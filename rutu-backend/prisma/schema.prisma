@@ -12,13 +12,127 @@ datasource db {
   provider = "postgresql"
 }
 
-// Tabel User
+// TABEL PENGGUNA (Akun & Saldo Waktu)
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String
-  password  String
-  timeSaldo Int      @default(3) // Modal awal 3 jam
+  id             String   @id @default(uuid())
+  name           String
+  email          String   @unique
+  password       String
+  timeBalance    Int      @default(30) // Saldo awal (misal: gratis 30 menit saat daftar)
+  profilePicture String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relasi
+  skillsOffered   UserSkill[]
+  sessionsAsTutor Session[]   @relation("TutorSessions")
+  sessionsAsSiswa Session[]   @relation("StudentSessions")
+  sentMessages    Message[]   @relation("SentMessages")
+  recvMessages    Message[]   @relation("ReceivedMessages")
+  forumPosts      ForumPost[]
+  forumComments   ForumComment[]
+}
+
+// TABEL SKILL (KETERAMPILAN YANG BISA DITUKAR)
+model Skill {
+  id          String      @id @default(uuid())
+  name        String      @unique // Contoh: "Matematika", "Desain Grafis", "Inggris"
+  description String?
+  
+  // Relasi
+  users       UserSkill[]
+  sessions    Session[]
+}
+
+// TABEL PENGHUBUNG (Siswa Mana Yang Menawarkan Skill Apa)
+model UserSkill {
+  id      String @id @default(uuid())
+  userId  String
+  skillId String
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, skillId]) // 1 user tidak bisa input skill yang sama 2 kali
+}
+
+// TABEL SESSION BOOKING (Pemesanan Sesi Belajar)
+model Session {
+  id              String   @id @default(uuid())
+  tutorId         String   // Yang mengajar
+  studentId       String   // Yang belajar (membayar dengan waktu)
+  skillId         String   // Skill yang dipelajari
+  scheduledAt     DateTime // Waktu belajar
+  durationMinutes Int      // Durasi belajar (misal: 60 menit)
+  status          Status   @default(PENDING) // PENDING, ACCEPTED, COMPLETED, CANCELED
+  meetingLink     String?  // Link GMeet/Zoom jika online
+  createdAt       DateTime @default(now())
+
+  // --- FITUR VERIFIKASI ---
+  verificationToken String?  // Token PIN untuk Tutor
+  isVerified        Boolean  @default(false)
+  
+  // --- FITUR BANDING (DISPUTE) ---
+  disputeReason     String?  // Alasan Tutor melaporkan Siswa (misal: "Siswa kabur")
+
+  // Relasi
+  tutor   User  @relation("TutorSessions", fields: [tutorId], references: [id])
+  student User  @relation("StudentSessions", fields: [studentId], references: [id])
+  skill   Skill @relation(fields: [skillId], references: [id])
+
+  review  Review?
+}
+
+// TABEL REVIEW (Ulasan & Rating setelah sesi terverifikasi)
+model Review {
+  id          String   @id @default(uuid())
+  sessionId   String   @unique
+  rating      Int      // Contoh: 1 sampai 5 bintang
+  feedback    String?  // Komentar dari siswa untuk tutor
+  createdAt   DateTime @default(now())
+
+  session     Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}
+
+enum Status {
+  PENDING
+  ACCEPTED
+  COMPLETED
+  CANCELED
+  DISPUTED
+}
+
+// TABEL CHAT & KOMUNITAS
+model Message {
+  id         String   @id @default(uuid())
+  senderId   String
+  receiverId String
+  content    String
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  sender   User @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+}
+
+model ForumPost {
+  id        String   @id @default(uuid())
+  authorId  String
+  title     String
+  content   String
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+
+  author   User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  comments ForumComment[]
+}
+
+model ForumComment {
+  id        String   @id @default(uuid())
+  postId    String
+  authorId  String
+  content   String
+  createdAt DateTime @default(now())
+
+  post   ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
 }
