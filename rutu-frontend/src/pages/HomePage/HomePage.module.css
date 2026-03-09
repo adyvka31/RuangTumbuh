@@ -1,0 +1,263 @@
+/* (Bagian atas CSS untuk .hero, .content, .textLogo biarkan sama seperti sebelumnya) */
+.hero {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff; /* Warna dasar kertas */
+  background-image: radial-gradient(
+    circle,
+    rgba(0, 0, 0, 0.15) 3px,
+    transparent 3px
+  );
+  background-size: 40px 40px; /* Jarak antar titik */
+  animation: moveBackground 10s linear infinite;
+}
+
+.parallaxContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.content {
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.textLogo {
+  width: 75vw;
+  max-width: 900px;
+  filter: drop-shadow(6px 6px 0px #000);
+  margin-bottom: 20px;
+  pointer-events: none;
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background: #fff;
+  padding: 10px 20px;
+  border: 4px solid #000;
+  border-radius: 12px;
+  box-shadow: 6px 6px 0px #000;
+  transition: all 0.3s ease;
+}
+
+.subtitle:hover {
+  background: #ff90e8;
+  color: #000;
+  transform: translateY(-4px) rotate(-2deg);
+  box-shadow: 8px 8px 0px #000;
+  transition: all 0.4s ease;
+}
+
+.shapeBack {
+  position: absolute;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.shapeFront {
+  position: absolute;
+  z-index: 15;
+  pointer-events: none;
+  filter: drop-shadow(3px 3px 0px rgba(0, 0, 0, 0.8));
+}
+
+/* --- POSISI AWAL (CLUSTER PADAT MENGELILINGI TEKS) --- */
+
+/* Shape Belakang (Mengisi celah-celah kosong di pinggir teks) */
+.s1 {
+  top: 15%;
+  left: 15%;
+  width: 140px;
+}
+.s2 {
+  top: 12%;
+  right: 10%;
+  width: 160px;
+}
+.s3 {
+  bottom: 18%;
+  left: 10%;
+  width: 150px;
+}
+.s4 {
+  bottom: 15%;
+  right: 12%;
+  width: 170px;
+}
+
+/* 2. Shape Utama Depan (Berada di sisi kiri dan kanan jauh) */
+.s5 {
+  top: 40%;
+  left: 4%;
+  width: 120px;
+}
+.s6 {
+  bottom: 42%;
+  right: 4%;
+  width: 130px;
+}
+.s7 {
+  top: 18%;
+  left: 35%;
+  width: 110px;
+} /* Agak ke tengah atas */
+.s8 {
+  bottom: 6%;
+  right: 35%;
+  width: 140px;
+} /* Agak ke tengah bawah */
+
+/* 3. Shape Khusus 9 & 10 (Ditarik mentok ke pojok atas dan bawah) */
+.s9 {
+  top: 6%;
+  left: 5%;
+  width: 120px;
+}
+.s10 {
+  bottom: 5%;
+  right: 5%;
+  width: 140px;
+}
+
+/* 4. Shape Duplikat Ekstra (Mengisi celah di sepanjang tepi layar) */
+.s11 {
+  top: 12%;
+  right: 25%;
+  width: 90px;
+}
+.s12 {
+  bottom: 8%;
+  left: 25%;
+  width: 110px;
+}
+.s13 {
+  top: 60%;
+  left: 2%;
+  width: 80px;
+} /* Mentok di kiri tengah */
+.s14 {
+  bottom: 60%;
+  right: 2%;
+  width: 100px;
+} /* Mentok di kanan tengah */
+.s15 {
+  bottom: 28%;
+  right: 6%;
+  width: 130px;
+}
+.s16 {
+  top: 25%;
+  left: 6%;
+  width: 100px;
+}
+.s17 {
+  top: 25%;
+  right: 5%;
+  width: 120px;
+}
+.s18 {
+  bottom: 25%;
+  left: 5%;
+  width: 95px;
+}
+
+.s19 {
+  top: 8%;
+  left: 48%;
+  width: 85px;
+} /* Atas tengah (ukuran sedang) */
+.s20 {
+  bottom: 10%;
+  left: 50%;
+  width: 115px;
+} /* Bawah tengah (ukuran lumayan besar) */
+.s21 {
+  top: 40%;
+  right: 14%;
+  width: 60px;
+} /* Kanan agak jauh (sangat kecil untuk efek jauh/3D) */
+.s22 {
+  top: 55%;
+  left: 16%;
+  width: 75px;
+} /* Kiri jauh (kecil) */
+.s23 {
+  top: 22%;
+  right: 20%;
+  width: 100px;
+} /* Kanan atas mid */
+.s24 {
+  bottom: 20%;
+  right: 22%;
+  width: 120px;
+} /* Kanan bawah mid */
+.s25 {
+  top: 26%;
+  left: 18%;
+  width: 90px;
+} /* Kiri atas mid */
+.s26 {
+  bottom: 25%;
+  left: 17%;
+  width: 140px;
+} /* Kiri bawah mid */
+.s27 {
+  top: 52%;
+  left: 24%;
+  width: 65px;
+} /* Kiri tengah (kecil) */
+.s28 {
+  top: 65%;
+  right: 20%;
+  width: 80px;
+} /* Kanan bawah */
+.s29 {
+  top: 12%;
+  right: 42%;
+  width: 70px;
+} /* Atas agak ke kanan */
+.s30 {
+  bottom: 15%;
+  left: 38%;
+  width: 105px;
+}
+
+.dummySection {
+  height: 100vh;
+  background-color: #ffd54f;
+  border-top: 6px solid #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  font-weight: 900;
+  color: #000;
+  text-shadow: 2px 2px 0px #fff;
+}
+
+@keyframes moveBackground {
+  0% {
+    background-position: 0px 0px;
+  }
+  100% {
+    /* Bergerak sejauh ukuran grid (40px) agar looping-nya tidak terlihat patah */
+    background-position: 40px 40px;
+  }
+}
