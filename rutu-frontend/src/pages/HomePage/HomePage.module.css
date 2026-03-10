@@ -351,8 +351,9 @@
 .stackSection {
   position: relative;
   width: 100vw;
-  background-color: #ffd54f; /* Latar belakang kertas abu-abu lembut agar kartu mencolok */
+  background-color: #ffd54f; 
   z-index: 10;
+  padding-bottom: 7rem;
 }
 
 .stackHeader {
@@ -376,13 +377,12 @@
 
 .cardShape {
   position: absolute;
-  width: 120px; /* Ukuran shape */
-  filter: drop-shadow(6px 6px 0px rgba(0, 0, 0, 0.8)); /* Bayangan tebal */
-  z-index: 1; /* Di belakang teks */
-  pointer-events: none; /* Agar tidak mengganggu klik/scroll */
+  width: 120px; 
+  filter: drop-shadow(6px 6px 0px rgba(0, 0, 0, 0.8)); 
+  z-index: 1; 
+  pointer-events: none; 
 }
 
-/* Memastikan teks tetap berada di atas (tidak tertutup shape) */
 .cardTextWrapper {
   position: relative;
   z-index: 5;
@@ -390,9 +390,6 @@
   flex-direction: column;
   align-items: center;
 }
-
-/* --- POSISI SUDUT: SETENGAH DI DALAM, SETENGAH DI LUAR --- */
-/* Menggunakan nilai negatif yang sama dengan sekitar setengah lebarnya (120px / 2 = 60px) */
 
 .decTopLeft {
   top: -55px;

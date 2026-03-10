@@ -8,7 +8,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 3rem;
+  gap: 4rem;
   z-index: 1000;
   font-family: "Fredoka", "plus-jakarta", sans-serif;
 
@@ -25,7 +25,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 40px;
+  gap: 30px;
   background: #ffd54f;
   padding: 12px 30px;
   border-radius: 20px;
@@ -43,7 +43,7 @@
 .dashboard {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 30px;
   background: #ff5e62;
   padding: 5px 10px;
   border-radius: 20px;

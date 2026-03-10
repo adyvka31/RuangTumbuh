@@ -26,7 +26,7 @@ const featuresData = [
     desc: "Temukan tutor sebaya atau bagikan keahlianmu kepada komunitas untuk berkembang bersama.",
     color: "#ff5e62", // Kuning
     decorations: [
-      { src: shape10, pos: styles.decTopLeft }, // Kiri Atas
+      { src: shape13, pos: styles.decTopLeft }, // Kiri Atas
       { src: shape1, pos: styles.decBottomRight }, // Kanan Bawah
     ],
   },
@@ -36,8 +36,8 @@ const featuresData = [
     desc: "Bergabung dengan ruang diskusi yang interaktif, penuh dukungan, dan menyenangkan.",
     color: "#4ade80", // Hijau
     decorations: [
-      { src: shape11, pos: styles.decTopRight }, // Kanan Atas
-      { src: shape2, pos: styles.decBottomLeft }, // Kiri Bawah
+      { src: shape10, pos: styles.decTopRight }, // Kanan Atas
+      { src: shape3, pos: styles.decBottomLeft }, // Kiri Bawah
     ],
   },
   {
@@ -46,8 +46,8 @@ const featuresData = [
     desc: "Pantau progres belajarmu, kumpulkan lencana, dan pamerkan pencapaian terbaikmu.",
     color: "#ff90e8", // Pink
     decorations: [
-      { src: shape12, pos: styles.decBottomRight }, // Kanan Bawah
-      { src: shape4, pos: styles.decTopLeft }, // Kiri Atas
+      { src: shape4, pos: styles.decBottomRight }, // Kanan Bawah
+      { src: shape12, pos: styles.decTopLeft }, // Kiri Atas
     ],
   },
   {
@@ -56,8 +56,8 @@ const featuresData = [
     desc: "Atur dan jadwalkan sesi belajarmu dengan sistem kalender yang terintegrasi penuh.",
     color: "#00f2fe", // Biru Cyan
     decorations: [
-      { src: shape13, pos: styles.decTopRight }, // Kanan Atas
-      { src: shape5, pos: styles.decBottomLeft }, // Kiri Bawah
+      { src: shape6, pos: styles.decTopRight }, // Kanan Atas
+      { src: shape2, pos: styles.decBottomLeft }, // Kiri Bawah
     ],
   },
   {
@@ -67,7 +67,7 @@ const featuresData = [
     color: "#ff5e62", // Merah
     decorations: [
       { src: shape9, pos: styles.decTopLeft }, // Kiri Atas
-      { src: shape6, pos: styles.decBottomRight }, // Kanan Bawah
+      { src: shape13, pos: styles.decBottomRight }, // Kanan Bawah
     ],
   },
 ];
@@ -500,7 +500,10 @@ export default function HomePage() {
 
   return (
     <>
+      {/* SECTION NAVBAR */}
       <Navbar />
+
+      {/* SECTION HERO */}
       <section className={styles.hero}>
         <div className={styles.parallaxContainer}>
           {shapesData.map((shape) => (
@@ -534,6 +537,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* SECTION TEXT BERJALAN */}
       <section className={styles.marqueeSection}>
         <div className={styles.marqueeContainer}>
           <div className={styles.marqueeContent}>
@@ -561,15 +565,47 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* SECTION SCROLL STACK */}
       <section className={styles.stackSection} ref={stackRef}>
         <div className={styles.stackWrapper}>
           {featuresData.map((feat, i) => {
-            // LOGIKA REACT BITS:
-            // 1. Kartu mulai mengecil TEPAT saat kartu tersebut mencapai posisi paling atas (sticky)
-            // 2. Semakin banyak kartu yang menimpa di atasnya, skalanya semakin mengecil
-            const range = [i * (1 / featuresData.length), 1];
-            const targetScale = 1 - (featuresData.length - 1 - i) * 0.05;
-            const scale = useTransform(stackProgress, range, [1, targetScale]);
+            const N = featuresData.length;
+            const totalPhases = 2 * N - 1;
+
+            // Tentukan titik mulainya setiap fase berdasarkan urutan (index)
+            const eStart = (2 * i - 1) / totalPhases; // Mulai masuk
+            const eEnd = (2 * i) / totalPhases; // Selesai masuk
+            const sStart = (2 * i) / totalPhases; // Mulai mengecil
+            const sEnd = (2 * i + 1) / totalPhases; // Selesai mengecil
+
+            const targetScale = 1.05 - (N - 1 - i) * 0.03;
+
+            let scaleInput, scaleOutput;
+            let yInput, yOutput;
+
+            if (i === 0) {
+              scaleInput = [0, sEnd, 1];
+              scaleOutput = [1.1, targetScale, targetScale];
+
+              yInput = [0, 1];
+              yOutput = [0, 0];
+            } else if (i === N - 1) {
+              scaleInput = [0, sStart, 1];
+              scaleOutput = [1.1, 1.1, targetScale];
+
+              yInput = [0, eStart, eEnd, 1];
+              yOutput = [50, 50, 0, 0]; // Efek slide-up dari bawah 50px
+            } else {
+              scaleInput = [0, sStart, sEnd, 1];
+              scaleOutput = [1.1, 1.1, targetScale, targetScale];
+
+              yInput = [0, eStart, eEnd, 1];
+              yOutput = [50, 50, 0, 0];
+            }
+
+            // Terapkan mapping ke useTransform
+            const scale = useTransform(stackProgress, scaleInput, scaleOutput);
+            const y = useTransform(stackProgress, yInput, yOutput);
 
             return (
               <div className={styles.cardStickyContainer} key={feat.id}>
@@ -577,17 +613,16 @@ export default function HomePage() {
                   className={styles.cardContent}
                   style={{
                     backgroundColor: feat.color,
-                    scale,
+                    scale, // Pengecilan sekuensial
+                    y, // Memberi efek slide-up saat masuk
                     top: `${i * 35}px`,
                   }}
                 >
-                  {/* --- BUNGKUS TEKS AGAR BERADA DI ATAS SHAPE --- */}
                   <div className={styles.cardTextWrapper}>
                     <h3>{feat.title}</h3>
                     <p>{feat.desc}</p>
                   </div>
 
-                  {/* --- RENDER SEMUA SHAPE DEKORASI (BISA 1 ATAU 2) --- */}
                   {feat.decorations.map((dec, idx) => (
                     <motion.img
                       key={idx}
@@ -597,10 +632,7 @@ export default function HomePage() {
                       animate={{ y: [0, -10, 0], rotate: [0, 8, 0] }}
                       transition={{
                         repeat: Infinity,
-                        duration:
-                          4 +
-                          i * 0.5 +
-                          idx * 0.5 /* Waktu melayang dibuat beda tiap shape */,
+                        duration: 4 + i * 0.5 + idx * 0.5,
                         ease: "easeInOut",
                       }}
                     />
