@@ -1,0 +1,25 @@
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 45px;
+  height: 45px;
+  background: #ff5e62;
+  border: 3px solid #000;
+  box-shadow: 3px 3px 0px #000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 900;
+  font-size: 20px;
+  pointer-events: none;
+  z-index: 9999;
+  will-change: transform, opacity;
+  transition: opacity 0.15s ease-out;
+}
+
+.cursorHide {
+  opacity: 0;
+}

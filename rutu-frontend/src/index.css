@@ -10,9 +10,30 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  cursor: none; 
+  cursor: none;
 }
 
-a, button {
+a,
+button {
   cursor: pointer !important;
+}
+
+@keyframes floatShapeCSS {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+@keyframes floatDecorCSS {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(8deg);
+  }
 }

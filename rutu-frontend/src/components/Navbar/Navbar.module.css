@@ -8,9 +8,16 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 3rem;
+  gap: 4rem;
   z-index: 1000;
   font-family: "Fredoka", "plus-jakarta", sans-serif;
+
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.headerContainer.scrolled {
+  gap: 0;
+  top: 15px;
 }
 
 .navbar {
@@ -18,32 +25,39 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 40px;
+  gap: 30px;
   background: #ffd54f;
   padding: 12px 30px;
   border-radius: 20px;
   border: 4px solid #000;
   box-shadow: 8px 8px 0px #000;
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.headerContainer.scrolled .navbar {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right-width: 2px;
 }
 
 .dashboard {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 30px;
   background: #ff5e62;
   padding: 5px 10px;
   border-radius: 20px;
   border: 4px solid #000;
   box-shadow: 8px 8px 0px #000;
   cursor: pointer !important;
-  transition: all 0.2s ease;
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.dashboard:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 10px 10px 0px #000;
+.headerContainer.scrolled .dashboard {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left-width: 2px;
 }
-
 .dashboard:active {
   transform: translate(2px, 2px);
   box-shadow: 4px 4px 0px #000;
@@ -51,12 +65,12 @@
 }
 
 .dashboard img {
-  cursor: pointer !important; 
+  cursor: pointer !important;
   transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .dashboard:hover img {
-  transform: rotate(360deg) scale(1.1); 
+  transform: rotate(360deg) scale(1.1);
   transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -104,12 +118,12 @@
   text-decoration: none;
   padding: 8px 16px;
   border-radius: 12px;
-  border: 3px solid transparent; 
+  border: 3px solid transparent;
   transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .right a:hover {
-  background: #fff; 
+  background: #fff;
   color: #000;
   border: 3px solid #000;
   box-shadow: 4px 4px 0px #000;
@@ -138,31 +152,4 @@
 .button:active {
   transform: translate(2px, 2px);
   box-shadow: 2px 2px 0px #000;
-}
-
-.cursor {
-  position: fixed;
-  width: 45px;
-  height: 45px;
-  background: #ff5e62;
-  border: 3px solid #000;
-  box-shadow: 3px 3px 0px #000;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-weight: 900;
-  font-size: 20px;
-  pointer-events: none;
-  transform: translate(-50%, -50%) scale(1);
-  z-index: 9999;
-  transition:
-    transform 0.15s ease-out,
-    opacity 0.15s ease-out;
-}
-
-.cursorHide {
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0);
 }
