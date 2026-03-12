@@ -79,7 +79,6 @@
 
 .shapeFront {
   z-index: 15;
-  filter: drop-shadow(3px 3px 0px rgba(0, 0, 0, 0.8));
 }
 
 .s1 {

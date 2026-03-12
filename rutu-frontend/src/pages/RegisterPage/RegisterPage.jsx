@@ -4,24 +4,8 @@ import styles from './RegisterPage.module.css';
 import logoGede from '../../assets/logo.svg'; 
 
 export default function Register() {
-  const [cursor, setCursor] = useState({ x: 0, y: 0 });
-
-  useEffect(() => {
-    const moveCursor = (e) => setCursor({ x: e.clientX, y: e.clientY });
-    window.addEventListener("mousemove", moveCursor);
-    return () => window.removeEventListener("mousemove", moveCursor);
-  }, []);
-
   return (
     <div className={styles.fullPage}>
-      {/* Kursor Custom Tetap Ada */}
-      <div 
-        className={styles.cursor} 
-        style={{ left: `${cursor.x}px`, top: `${cursor.y}px` }}
-      >
-        ✦
-      </div>
-
       <div className={styles.registerCard}>
         {/* SISI KIRI: BRANDING */}
         <div className={styles.leftSide}>
