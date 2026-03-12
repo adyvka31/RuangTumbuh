@@ -15,7 +15,7 @@ import shape13 from "@assets/shape13.svg";
 
 export const TEXT_LOGO = textLogo;
 
-const ASSETS = [
+export const ASSETS = [
   null,
   shape1,
   shape2,

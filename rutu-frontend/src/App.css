@@ -2,6 +2,7 @@
   width: 100%;
   margin: 0 auto;
   overflow-x: hidden;
+  position: relative;
 }
 
 .logo {
@@ -17,7 +18,8 @@
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
-html.lenis, html.lenis body {
+html.lenis,
+html.lenis body {
   height: auto;
 }
 .lenis.lenis-smooth {
@@ -32,7 +34,6 @@ html.lenis, html.lenis body {
 .lenis.lenis-scrolling iframe {
   pointer-events: none;
 }
-
 
 @keyframes logo-spin {
   from {
