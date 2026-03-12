@@ -1,6 +1,5 @@
 import styles from "./Navbar.module.css";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 
 export default function Navbar() {
   const [cursor, setCursor] = useState({ x: 0, y: 0 });
@@ -70,14 +69,13 @@ export default function Navbar() {
           <div className={styles.divider}></div>
 
           <div className={styles.right}>
-            <Link
-              to="/login"
-              className={styles.navLink}
+            <a
+              href="#signin"
               onMouseEnter={disableCustomCursor}
               onMouseLeave={enableCustomCursor}
             >
               SIGN IN
-            </Link>
+            </a>
 
             <button
               className={styles.button}

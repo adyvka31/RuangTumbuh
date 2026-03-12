@@ -1,16 +1,13 @@
+// src/App.jsx
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage/HomePage";
-import Login from "./pages/LoginPage/LoginPage";
-import Register from "./pages/RegisterPage/RegisterPage";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
       </Routes>
     </BrowserRouter>
   );

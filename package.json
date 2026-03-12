@@ -12,5 +12,9 @@
   "packageManager": "pnpm@10.29.2",
   "devDependencies": {
     "concurrently": "^9.2.1"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.8",
+    "react-router-dom": "^7.13.1"
   }
 }
