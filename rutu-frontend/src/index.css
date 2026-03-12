@@ -10,9 +10,64 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  cursor: none; 
+  cursor: none;
 }
 
-a, button {
+a,
+button {
   cursor: pointer !important;
+}
+
+@keyframes floatShapeCSS {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+@keyframes floatDecorCSS {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(8deg);
+  }
+}
+
+/* --- Responsive: Disable custom cursor on touch devices --- */
+@media (hover: none) and (pointer: coarse) {
+  * {
+    cursor: auto !important;
+  }
+  a,
+  button {
+    cursor: pointer !important;
+  }
+}
+
+/* --- Responsive: Reduce float animation intensity on mobile --- */
+@media (max-width: 768px) {
+  @keyframes floatShapeCSS {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  @keyframes floatDecorCSS {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-5px) rotate(4deg);
+    }
+  }
 }
