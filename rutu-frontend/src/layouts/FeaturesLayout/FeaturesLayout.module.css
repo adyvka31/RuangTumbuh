@@ -1,0 +1,380 @@
+/* --- Reset & Base Section Styling --- */
+.featuresSection {
+    padding: 120px 0;
+    /* Padding atas bawah lebih lega */
+    background-color: #F8F5F2;
+    /* Warna krem background sesuai desain */
+    position: relative;
+    text-align: center;
+    overflow: hidden;
+    /* Biar shapes nggak tumpeh-tumpeh */
+    width: 100%;
+}
+
+/* --- Header Styling --- */
+.header {
+    margin-bottom: 80px;
+}
+
+.header h2 {
+    font-size: 3.5rem;
+    /* Ukuran font judul lebih besar */
+    font-weight: 900;
+    margin-bottom: 15px;
+    color: #000;
+}
+
+.header p {
+    font-size: 1.2rem;
+    color: #333;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* --- Card Grid Styling --- */
+.cardGrid {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    /* Jarak antar kartu lebih lebar */
+    margin-top: 50px;
+    position: relative;
+    z-index: 10;
+    /* Di atas banner biru */
+    width: 100%;
+    max-width: 1300px;
+    /* Batasi lebar grid biar rapi */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* --- Card Styling (Neubrutalism Look) --- */
+.card {
+    width: 280px;
+    /* UKURAN KARTU JAUH LEBIH BESAR */
+    height: 420px;
+    /* Tinggi kartu juga disesuaikan */
+    background: white;
+    border: 4px solid #000;
+    /* Border hitam tebal wajib */
+    border-radius: 24px;
+    /* Sudut lebih rounded sesuai desain */
+    box-shadow: 10px 10px 0px #000;
+    /* Shadow hitam tajam dan tebal */
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.3s ease;
+    /* Transisi untuk hover shadow */
+}
+
+/* Setengah Lingkaran Kontras di Atas Kartu */
+.halfCircle {
+    width: 160px;
+    height: 80px;
+    border-radius: 0 0 120px 120px;
+    margin: 0 auto;
+    border: 4px solid #000;
+    border-top: none;
+    position: absolute;
+    top: -4px;
+    /* Sedikit overlap ke atas */
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Konten di Dalam Kartu */
+.cardContent {
+    padding: 100px 25px 30px;
+    /* Padding atas lebih besar buat kasih ruang circle */
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    height: 100%;
+}
+
+.cardContent h3 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+    color: #000;
+    line-height: 1.2;
+}
+
+.cardContent p {
+    font-size: 1rem;
+    color: #444;
+    line-height: 1.6;
+}
+
+/* --- Banner Biru & Shapes Dekoratif --- */
+.blueBannerWrapper {
+    position: absolute;
+    bottom: 150px;
+    /* Atur posisi vertikal banner biru */
+    left: 0;
+    width: 100%;
+    height: 160px;
+    /* Tinggi banner biru */
+    z-index: 1;
+    /* Di bawah kartu */
+}
+
+.blueBanner {
+    width: 100%;
+    height: 300px;
+    background-color: #4A6CF7;
+    /* Warna biru banner */
+    border-top: 4px solid #000;
+    border-bottom: 4px solid #000;
+}
+
+/* Styling Umum untuk Semua Shapes Dekoratif */
+.decorShape {
+    position: absolute;
+    height: auto;
+    z-index: 5;
+    /* Di atas banner biru, tapi di bawah kartu */
+}
+
+/* Posisi Spesifik untuk Masing-masing Shape (Sesuaikan dengan Desain Mata) */
+.shapeYellow {
+    width: 100px;
+    bottom: 20px;
+    left: 8%;
+}
+
+.shapePink {
+    width: 120px;
+    top: -30px;
+    left: 25%;
+}
+
+.shapeGreen {
+    width: 90px;
+    bottom: -20px;
+    right: 20%;
+}
+
+.shapeBlue {
+    width: 110px;
+    top: 10px;
+    right: 5%;
+}
+
+/* ==========================================
+   RESPONSIVE BREAKPOINTS — Features
+   ========================================== */
+
+/* --- Tablet: ≤ 1024px --- */
+@media (max-width: 1024px) {
+    .featuresSection {
+        padding: 80px 0;
+    }
+
+    .header {
+        margin-bottom: 50px;
+    }
+
+    .header h2 {
+        font-size: 2.8rem;
+    }
+
+    .cardGrid {
+        flex-wrap: wrap;
+        gap: 30px;
+        padding: 0 30px;
+    }
+
+    .card {
+        width: 240px;
+        height: 370px;
+        box-shadow: 8px 8px 0px #000;
+    }
+
+    .halfCircle {
+        width: 130px;
+        height: 65px;
+        border-width: 3px;
+    }
+
+    .cardContent {
+        padding: 80px 20px 25px;
+    }
+
+    .cardContent h3 {
+        font-size: 1.4rem;
+    }
+
+    .decorShape {
+        transform: scale(0.8);
+    }
+}
+
+/* --- Mobile: ≤ 768px --- */
+@media (max-width: 768px) {
+    .featuresSection {
+        padding: 50px 0;
+    }
+
+    .header {
+        margin-bottom: 30px;
+        padding: 0 20px;
+    }
+
+    .header h2 {
+        font-size: 2rem;
+    }
+
+    .header p {
+        font-size: 1rem;
+    }
+
+    .cardGrid {
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+        margin-top: 30px;
+        padding: 0 20px;
+    }
+
+    .card {
+        width: 100%;
+        max-width: 340px;
+        height: auto;
+        min-height: 280px;
+        border-width: 3px;
+        border-radius: 20px;
+        box-shadow: 6px 6px 0px #000;
+    }
+
+    .halfCircle {
+        width: 110px;
+        height: 55px;
+        border-width: 3px;
+    }
+
+    .cardContent {
+        padding: 75px 20px 24px;
+    }
+
+    .cardContent h3 {
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+    }
+
+    .cardContent p {
+        font-size: 0.9rem;
+    }
+
+    /* Adjust blue banner for mobile */
+    .blueBannerWrapper {
+        bottom: 80px;
+        height: 120px;
+    }
+
+    .blueBanner {
+        height: 200px;
+        border-top-width: 3px;
+        border-bottom-width: 3px;
+    }
+
+    /* Scale down and reposition shapes */
+    .decorShape {
+        transform: scale(0.6);
+    }
+
+    .shapeYellow {
+        width: 70px;
+        left: 3%;
+    }
+
+    .shapePink {
+        width: 80px;
+        left: 15%;
+    }
+
+    .shapeGreen {
+        width: 60px;
+        right: 10%;
+    }
+
+    .shapeBlue {
+        width: 75px;
+        right: 2%;
+    }
+}
+
+/* --- Small Mobile: ≤ 480px --- */
+@media (max-width: 480px) {
+    .featuresSection {
+        padding: 40px 0;
+    }
+
+    .header {
+        margin-bottom: 24px;
+    }
+
+    .header h2 {
+        font-size: 1.6rem;
+    }
+
+    .header p {
+        font-size: 0.85rem;
+    }
+
+    .cardGrid {
+        gap: 18px;
+        padding: 0 16px;
+        margin-top: 20px;
+    }
+
+    .card {
+        max-width: 300px;
+        min-height: 240px;
+        border-width: 2px;
+        border-radius: 16px;
+        box-shadow: 4px 4px 0px #000;
+    }
+
+    .halfCircle {
+        width: 90px;
+        height: 45px;
+        border-width: 2px;
+        border-radius: 0 0 90px 90px;
+    }
+
+    .cardContent {
+        padding: 60px 16px 20px;
+    }
+
+    .cardContent h3 {
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+    }
+
+    .cardContent p {
+        font-size: 0.82rem;
+        line-height: 1.5;
+    }
+
+    /* Hide decorative shapes on small screens */
+    .decorShape {
+        display: none;
+    }
+
+    /* Adjust blue banner */
+    .blueBannerWrapper {
+        bottom: 60px;
+        height: 100px;
+    }
+
+    .blueBanner {
+        height: 160px;
+        border-top-width: 2px;
+        border-bottom-width: 2px;
+    }
+}

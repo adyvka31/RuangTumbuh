@@ -1,17 +1,17 @@
-import textLogo from "../assets/text-logo.svg";
-import shape1 from "../assets/shape1.svg";
-import shape2 from "../assets/shape2.svg";
-import shape3 from "../assets/shape3.svg";
-import shape4 from "../assets/shape4.svg";
-import shape5 from "../assets/shape5.svg";
-import shape6 from "../assets/shape6.svg";
-import shape7 from "../assets/shape7.svg";
-import shape8 from "../assets/shape8.svg";
-import shape9 from "../assets/shape9.svg";
-import shape10 from "../assets/shape10.svg";
-import shape11 from "../assets/shape11.svg";
-import shape12 from "../assets/shape12.svg";
-import shape13 from "../assets/shape13.svg";
+import textLogo from "@assets/text-logo.svg";
+import shape1 from "@assets/shape1.svg";
+import shape2 from "@assets/shape2.svg";
+import shape3 from "@assets/shape3.svg";
+import shape4 from "@assets/shape4.svg";
+import shape5 from "@assets/shape5.svg";
+import shape6 from "@assets/shape6.svg";
+import shape7 from "@assets/shape7.svg";
+import shape8 from "@assets/shape8.svg";
+import shape9 from "@assets/shape9.svg";
+import shape10 from "@assets/shape10.svg";
+import shape11 from "@assets/shape11.svg";
+import shape12 from "@assets/shape12.svg";
+import shape13 from "@assets/shape13.svg";
 
 export const TEXT_LOGO = textLogo;
 

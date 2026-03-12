@@ -10,3 +10,21 @@
   color: #000;
   text-shadow: 2px 2px 0px #fff;
 }
+
+/* --- Responsive: Dummy Section --- */
+@media (max-width: 768px) {
+  .dummySection {
+    font-size: 1.3rem;
+    border-top-width: 4px;
+    padding: 0 20px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .dummySection {
+    font-size: 1rem;
+    border-top-width: 3px;
+    text-shadow: 1px 1px 0px #fff;
+  }
+}

@@ -1,7 +1,7 @@
 import React from "react";
 import { motion, useTransform } from "framer-motion";
-import { useSequentialScroll } from "../../hooks/useSequentialScroll";
-import { FEATURES_DATA } from "../../constants/stackData";
+import { useSequentialScroll } from "@/hooks/useSequentialScroll";
+import { FEATURES_DATA } from "@/constants/stackData";
 import styles from "./StackLayout.module.css";
 
 export default function StackSection() {

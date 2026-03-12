@@ -41,3 +41,38 @@
     transform: translateX(-100%);
   }
 }
+
+/* ==========================================
+   RESPONSIVE BREAKPOINTS — Marquee
+   ========================================== */
+
+@media (max-width: 768px) {
+  .marqueeSection {
+    border-top-width: 4px;
+    border-bottom-width: 4px;
+    padding: 10px 0;
+  }
+
+  .marqueeText {
+    font-size: 1.3rem;
+    text-shadow: 3px 3px 0px #000;
+    letter-spacing: 1px;
+    padding-right: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .marqueeSection {
+    border-top-width: 3px;
+    border-bottom-width: 3px;
+    padding: 8px 0;
+  }
+
+  .marqueeText {
+    font-size: 1rem;
+    text-shadow: 2px 2px 0px #000;
+    -webkit-text-stroke: 0.5px #000;
+    letter-spacing: 0.5px;
+    padding-right: 10px;
+  }
+}

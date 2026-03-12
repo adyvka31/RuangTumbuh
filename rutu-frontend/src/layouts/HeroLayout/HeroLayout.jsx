@@ -1,10 +1,10 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { useParallax } from "../../hooks/useParallax";
-import { TEXT_LOGO, SHAPES_CONFIG } from "../../constants/heroData";
+import { useParallax } from "@/hooks/useParallax";
+import { TEXT_LOGO, SHAPES_CONFIG } from "@/constants/heroData";
 import styles from "./HeroLayout.module.css";
 
-export default function HeroSection() {
+export default function   HeroSection() {
   const { motionValues, yText } = useParallax();
 
   return (

@@ -108,3 +108,130 @@
   box-shadow: 6px 6px 0px #000;
   line-height: 1.6;
 }
+
+/* ==========================================
+   RESPONSIVE BREAKPOINTS — Stack
+   ========================================== */
+
+/* --- Tablet: ≤ 1024px --- */
+@media (max-width: 1024px) {
+  .cardContent {
+    width: 90vw;
+    height: 55vh;
+    min-height: 350px;
+    padding: 30px;
+    border-width: 5px;
+    box-shadow: 12px 12px 0px #000;
+  }
+
+  .cardContent h3 {
+    font-size: 2.8rem;
+  }
+
+  .cardContent p {
+    font-size: 1.15rem;
+    padding: 12px 20px;
+  }
+
+  .cardShape {
+    width: 100px;
+  }
+}
+
+/* --- Mobile: ≤ 768px --- */
+@media (max-width: 768px) {
+  .stackSection {
+    padding-bottom: 4rem;
+  }
+
+  .cardStickyContainer {
+    padding-top: 12vh;
+  }
+
+  .cardContent {
+    width: 92vw;
+    height: 50vh;
+    min-height: 300px;
+    border-radius: 20px;
+    border-width: 4px;
+    box-shadow: 8px 8px 0px #000;
+    padding: 25px 20px;
+  }
+
+  .cardContent h3 {
+    font-size: 2rem;
+    margin-bottom: 14px;
+    letter-spacing: 1px;
+  }
+
+  .cardContent p {
+    font-size: 1rem;
+    padding: 10px 16px;
+    border-width: 2px;
+    box-shadow: 4px 4px 0px #000;
+    border-radius: 10px;
+  }
+
+  .cardShape {
+    width: 80px;
+    filter: drop-shadow(4px 4px 0px rgba(0, 0, 0, 0.8));
+  }
+
+  /* Pull shapes inward to prevent overflow */
+  .decTopLeft {
+    top: -35px;
+    left: -25px;
+  }
+  .decTopRight {
+    top: -35px;
+    right: -25px;
+  }
+  .decBottomLeft {
+    bottom: -35px;
+    left: -25px;
+  }
+  .decBottomRight {
+    bottom: -35px;
+    right: -25px;
+  }
+}
+
+/* --- Small Mobile: ≤ 480px --- */
+@media (max-width: 480px) {
+  .stackSection {
+    padding-bottom: 3rem;
+  }
+
+  .cardStickyContainer {
+    padding-top: 10vh;
+  }
+
+  .cardContent {
+    width: 94vw;
+    height: 45vh;
+    min-height: 260px;
+    border-radius: 16px;
+    border-width: 3px;
+    box-shadow: 6px 6px 0px #000;
+    padding: 20px 16px;
+  }
+
+  .cardContent h3 {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+  }
+
+  .cardContent p {
+    font-size: 0.85rem;
+    padding: 8px 12px;
+    border-width: 2px;
+    box-shadow: 3px 3px 0px #000;
+    line-height: 1.5;
+  }
+
+  /* Hide decorative shapes on smallest screens */
+  .cardShape {
+    display: none;
+  }
+}

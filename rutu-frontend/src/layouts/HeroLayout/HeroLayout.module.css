@@ -307,3 +307,94 @@
     background-position: 40px 40px;
   }
 }
+
+/* ==========================================
+   RESPONSIVE BREAKPOINTS — Hero
+   ========================================== */
+
+/* --- Tablet: ≤ 1024px --- */
+@media (max-width: 1024px) {
+  .textLogo {
+    width: 80vw;
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+    padding: 8px 16px;
+  }
+
+  /* Scale down all shapes slightly */
+  .shapeWrapper {
+    transform: scale(0.8);
+  }
+}
+
+/* --- Mobile: ≤ 768px --- */
+@media (max-width: 768px) {
+  .hero {
+    background-size: 30px 30px;
+  }
+
+  .textLogo {
+    width: 88vw;
+    filter: drop-shadow(4px 4px 0px #000);
+    margin-bottom: 14px;
+  }
+
+  .subtitle {
+    font-size: 0.95rem;
+    padding: 8px 14px;
+    border-width: 3px;
+    box-shadow: 4px 4px 0px #000;
+    letter-spacing: 1px;
+  }
+
+  /* Scale all shapes down significantly */
+  .shapeWrapper {
+    transform: scale(0.6);
+  }
+
+  /* Hide shapes that overlap the center text area */
+  .s19, .s20, .s21, .s22, .s23, .s24, .s25, .s26,
+  .s27, .s28, .s29, .s30, .s31, .s32, .s33, .s34,
+  .s35, .s36, .s37, .s38, .s39, .s40 {
+    display: none;
+  }
+}
+
+/* --- Small Mobile: ≤ 480px --- */
+@media (max-width: 480px) {
+  .hero {
+    background-size: 25px 25px;
+    background-image: radial-gradient(
+      circle,
+      rgba(0, 0, 0, 0.1) 2px,
+      transparent 2px
+    );
+  }
+
+  .textLogo {
+    width: 92vw;
+    filter: drop-shadow(3px 3px 0px #000);
+  }
+
+  .subtitle {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+    border-width: 2px;
+    border-radius: 10px;
+    box-shadow: 3px 3px 0px #000;
+    letter-spacing: 0.5px;
+  }
+
+  /* Scale shapes down further */
+  .shapeWrapper {
+    transform: scale(0.4);
+  }
+
+  /* Also hide more peripheral shapes for cleanliness */
+  .s5, .s6, .s7, .s8, .s9, .s10, .s11, .s12,
+  .s13, .s14, .s15, .s16, .s17, .s18 {
+    display: none;
+  }
+}
