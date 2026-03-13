@@ -8,7 +8,6 @@ import CustomCursor from "./components/CustomCursor/CustomCursor";
 
 export default function App() {
   return (
-    // Gunakan lerp 0.08 untuk efek mulus yang natural. Jangan gunakan parameter 'duration'.
     <ReactLenis root>
       <BrowserRouter>
         <CustomCursor />

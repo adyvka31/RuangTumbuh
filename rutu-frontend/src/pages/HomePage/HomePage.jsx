@@ -1,9 +1,9 @@
 import React from "react";
-import HeroLayout from "@/layouts/Home/HeroLayout/HeroLayout";
-import MarqueeLayout from "@/layouts/Home/MarqueeLayout/MarqueeLayout";
-import StackLayout from "@/layouts/Home/StackLayout/StackLayout";
+import HeroLayout from "@/pages/HomePage/HeroLayout/HeroLayout";
+import MarqueeLayout from "@/pages/HomePage/MarqueeLayout/MarqueeLayout";
+import StackLayout from "@/pages/HomePage/StackLayout/StackLayout";
 import styles from "./HomePage.module.css";
-import MainLayout from "@/layouts/Home/MainLayout/MainLayout";
+import MainLayout from "@/pages/HomePage/MainLayout/MainLayout";
 
 export default function HomePage() {
   return (
