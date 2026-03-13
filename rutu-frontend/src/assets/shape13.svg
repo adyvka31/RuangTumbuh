@@ -1,20 +1,6 @@
-<svg width="165" height="166" viewBox="0 0 165 166" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g filter="url(#filter0_d_69_323)">
-<path d="M23.3738 157.978H142.491C162.247 157.978 162.344 142.834 159.923 135.262C138.133 24.5838 43.2267 6.21795 23.3738 0.90151C7.49141 -3.35164 3.84363 8.47341 4.00504 14.9176V140.096C4.00504 155.175 16.9175 158.3 23.3738 157.978Z" fill="#FFB700"/>
-<path d="M72.5 75C76.8008 81.7916 87.422 91.2999 95.5 75" stroke="black" stroke-width="6" stroke-linecap="round"/>
-<path d="M42 75C46.3008 81.7916 56.922 91.2999 65 75" stroke="black" stroke-width="6" stroke-linecap="round"/>
-<path d="M19 75C37.3252 96.8841 82.5805 127.522 117 75" stroke="black" stroke-width="6" stroke-linecap="round"/>
-</g>
-<defs>
-<filter id="filter0_d_69_323" x="0" y="0" width="165" height="166" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-<feFlood flood-opacity="0" result="BackgroundImageFix"/>
-<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-<feOffset dy="4"/>
-<feGaussianBlur stdDeviation="2"/>
-<feComposite in2="hardAlpha" operator="out"/>
-<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
-<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_69_323"/>
-<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_69_323" result="shape"/>
-</filter>
-</defs>
+<svg width="157" height="158" viewBox="0 0 157 158" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M19.3738 157.978H138.491C158.247 157.978 158.344 142.834 155.923 135.262C134.133 24.5838 39.2267 6.21795 19.3738 0.90151C3.49141 -3.35164 -0.156372 8.47341 0.0050354 14.9176V140.096C0.0050354 155.175 12.9175 158.3 19.3738 157.978Z" fill="#FFB700"/>
+<path d="M68.5 75C72.8008 81.7916 83.422 91.2999 91.5 75" stroke="black" stroke-width="6" stroke-linecap="round"/>
+<path d="M38 75C42.3008 81.7916 52.922 91.2999 61 75" stroke="black" stroke-width="6" stroke-linecap="round"/>
+<path d="M15 75C33.3252 96.8841 78.5805 127.522 113 75" stroke="black" stroke-width="6" stroke-linecap="round"/>
 </svg>

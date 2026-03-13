@@ -1,69 +1,150 @@
 .main {
-    display: flex;
-    flex-direction: column;
-    padding: 48px 24px;
-    gap: 48px;
-    max-width: 1440px;
-    margin: auto;
-    margin-top: 10rem;
-    width: 100%;
-    align-items: flex-start;
-}
-
-@media (min-width: 768px) {
-    .main {
-        flex-direction: row;
-        justify-content: center;
-        padding: 48px 80px;
-    }
-
-    .leftSection {
-        width: 450px;
-        margin-left: 7rem;
-        margin-right: 3rem;
-
-        position: sticky;
-        top: 15rem;
-        height: fit-content;
-        padding-bottom: 128px;
-    }
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  margin-top: 10rem;
+  margin-bottom: 8rem;
+  width: 100%;
 }
 
 .rightSection {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 64px;
-    padding-bottom: 128px;
-    height: fit-content;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+  height: fit-content;
 }
 
-
 .section {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    gap: 24px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 40px;
+}
+
+.headerArea {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .tag {
-    background: #ffd400;
-    border: 2px solid black;
-    padding: 4px 12px;
-    font-weight: 900;
-    border-radius: 10px;
-    text-transform: uppercase;
-    align-self: flex-start;
+  background: #ffd400;
+  border: 2px solid black;
+  padding: 6px 16px;
+  font-weight: 900;
+  border-radius: 99px;
+  text-transform: uppercase;
+  align-self: flex-start;
+  box-shadow: 2px 2px 0px black;
 }
 
 .heroTitle {
-    font-size: 64px;
-    font-weight: 900;
-    line-height: 1;
-    text-transform: uppercase;
+  font-size: 64px;
+  font-weight: 900;
+  line-height: 1;
+  text-transform: uppercase;
 }
 
 .heroDesc {
-    font-size: 20px;
-    max-width: 600px;
+  font-size: 20px;
+  max-width: 600px;
+  color: #222;
+  line-height: 1.5;
+}
+
+@media (min-width: 768px) {
+  .main {
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 48px 80px;
+  }
+
+  .leftSection {
+    width: 520px;
+    margin-left: 4rem;
+    margin-right: 4rem;
+    position: sticky;
+    top: 9rem;
+    height: fit-content;
+    z-index: 10;
+  }
+}
+
+.decorShape9 {
+  position: absolute;
+  top: -45px;
+  right: -55px;
+  width: 110px;
+  z-index: 1;
+  filter: drop-shadow(4px 4px 0px rgba(0, 0, 0, 0.8));
+  animation: floatShapeCSS 5s ease-in-out infinite;
+}
+
+.timelineContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.timelineItem {
+  display: flex;
+  gap: 24px;
+  position: relative;
+}
+
+.timelineDivider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 24px;
+  flex-shrink: 0;
+  position: relative;
+  padding-top: 6px;
+}
+
+.timelineDot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 3px solid black;
+  z-index: 2;
+  box-shadow: 2px 2px 0px black;
+}
+
+.timelineLineTrack {
+  position: absolute;
+  top: 24px;
+  bottom: -6px;
+  width: 5px; 
+  background-color: #e2e2e2;
+  z-index: 1;
+  border-radius: 3px;
+  overflow: hidden; 
+}
+
+.timelineLineFill {
+  width: 100%;
+  height: 100%;
+  transform-origin: top;
+  border-radius: 3px;
+}
+
+.timelineContent {
+  flex: 1;
+  padding-bottom: 40px;
+}
+
+.pointTitle {
+  font-weight: 500;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
+}
+
+.pointDesc {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #444;
+  font-weight: 500;
 }

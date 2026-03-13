@@ -1,138 +1,154 @@
-.calendarWrapper{
-width:100%;
+.calendarWrapper {
+  width: 100%;
 }
 
-.sticky{
-position:sticky;
-top:128px;
+.sticky {
+  position: sticky;
 }
 
-.calendarCard{
-background:white;
-border:2px solid black;
-border-radius: 10px;
-box-shadow:6px 6px 0 black;
-padding:24px;
-display:flex;
-flex-direction:column;
-gap:24px;
+.calendarCard {
+  background: white;
+  border: 2px solid black;
+  border-radius: 10px;
+  box-shadow: 6px 6px 0 black;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
-.calendarHeader{
-display:flex;
-align-items:center;
-justify-content:space-between;
-border-bottom:2px solid black;
-padding-bottom:16px;
+.calendarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid black;
+  padding-bottom: 16px;
 }
 
-.navBtn{
-width:40px;
-height:40px;
-border:2px solid black;
-background:#f5f5f5;
-display:flex;
-align-items:center;
-justify-content:center;
-cursor:pointer;
+.navBtn {
+  width: 40px;
+  height: 40px;
+  border: 2px solid black;
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
-.monthTitle{
-font-size:20px;
-font-weight:900;
-text-transform:uppercase;
+.monthTitle {
+  font-size: 20px;
+  font-weight: 900;
+  text-transform: uppercase;
 }
 
-.calendarGrid{
-display:grid;
-grid-template-columns:repeat(7,1fr);
-gap:8px;
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
 }
 
-.dayLabel{
-text-align:center;
-font-weight:900;
-font-size:12px;
-padding:4px;
-text-transform:uppercase;
+.dayLabel {
+  text-align: center;
+  font-weight: 900;
+  font-size: 12px;
+  padding: 4px;
+  text-transform: uppercase;
 }
 
-.day{
-aspect-ratio:1/1;
-border:2px solid black;
-display:flex;
-align-items:center;
-justify-content:center;
-font-weight:bold;
-background:white;
-position:relative;
-cursor:pointer;
+.day {
+  aspect-ratio: 1/1;
+  border: 2px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  background: white;
+  position: relative;
+  cursor: pointer !important;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.secondaryDay{
-background:#bdf4c8;
+.day:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 4px 4px 0px black;
+  background: #f4f0ea; 
+  z-index: 10;
 }
 
-.accentDay{
-background:#ff6ea8;
+.secondaryDay {
+  background: #bdf4c8;
+}
+.secondaryDay:hover {
+  background: #9be9a8;
 }
 
-.primaryDay{
-background:#ffd400;
+.accentDay {
+  background: #ff6ea8;
+}
+.accentDay:hover {
+  background: #ff4d94;
 }
 
-.eventDot{
-position:absolute;
-top:-4px;
-right:-4px;
-width:10px;
-height:10px;
-background:black;
-border-radius:50%;
-border:2px solid white;
+.primaryDay {
+  background: #ffd400;
+}
+.primaryDay:hover {
+  background: #e6bf00;
 }
 
-.events{
-display:flex;
-flex-direction:column;
-gap:12px;
-margin-top:16px;
+.eventDot {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 10px;
+  height: 10px;
+  background: black;
+  border-radius: 50%;
+  border: 2px solid white;
 }
 
-.eventSecondary{
-display:flex;
-align-items:center;
-gap:12px;
-padding:12px;
-border:2px solid black;
-background:rgba(0,200,0,0.1);
+.events {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
 }
 
-.eventAccent{
-display:flex;
-align-items:center;
-gap:12px;
-padding:12px;
-border:2px solid black;
-background:rgba(255,0,120,0.1);
+.eventSecondary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 2px solid black;
+  background: rgba(0, 200, 0, 0.1);
 }
 
-.eventText{
-font-size:12px;
-font-weight:900;
-text-transform:uppercase;
+.eventAccent {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 2px solid black;
+  background: rgba(255, 0, 120, 0.1);
 }
 
-.eventColorSecondary{
-width:12px;
-height:12px;
-background:#00b140;
-border:2px solid black;
+.eventText {
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
 }
 
-.eventColorAccent{
-width:12px;
-height:12px;
-background:#ff6ea8;
-border:2px solid black;
+.eventColorSecondary {
+  width: 12px;
+  height: 12px;
+  background: #00b140;
+  border: 2px solid black;
+}
+
+.eventColorAccent {
+  width: 12px;
+  height: 12px;
+  background: #ff6ea8;
+  border: 2px solid black;
 }
