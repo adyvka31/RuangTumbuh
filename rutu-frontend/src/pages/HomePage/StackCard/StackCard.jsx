@@ -37,6 +37,8 @@ export default function StackSection() {
             i === 0 ? [0, 0, 0, 0] : [50, 50, 0, 0],
           );
 
+          const isLastCard = i === N - 1;
+
           return (
             <div className={styles.cardStickyContainer} key={feat.id}>
               <motion.div
@@ -48,10 +50,54 @@ export default function StackSection() {
                   top: `${i * 35}px`,
                 }}
               >
-                <div className={styles.cardTextWrapper}>
-                  <h3>{feat.title}</h3>
-                  <p>{feat.desc}</p>
-                </div>
+                {isLastCard ? (
+                  <div className={styles.lastCardBody}>
+                    {/* -- DEKORASI KILAUAN --- */}
+                    <div
+                      className={`${styles.lastCardKilau} ${styles.kilauKiriTop}`}
+                    >
+                      ✦
+                    </div>
+                    <div
+                      className={`${styles.lastCardKilau} ${styles.kilauKananBottom}`}
+                    >
+                      ✦
+                    </div>
+
+                    <span className={styles.lastCardBadge}>
+                      ✦ THE GRAND FINALE ✦
+                    </span>
+
+                    <div className={styles.titleWrapper}>
+                      <h3 className={styles.lastCardTitle}>{feat.title}</h3>
+                    </div>
+
+                    <div className={styles.lastCardDescBox}>
+                      <p>{feat.desc}</p>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className={styles.cardBackground}>
+                      <span className={styles.cardNumber}>0{i + 1}</span>
+                    </div>
+
+                    <div className={styles.cardBody}>
+                      <div className={styles.topContent}>
+                        <span className={styles.featureBadge}>
+                          ✦ Feature 0{i + 1}
+                        </span>
+                        <h3>{feat.title}</h3>
+                      </div>
+
+                      <div className={styles.bottomContent}>
+                        <div className={styles.descBox}>
+                          <p>{feat.desc}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
 
                 {feat.decorations.map((dec, idx) => (
                   <img
@@ -61,7 +107,9 @@ export default function StackSection() {
                     aria-hidden="true"
                     className={`${styles.cardShape} ${styles[dec.pos]}`}
                     style={{
-                      animation: `floatDecorCSS ${4 + i * 0.5 + idx * 0.5}s ease-in-out infinite`,
+                      animation: `floatDecorCSS ${
+                        4 + i * 0.5 + idx * 0.5
+                      }s ease-in-out infinite`,
                       transform: "translateZ(0)",
                       backfaceVisibility: "hidden",
                     }}
@@ -73,7 +121,6 @@ export default function StackSection() {
         })}
       </div>
 
-      {/* Wadah Kanvas Fisika Matter.js */}
       <div
         ref={sceneRef}
         style={{
