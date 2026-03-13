@@ -79,106 +79,308 @@
   border-radius: 30px;
   border: 6px solid #000;
   box-shadow: 15px 15px 0px #000;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 40px;
+  padding: 50px;
   transform-origin: top center;
 }
 
-.cardContent h3 {
-  font-size: 3.5rem;
+.cardBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 24px;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.cardNumber {
+  position: absolute;
+  right: -10px;
+  bottom: -40px;
+  font-size: 20rem;
+  font-weight: 900;
+  color: transparent;
+  -webkit-text-stroke: 6px rgba(0, 0, 0, 0.2);
+  line-height: 1;
+}
+
+/* ISI KARTU */
+.cardBody {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.topContent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.featureBadge {
+  background: #fff;
+  color: #000;
+  padding: 8px 20px;
+  border: 3px solid #000;
+  border-radius: 50px;
+  font-weight: 900;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  box-shadow: 4px 4px 0px #000;
+  transform: rotate(-3deg);
+}
+
+.cardBody h3 {
+  font-size: 4rem;
   font-weight: 900;
   color: #000;
   text-transform: uppercase;
-  margin-bottom: 20px;
-  letter-spacing: 2px;
+  line-height: 1;
+  max-width: 80%;
+  letter-spacing: -1px;
 }
 
-.cardContent p {
+.bottomContent {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.descBox {
+  background: #fff;
+  padding: 24px 30px;
+  border: 4px solid #000;
+  border-radius: 16px;
+  box-shadow: 8px 8px 0px #000;
+  max-width: 500px;
+  transform: rotate(2deg);
+}
+
+.descBox p {
   font-size: 1.3rem;
   font-weight: 700;
   color: #000;
-  max-width: 600px;
-  background: #fff;
-  padding: 15px 25px;
-  border: 3px solid #000;
-  border-radius: 12px;
-  box-shadow: 6px 6px 0px #000;
   line-height: 1.6;
+  margin: 0;
+}
+
+.lastCardBody {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 30px; 
+}
+
+.lastCardKilau {
+  position: absolute;
+  font-size: 3rem;
+  font-weight: 900;
+  color: #fff;
+  -webkit-text-stroke: 3px #000;
+  filter: drop-shadow(4px 4px 0px rgba(0, 0, 0, 0.3));
+  pointer-events: none;
+  z-index: 10;
+  animation: blinkKilauCSS 3s ease-in-out infinite;
+}
+
+.kilauKiriTop {
+  top: 40px;
+  left: 60px;
+  transform: rotate(-15deg);
+}
+.kilauKananBottom {
+  bottom: 60px;
+  right: 80px;
+  transform: rotate(20deg);
+  font-size: 2rem;
+  animation-delay: 1.5s;
+}
+
+.titleWrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 0 20px;
+}
+
+.lastCardBadge {
+  background: #000;
+  color: #fff;
+  padding: 10px 24px;
+  border-radius: 50px;
+  font-weight: 900;
+  font-size: 1rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  box-shadow:
+    0 0 0 3px #000,
+    6px 6px 0px rgba(0, 0, 0, 0.5);
+  transform: rotate(-2deg);
+  margin-bottom: 10px;
+}
+
+.lastCardTitle {
+  font-size: 4rem !important; 
+  font-weight: 900;
+  color: #fff; 
+  -webkit-text-stroke: 3px #000; 
+  text-transform: uppercase;
+  line-height: 1.1 !important;
+  letter-spacing: -1px !important;
+  margin: 0;
+  width: 100%;
+  word-wrap: break-word; 
+  z-index: 2;
+
+  text-shadow:
+    2px 2px 0px #000,
+    4px 4px 0px #000,
+    6px 6px 0px #000,
+    8px 8px 0px #000;
+}
+
+.lastCardDescBox {
+  background: #fff;
+  padding: 15px 30px;
+  border: 4px solid #000;
+  border-radius: 20px;
+  box-shadow: 8px 8px 0px #000;
+  transform: rotate(1deg);
+  max-width: 650px;
+  margin-top: 10px;
+}
+
+.lastCardDescBox p {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #000;
+  line-height: 1.5;
+  margin: 0;
 }
 
 /* ==========================================
    RESPONSIVE BREAKPOINTS — Stack
    ========================================== */
 
-/* --- Tablet: ≤ 1024px --- */
 @media (max-width: 1024px) {
   .cardContent {
     width: 90vw;
     height: 55vh;
-    min-height: 350px;
-    padding: 30px;
+    padding: 40px;
     border-width: 5px;
     box-shadow: 12px 12px 0px #000;
   }
-
-  .cardContent h3 {
-    font-size: 2.8rem;
+  .cardNumber {
+    font-size: 16rem;
   }
-
-  .cardContent p {
+  .cardBody h3 {
+    font-size: 3.2rem;
+    max-width: 90%;
+  }
+  .descBox {
+    max-width: 400px;
+    padding: 20px;
+  }
+  .descBox p {
     font-size: 1.15rem;
-    padding: 12px 20px;
   }
-
   .cardShape {
     width: 100px;
   }
+
+  .lastCardTitle {
+    font-size: 4.5rem !important;
+  }
+  .lastCardBadge {
+    font-size: 1rem;
+    padding: 10px 24px;
+  }
+  .lastCardDescBox p {
+    font-size: 1.2rem;
+  }
+  .lastCardKilau {
+    font-size: 2rem;
+  }
+  .kilauKiriTop {
+    top: 40px;
+    left: 40px;
+  }
+  .kilauKananBottom {
+    bottom: 60px;
+    right: 80px;
+    font-size: 1.5rem;
+  }
+  .wavyLine {
+    width: 100px;
+    height: 8px;
+  }
 }
 
-/* --- Mobile: ≤ 768px --- */
 @media (max-width: 768px) {
   .stackSection {
     padding-bottom: 4rem;
   }
-
   .cardStickyContainer {
     padding-top: 12vh;
   }
-
   .cardContent {
     width: 92vw;
-    height: 50vh;
-    min-height: 300px;
+    height: auto;
+    min-height: 450px;
     border-radius: 20px;
     border-width: 4px;
     box-shadow: 8px 8px 0px #000;
-    padding: 25px 20px;
+    padding: 30px 20px;
   }
 
-  .cardContent h3 {
-    font-size: 2rem;
-    margin-bottom: 14px;
-    letter-spacing: 1px;
+  .cardNumber {
+    font-size: 12rem;
+    right: -5px;
+    bottom: 10px;
+  }
+  .cardBody {
+    gap: 40px;
+  }
+  .featureBadge {
+    font-size: 0.9rem;
+    padding: 6px 14px;
+  }
+  .cardBody h3 {
+    font-size: 2.5rem;
+    max-width: 100%;
   }
 
-  .cardContent p {
-    font-size: 1rem;
-    padding: 10px 16px;
-    border-width: 2px;
-    box-shadow: 4px 4px 0px #000;
-    border-radius: 10px;
+  .bottomContent {
+    justify-content: flex-start;
+  }
+  .descBox {
+    max-width: 100%;
+    transform: rotate(-1deg);
+    box-shadow: 5px 5px 0px #000;
+  }
+  .descBox p {
+    font-size: 1.05rem;
   }
 
   .cardShape {
     width: 80px;
     filter: drop-shadow(4px 4px 0px rgba(0, 0, 0, 0.8));
   }
-
-  /* Pull shapes inward to prevent overflow */
   .decTopLeft {
     top: -35px;
     left: -25px;
@@ -195,44 +397,99 @@
     bottom: -35px;
     right: -25px;
   }
+  .lastCardBody {
+    gap: 20px;
+  }
+  .lastCardTitle {
+    font-size: 3.5rem !important;
+    text-shadow: 3px 3px 0px #fff;
+  }
+  .lastCardBadge {
+    font-size: 0.85rem;
+    padding: 8px 20px;
+  }
+  .lastCardDescBox {
+    padding: 15px 20px;
+    box-shadow: 5px 5px 0px #000;
+  }
+  .lastCardDescBox p {
+    font-size: 1.1rem;
+  }
+  .lastCardKilau {
+    display: none;
+  }
+  .titleWrapper {
+    margin-bottom: 5px;
+  }
+  .wavyLine {
+    width: 80px;
+    height: 6px;
+  }
 }
 
-/* --- Small Mobile: ≤ 480px --- */
 @media (max-width: 480px) {
   .stackSection {
     padding-bottom: 3rem;
   }
-
   .cardStickyContainer {
     padding-top: 10vh;
   }
-
   .cardContent {
     width: 94vw;
-    height: 45vh;
-    min-height: 260px;
+    min-height: 400px;
     border-radius: 16px;
     border-width: 3px;
     box-shadow: 6px 6px 0px #000;
-    padding: 20px 16px;
+    padding: 24px 16px;
   }
-
-  .cardContent h3 {
-    font-size: 1.4rem;
-    margin-bottom: 10px;
-    letter-spacing: 0.5px;
+  .cardNumber {
+    font-size: 10rem;
   }
-
-  .cardContent p {
-    font-size: 0.85rem;
-    padding: 8px 12px;
-    border-width: 2px;
-    box-shadow: 3px 3px 0px #000;
+  .featureBadge {
+    font-size: 0.8rem;
+  }
+  .cardBody h3 {
+    font-size: 2rem;
+    letter-spacing: 0;
+  }
+  .descBox {
+    padding: 16px;
+    border-width: 3px;
+  }
+  .descBox p {
+    font-size: 0.95rem;
     line-height: 1.5;
   }
-
-  /* Hide decorative shapes on smallest screens */
   .cardShape {
     display: none;
+  }
+  .lastCardTitle {
+    font-size: 2.5rem !important;
+    letter-spacing: -1px !important;
+    text-shadow: 2px 2px 0px #fff;
+  }
+  .lastCardBadge {
+    font-size: 0.75rem;
+  }
+  .lastCardDescBox {
+    padding: 12px 16px;
+    border-width: 3px;
+  }
+  .lastCardDescBox p {
+    font-size: 0.95rem;
+  }
+}
+
+@keyframes blinkKilauCSS {
+  0%,
+  100% {
+    opacity: 1;
+    transform: translateY(0px) rotate(-15deg);
+    scale: 1;
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateY(-10px) rotate(-10deg);
+    scale: 0.9;
   }
 }

@@ -11,7 +11,7 @@ import shape13 from "../assets/shape13.svg";
 export const FEATURES_DATA = [
   {
     id: 1,
-    title: "Learn & Teach",
+    title: "Sesi Belajar & Mengajar",
     desc: "Temukan tutor sebaya atau bagikan keahlianmu kepada komunitas untuk berkembang bersama.",
     color: "#ff5e62",
     decorations: [
@@ -21,7 +21,7 @@ export const FEATURES_DATA = [
   },
   {
     id: 2,
-    title: "Community",
+    title: "Komunitas Antar Siswa",
     desc: "Bergabung dengan ruang diskusi yang interaktif, penuh dukungan, dan menyenangkan.",
     color: "#4ade80",
     decorations: [
@@ -41,7 +41,7 @@ export const FEATURES_DATA = [
   },
   {
     id: 4,
-    title: "Calendar",
+    title: "Pengaturan Kalender",
     desc: "Atur dan jadwalkan sesi belajarmu dengan sistem kalender yang terintegrasi penuh.",
     color: "#00f2fe",
     decorations: [
