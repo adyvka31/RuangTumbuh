@@ -38,6 +38,8 @@ const RAW_FALLEN = [
   [9, -15],
   [11, 75],
   [10, -25],
+  [6, 32],
+
 ];
 
 export const FALLEN_SHAPES_CONFIG = RAW_FALLEN.map((s, idx) => ({
