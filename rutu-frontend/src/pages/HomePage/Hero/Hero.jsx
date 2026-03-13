@@ -1,4 +1,5 @@
 import React from "react";
+// eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import { useParallax } from "@/hooks/useParallax";
 import { TEXT_LOGO, SHAPES_CONFIG } from "@/constants/heroData";
