@@ -2,18 +2,16 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styles from "./LoginPage.module.css";
 import logoGede from "@assets/logo.svg";
-import Navbar from "@components/Navbar/Navbar";
 
 export default function Login() {
 
   return (
     <>
-      <Navbar />
       <div className={styles.fullPage}>
         <div className={styles.loginCard}>
           {/* SISI KIRI: BRANDING */}
           <div className={styles.leftSide}>
-            <img src={logoGede} alt="Logo" className={styles.mainLogo} />
+            <Link to="/" className={styles.mainLogo} ><img src={logoGede} alt="Logo" className={styles.mainLogo} /></Link>
             <p className={styles.brandText}>
               Temukan Ruang untuk Terus Tumbuh dan Berkembang Bersama Kami.
             </p>
