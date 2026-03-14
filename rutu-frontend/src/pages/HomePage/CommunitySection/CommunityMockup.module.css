@@ -1,0 +1,392 @@
+.stackWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  height: 600px;
+  margin: 0 auto;
+}
+
+.scrollWrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.mockupCard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  border: 4px solid #000;
+  border-radius: 20px;
+  box-shadow: 6px 6px 0px #000;
+  display: flex;
+  flex-direction: column;
+}
+
+.cardInner {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  border-radius: 14px; 
+  overflow: hidden;
+  position: relative;
+  z-index: 2; 
+}
+
+.mockupCard:hover {
+  filter: brightness(0.98);
+}
+
+.decorShape {
+  position: absolute;
+  width: 90px;
+  z-index: -1;
+  filter: drop-shadow(4px 4px 0px rgba(0, 0, 0, 0.8));
+  pointer-events: none;
+  animation: floatShapeCSS 5s ease-in-out infinite;
+}
+
+.shapeListTR {
+  top: -45px;
+  right: -45px;
+  z-index: 999;
+}
+.shapeListBL {
+  bottom: -45px;
+  left: -45px;
+  animation-delay: 1s;
+  z-index: 999;
+}
+
+.shapeChatTL {
+  top: -45px;
+  left: -45px;
+  animation-delay: 0.5s;
+  z-index: 999;
+}
+.shapeChatBR {
+  bottom: -45px;
+  right: -45px;
+  animation-delay: 1.5s;
+  z-index: 999;
+  rotate: 9;
+}
+
+.mockupList {
+  background: #fdfaf5;
+}
+
+.listHeader {
+  background: #ff90e8;
+  padding: 24px 30px;
+  border-bottom: 4px solid #000;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.listTitle {
+  font-size: 2rem;
+  font-weight: 900;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.searchBar {
+  background: #fff;
+  border: 3px solid #000;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-weight: 600;
+  color: #888;
+}
+
+.listBody {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 20px 24px;
+  border-bottom: 3px solid #000;
+  background: #fff;
+  transition: all 0.3s;
+}
+
+.listItem:hover {
+  background: #f2efeb;
+}
+
+.avatar {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  border: 3px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+.listInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.listInfo h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #000;
+}
+
+.listInfo p {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #555;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 250px;
+}
+
+.unreadBadge {
+  background: #ff5e62;
+  color: #fff;
+  font-weight: 900;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 3px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mockupChat {
+  background: #fdfaf5;
+}
+
+.chatHeader {
+  background: #ff5e62;
+  padding: 24px 30px;
+  border-bottom: 4px solid #000;
+}
+
+.groupInfo {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.groupAvatar {
+  width: 50px;
+  height: 50px;
+  background: #ffd400;
+  border: 3px solid #000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.groupName {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #000;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.onlineStatus {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  text-shadow: 1px 1px 0px #000;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.onlineDot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  background-color: #4ade80;
+  border: 2px solid #000;
+  border-radius: 50%;
+  animation: pulseOnline 2s infinite;
+}
+
+@keyframes pulseOnline {
+  0% {
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.8);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(74, 222, 128, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
+  }
+}
+
+.chatBody {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  flex: 1;
+}
+
+.bubble {
+  padding: 16px 20px;
+  border: 3px solid #000;
+  border-radius: 20px;
+  max-width: 90%;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.bubble:hover {
+  box-shadow: 4px 4px 0px #000;
+  transform: translateY(-2px) scale(1);
+}
+
+.sender {
+  font-size: 0.85rem;
+  font-weight: 900;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.bubble p {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.leftBubble {
+  align-self: flex-start;
+  background: #fff;
+  border-bottom-left-radius: 0;
+}
+
+.rightBubble {
+  align-self: flex-end;
+  background: #bdf4c8;
+  border-bottom-right-radius: 0;
+}
+
+.chatInput {
+  background: #fff;
+  padding: 24px 30px;
+  border-top: 4px solid #000;
+  display: flex;
+  gap: 15px;
+}
+
+.inputBox {
+  flex: 1;
+  border: 3px solid #000;
+  border-radius: 12px;
+  padding: 16px 20px;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #999;
+  background: #f4f4f4;
+}
+
+.sendBtn {
+  background: #ffd400;
+  border: 3px solid #000;
+  border-radius: 12px;
+  width: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 900;
+  transition: all 0.2s ease;
+}
+
+.sendBtn:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 3px 3px 0px #000;
+}
+
+.sendBtn:active {
+  transform: translate(0px, 0px);
+  box-shadow: 0px 0px 0px #000;
+}
+
+.typingIndicator {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  background: #eee;
+  border: 3px solid #000;
+  border-radius: 20px;
+  border-bottom-left-radius: 0;
+}
+
+.typingIndicator span {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #555;
+}
+
+.dots {
+  display: flex;
+  gap: 4px;
+}
+.dot {
+  width: 6px;
+  height: 6px;
+  background-color: #555;
+  border-radius: 50%;
+  animation: typingBounce 1.4s infinite ease-in-out both;
+}
+.dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+.dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes typingBounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 768px) {
+  .stackWrapper {
+    height: 500px;
+  }
+}

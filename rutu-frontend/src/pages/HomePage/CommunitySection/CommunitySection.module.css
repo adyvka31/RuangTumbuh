@@ -1,0 +1,159 @@
+.main {
+  display: flex;
+  flex-direction: column-reverse;
+  margin-top: 8rem;
+  margin-bottom: 8rem;
+  width: 100%;
+}
+
+.leftSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  height: fit-content;
+}
+
+.rightSection {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  position: relative;
+}
+
+.headerArea {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tag {
+  background: #ffd400;
+  border: 2px solid black;
+  padding: 6px 16px;
+  font-weight: 900;
+  border-radius: 99px;
+  text-transform: uppercase;
+  align-self: flex-start;
+  box-shadow: 2px 2px 0px black;
+}
+
+.heroTitle {
+  font-size: 4rem;
+  font-weight: 900;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.heroDesc {
+  font-size: 1.25rem;
+  max-width: 600px;
+  color: #222;
+  line-height: 1.5;
+}
+
+.featureList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.featureCard {
+  background: #fff;
+  border: 3px solid #000;
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  gap: 20px;
+  cursor: default;
+  box-shadow: 6px 6px 0px #000;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.featureCard:hover {
+  transform: translate(-6px, -6px);
+  box-shadow: 12px 12px 0px #000;
+}
+
+.cardIndicator {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 3px solid #000;
+  flex-shrink: 0;
+  margin-top: 5px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.featureCard:hover .cardIndicator {
+  transform: scale(1.2) rotate(45deg);
+  border-radius: 6px;
+  box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.6);
+}
+
+.cardContent h3 {
+  font-size: 1.5rem;
+  font-weight: 900;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  transition:
+    transform 0.3s ease,
+    color 0.3s ease;
+}
+
+.featureCard:hover .cardContent h3 {
+  transform: translateX(8px);
+}
+
+.cardContent p {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #444;
+  line-height: 1.5;
+}
+
+@media (min-width: 1024px) {
+  .main {
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
+    padding: 48px 80px 0px 80px;
+    gap: 60px;
+  }
+
+  .rightSection {
+    max-width: 550px;
+    height: auto;
+  }
+
+  .stickyWrapper {
+    position: sticky;
+    top: 11rem;
+    height: fit-content;
+    z-index: 10;
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .heroTitle {
+    font-size: 3.5rem;
+  }
+  .featureCard {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .main {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .heroTitle {
+    font-size: 2.5rem;
+  }
+  .heroDesc {
+    font-size: 1rem;
+  }
+}

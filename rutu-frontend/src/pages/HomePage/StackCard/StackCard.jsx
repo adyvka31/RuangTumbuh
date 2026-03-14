@@ -12,7 +12,7 @@ export default function StackSection() {
   useMatterPhysics(sceneRef);
 
   return (
-    <section className={styles.stackSection} ref={scrollRef}>
+    <section className={styles.stackSection} ref={scrollRef} id="fitur">
       <div className={styles.stackWrapper}>
         {FEATURES_DATA.map((feat, i) => {
           const N = FEATURES_DATA.length;

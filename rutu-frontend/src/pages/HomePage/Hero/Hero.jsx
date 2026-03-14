@@ -9,7 +9,7 @@ export default function   HeroSection() {
   const { motionValues, yText } = useParallax();
 
   return (
-    <section className={styles.hero}>
+    <section className={styles.hero} id="beranda">
       <div className={styles.parallaxContainer}>
         {SHAPES_CONFIG.map((shape) => (
           <motion.div

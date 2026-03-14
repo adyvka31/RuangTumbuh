@@ -12,7 +12,7 @@ export default function CalendarSection() {
   const { containerRef, rotate } = useCalendarScroll();
 
   return (
-    <main className={styles.main} ref={containerRef}>
+    <main className={styles.main} ref={containerRef} id="kalender">
       {/* KIRI: KALENDER */}
       <div className={styles.leftSection}>
         <img

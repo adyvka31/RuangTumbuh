@@ -3,12 +3,11 @@
   width: 100vw;
   height: 300vh;
   z-index: 10;
-  margin-bottom: 20rem;
 }
 
 .section {
   position: sticky;
-  top: 0;
+  top: 30px;
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -18,11 +17,11 @@
 
 .blueBottom {
   position: absolute;
-  bottom: 0;
+  bottom: 30px;
   left: 0;
   width: 100%;
-  height: 45%;
-  background-color: #4b7bec; 
+  height: 40%;
+  background-color: #4b7bec;
   border-top: 4px solid #000;
   border-bottom: 4px solid #000;
   z-index: 1;
@@ -45,64 +44,6 @@
   background-image: radial-gradient(rgba(0, 0, 0, 0.2) 3px, transparent 3px);
   background-size: 40px 40px;
   pointer-events: none;
-}
-
-.randomSymbol {
-  position: absolute;
-  font-family: "Fredoka", "Comic Sans MS", sans-serif;
-  font-weight: 900;
-  color: #fff;
-  -webkit-text-stroke: 3px #000;
-  pointer-events: none;
-  z-index: 2;
-  animation: floatSymbol 5s ease-in-out infinite;
-  filter: drop-shadow(4px 4px 0px rgba(0, 0, 0, 0.5));
-}
-
-.symbol1 {
-  font-size: 5rem;
-  top: 15%;
-  left: 8%;
-  transform: rotate(15deg);
-}
-.symbol2 {
-  font-size: 4rem;
-  bottom: 15%;
-  left: 22%;
-  animation-delay: 1s;
-  transform: rotate(-20deg);
-}
-.symbol3 {
-  font-size: 5.5rem;
-  top: 10%;
-  right: 12%;
-  animation-delay: 2s;
-  transform: rotate(25deg);
-}
-.symbol4 {
-  font-size: 4.5rem;
-  bottom: 20%;
-  right: 28%;
-  animation-delay: 0.5s;
-  transform: rotate(-10deg);
-}
-.symbol5 {
-  font-size: 3rem;
-  top: 35%;
-  left: 45%;
-  animation-delay: 1.5s;
-  transform: rotate(5deg);
-  opacity: 0.5;
-}
-
-@keyframes floatSymbol {
-  0%,
-  100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-15px) rotate(15deg);
-  }
 }
 
 .bgDecor {
@@ -174,6 +115,17 @@
   border-bottom-right-radius: 60px;
   border: 5px solid #000;
   border-top: none;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 8px;
+}
+
+.stepNumber {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #000;
+  line-height: 1;
 }
 
 .cardTitle {

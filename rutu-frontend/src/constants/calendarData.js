@@ -2,7 +2,7 @@ export const SCHEDULE_POINTS = [
   {
     title: "Sesi Mentorship",
     desc: "Pesan sesi bimbingan langsung dengan mentor pilihanmu. Pilih tanggal, jam, dan topik bahasan tanpa perlu chat sana-sini.",
-    color: "#ffd400",
+    color: "#ffd54f",
   },
   {
     title: "Workshop Eksklusif",
