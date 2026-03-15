@@ -1,7 +1,8 @@
 import styles from "./Navbar.module.css";
-import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom"; // <-- IMPORT ROUTER HOOKS
+import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "@assets/logo.svg";
+import { useScroll, useMotionValueEvent } from "framer-motion";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -11,13 +12,12 @@ export default function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    // Akan mengecek tanpa membebani thread utama
+    setIsScrolled(latest > 50);
+  });
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
@@ -36,7 +36,6 @@ export default function Navbar() {
           ?.scrollIntoView({ behavior: "smooth" });
       }, 300); // Beri jeda sedikit agar Home selesai di-render
     } else {
-      // Jika sudah di Home, langsung meluncur!
       document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth" });
     }
   };
@@ -46,7 +45,6 @@ export default function Navbar() {
       className={`${styles.headerContainer} ${isScrolled ? styles.scrolled : ""}`}
     >
       <nav className={styles.navbar}>
-        {/* Hamburger Button */}
         <button
           className={styles.hamburger}
           onClick={toggleMenu}
@@ -63,7 +61,6 @@ export default function Navbar() {
           ></span>
         </button>
 
-        {/* --- DESKTOP MENU --- */}
         <div className={styles.left}>
           <a href="#beranda" onClick={(e) => handleScrollTo(e, "beranda")}>
             HOME
@@ -82,7 +79,6 @@ export default function Navbar() {
         <div className={styles.divider}></div>
 
         <div className={styles.right}>
-          {/* Tombol Sign In & Get Started menggunakan navigasi halaman */}
           <Link to="/login" className={styles.navLink}>
             SIGN IN
           </Link>
@@ -94,7 +90,6 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* --- MOBILE MENU --- */}
         <div
           className={`${styles.mobileMenu} ${isMenuOpen ? styles.mobileMenuOpen : ""}`}
         >
@@ -128,7 +123,6 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Logo klik untuk kembali ke atas */}
       <div
         className={`${styles.dashboard}`}
         onClick={(e) => handleScrollTo(e, "beranda")}

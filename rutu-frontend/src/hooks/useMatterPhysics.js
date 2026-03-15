@@ -56,17 +56,18 @@ export const useMatterPhysics = (sceneRef) => {
 
     const shapes = FALLEN_SHAPES_CONFIG.map((shapeData) => {
       const randomX = Math.random() * (width - 100) + 50;
-      const startY = Math.random() * -500 - 100; // Sesuai kode Anda
+
+      const startY = height - 100 - Math.random() * 200;
 
       return Matter.Bodies.circle(randomX, startY, 35, {
-        restitution: 0.4, // Sesuai kode Anda
-        friction: 0.5, // Sesuai kode Anda
+        restitution: 0.4,
+        friction: 0.5,
         angle: (shapeData.rot * Math.PI) / 180,
         render: {
           sprite: {
             texture: shapeData.src,
-            xScale: 0.8, // Sesuai kode Anda
-            yScale: 0.8, // Sesuai kode Anda
+            xScale: 0.8,
+            yScale: 0.8,
           },
         },
       });
@@ -114,7 +115,19 @@ export const useMatterPhysics = (sceneRef) => {
     const runner = Matter.Runner.create();
     Matter.Runner.run(runner, engine);
 
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        // Jika section masuk layar, jalankan fisika. Jika keluar layar, pause (tidurkan).
+        runner.enabled = entry.isIntersecting;
+      });
+    });
+
+    if (sceneRef.current) {
+      observer.observe(sceneRef.current);
+    }
+
     return () => {
+      observer.disconnect();
       Matter.Render.stop(render);
       Matter.Runner.stop(runner);
       Matter.World.clear(world);

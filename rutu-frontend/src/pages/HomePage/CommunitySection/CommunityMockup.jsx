@@ -46,10 +46,10 @@ export default function CommunityMockup() {
           }}
           transition={{ type: "spring", stiffness: 300, damping: 25 }}
         >
-          {/* MENGGUNAKAN ANIMASI floatDecorCSS SEPERTI DI STACK LAYOUT */}
           <img
             src={shape12}
             alt=""
+            loading="lazy"
             aria-hidden="true"
             className={`${styles.decorShape} ${styles.shapeListTR}`}
             style={{
@@ -61,6 +61,7 @@ export default function CommunityMockup() {
           <img
             src={shape4}
             alt=""
+            loading="lazy"
             aria-hidden="true"
             className={`${styles.decorShape} ${styles.shapeListBL}`}
             style={{
@@ -141,6 +142,7 @@ export default function CommunityMockup() {
           <img
             src={shape9}
             alt=""
+            loading="lazy"
             aria-hidden="true"
             className={`${styles.decorShape} ${styles.shapeChatTL}`}
             style={{
@@ -152,6 +154,7 @@ export default function CommunityMockup() {
           <img
             src={shape1}
             alt=""
+            loading="lazy"
             aria-hidden="true"
             className={`${styles.decorShape} ${styles.shapeChatBR}`}
             style={{

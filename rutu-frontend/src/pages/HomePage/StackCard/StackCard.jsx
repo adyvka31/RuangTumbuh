@@ -104,6 +104,7 @@ export default function StackSection() {
                     key={`dec-${idx}`}
                     src={dec.src}
                     alt=""
+                    loading="lazy"
                     aria-hidden="true"
                     className={`${styles.cardShape} ${styles[dec.pos]}`}
                     style={{

@@ -22,37 +22,6 @@
   position: relative;
 }
 
-.headerArea {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.tag {
-  background: var(--primary-yellow);
-  border: 2px solid black;
-  padding: 6px 16px;
-  font-weight: 900;
-  border-radius: 99px;
-  text-transform: uppercase;
-  align-self: flex-start;
-  box-shadow: 2px 2px 0px black;
-}
-
-.heroTitle {
-  font-size: 4rem;
-  font-weight: 900;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.heroDesc {
-  font-size: 1.25rem;
-  max-width: 600px;
-  color: #222;
-  line-height: 1.5;
-}
-
 .featureList {
   display: flex;
   flex-direction: column;

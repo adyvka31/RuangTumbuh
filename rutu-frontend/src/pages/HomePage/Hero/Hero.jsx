@@ -5,7 +5,7 @@ import { useParallax } from "@/hooks/useParallax";
 import { TEXT_LOGO, SHAPES_CONFIG } from "@/constants/heroData";
 import styles from "./HeroLayout.module.css";
 
-export default function   HeroSection() {
+export default function HeroSection() {
   const { motionValues, yText } = useParallax();
 
   return (
@@ -45,6 +45,7 @@ export default function   HeroSection() {
             src={TEXT_LOGO}
             alt="Ruang Tumbuh Logo"
             className={styles.textLogo}
+            fetchpriority="high"
           />
           <p className={styles.subtitle}>Learn, Grow, and Explore Together</p>
         </motion.div>
