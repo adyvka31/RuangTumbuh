@@ -29,7 +29,7 @@ export default function CustomCursor() {
       // Menambahkan class untuk elemen dengan logo/dashboard di Navbar agar kursor juga hilang
       if (
         e.target.closest(
-          "a, button, input, textarea, select, .interactable, [class*='dashboard']",
+          "a, button, input, textarea, select, .interactable",
         )
       ) {
         cursor.classList.add(styles.cursorHide);
@@ -40,7 +40,7 @@ export default function CustomCursor() {
     const handleMouseOut = (e) => {
       if (
         e.target.closest(
-          "a, button, input, textarea, select, .interactable, [class*='dashboard']",
+          "a, button, input, textarea, select, .interactable",
         )
       ) {
         cursor.classList.remove(styles.cursorHide);
