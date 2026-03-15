@@ -6,10 +6,10 @@ import CustomCursor from "@components/CustomCursor/CustomCursor";
 const HomePage = lazy(() => import("@pages/HomePage/HomePage"));
 const Login = lazy(() => import("@pages/LoginPage/LoginPage"));
 const Register = lazy(() => import("@pages/RegisterPage/RegisterPage"));
-const DashboardPage = lazy(() => import("@pages/DashboardPage/DashboardPage");
-const SearchPage = lazy(() => import("@pages/SearchPage/SearchPage");
-const BookmarksPage = lazy(() => import("@pages/BookmarksPage/BookmarksPage");
-const MessagesPage = lazy(() => import("@pages/DashboardPage/DashboardPage");
+const DashboardPage = lazy(() => import("@pages/DashboardPage/DashboardPage"));
+const SearchPage = lazy(() => import("@pages/SearchPage/SearchPage"));
+const BookmarksPage = lazy(() => import("@pages/BookmarksPage/BookmarksPage"));
+const MessagesPage = lazy(() => import("@pages/DashboardPage/DashboardPage"));
 
 const PageLoader = () => (
   <div
