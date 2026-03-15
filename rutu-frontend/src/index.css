@@ -3,7 +3,9 @@
   padding: 0;
   box-sizing: border-box;
   cursor: none !important;
-  ::-webkit-scrollbar { display: none; }
+  ::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 body {
@@ -17,6 +19,31 @@ body {
 a,
 button {
   cursor: pointer !important;
+}
+
+:root {
+  --primary-yellow: #ffd400;
+  --primary-red: #ff5e62;
+  --primary-green: #4ade80;
+  --primary-blue: #00f2fe;
+  --bg-cream: #fdfaf5;
+  --border-thick: 4px solid #000;
+  --shadow-neo: 6px 6px 0px #000;
+  --transition-bouncy: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+:focus-visible,
+input:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: 4px solid var(--primary-red) !important;
+  outline-offset: 3px !important;
+  border-radius: 4px;
+  transition: outline-offset 0.2s ease;
 }
 
 @keyframes floatShapeCSS {
@@ -39,7 +66,6 @@ button {
   }
 }
 
-/* --- Responsive: Disable custom cursor on touch devices --- */
 @media (hover: none) and (pointer: coarse) {
   * {
     cursor: auto !important;
@@ -50,7 +76,6 @@ button {
   }
 }
 
-/* --- Responsive: Reduce float animation intensity on mobile --- */
 @media (max-width: 768px) {
   @keyframes floatShapeCSS {
     0%,

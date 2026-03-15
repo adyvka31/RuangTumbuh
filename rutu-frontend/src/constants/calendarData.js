@@ -12,12 +12,12 @@ export const SCHEDULE_POINTS = [
   {
     title: "Belajar Bareng (Group Sync)",
     desc: "Atur jadwal belajar bareng teman komunitas Ruang Tumbuh. Kalender akan menyesuaikan zona waktu secara otomatis biar nggak ada yang telat.",
-    color: "#4ade80",
+    color: "var(--primary-green)",
   },
   {
     title: "Target Belajar Publik",
     desc: "Tunjukkan komitmenmu dengan membagikan jadwal belajarmu secara publik. Bangun akuntabilitas dan saling dukung antar sesama pengguna.",
-    color: "#00f2fe",
+    color: "var(--primary-blue)",
   },
   {
     title: "Tracking Progres",

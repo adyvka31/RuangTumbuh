@@ -3,10 +3,10 @@ import { motion } from "framer-motion";
 import styles from "./CommunityMockup.module.css";
 
 // 1. Import semua shape yang dibutuhkan
-import shape4 from "@/assets/shape4.svg";
-import shape9 from "@/assets/shape9.svg";
-import shape12 from "@/assets/shape12.svg";
-import shape1 from "@/assets/shape1.svg";
+import shape4 from "@assets/shape4.svg";
+import shape9 from "@assets/shape9.svg";
+import shape12 from "@assets/shape12.svg";
+import shape1 from "@assets/shape1.svg";
 
 export default function CommunityMockup() {
   const [activeCard, setActiveCard] = useState(1);
@@ -50,6 +50,7 @@ export default function CommunityMockup() {
           <img
             src={shape12}
             alt=""
+            aria-hidden="true"
             className={`${styles.decorShape} ${styles.shapeListTR}`}
             style={{
               animation: "floatDecorCSS 5s ease-in-out infinite",
@@ -60,6 +61,7 @@ export default function CommunityMockup() {
           <img
             src={shape4}
             alt=""
+            aria-hidden="true"
             className={`${styles.decorShape} ${styles.shapeListBL}`}
             style={{
               animation: "floatDecorCSS 4.5s ease-in-out infinite",
@@ -78,7 +80,7 @@ export default function CommunityMockup() {
               <div className={styles.listItem}>
                 <div
                   className={styles.avatar}
-                  style={{ background: "#4ade80" }}
+                  style={{ background: "var(--primary-green)" }}
                 >
                   UI
                 </div>
@@ -91,7 +93,7 @@ export default function CommunityMockup() {
               <div className={styles.listItem}>
                 <div
                   className={styles.avatar}
-                  style={{ background: "#ffd400" }}
+                  style={{ background: "var(--primary-yellow)" }}
                 >
                   💻
                 </div>
@@ -103,7 +105,7 @@ export default function CommunityMockup() {
               <div className={styles.listItem}>
                 <div
                   className={styles.avatar}
-                  style={{ background: "#00f2fe" }}
+                  style={{ background: "var(--primary-blue)" }}
                 >
                   🚀
                 </div>
@@ -139,6 +141,7 @@ export default function CommunityMockup() {
           <img
             src={shape9}
             alt=""
+            aria-hidden="true"
             className={`${styles.decorShape} ${styles.shapeChatTL}`}
             style={{
               animation: "floatDecorCSS 6s ease-in-out infinite",
@@ -149,6 +152,7 @@ export default function CommunityMockup() {
           <img
             src={shape1}
             alt=""
+            aria-hidden="true"
             className={`${styles.decorShape} ${styles.shapeChatBR}`}
             style={{
               animation: "floatDecorCSS 5.5s ease-in-out infinite",

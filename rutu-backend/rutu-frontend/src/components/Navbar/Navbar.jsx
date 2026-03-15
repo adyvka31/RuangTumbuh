@@ -91,7 +91,7 @@ export default function Navbar() {
           onMouseEnter={disableCustomCursor}
           onMouseLeave={enableCustomCursor}
         >
-          <img src="src/assets/logo.svg" alt="Logo RuangTumbuh" />
+          <img src="src@assets/logo.svg" alt="Logo RuangTumbuh" />
         </div>
       </div>
     </>

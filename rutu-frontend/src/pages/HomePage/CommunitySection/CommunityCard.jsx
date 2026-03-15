@@ -1,7 +1,7 @@
-import React from "react";
+import React, { memo } from "react";
 import styles from "./CommunitySection.module.css";
 
-export default function CommunityCard({ feat, index }) {
+function CommunityCard({ feat }) {
   return (
     <div className={styles.featureCard}>
       <div
@@ -15,3 +15,5 @@ export default function CommunityCard({ feat, index }) {
     </div>
   );
 }
+
+export default memo(CommunityCard);

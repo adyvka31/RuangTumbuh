@@ -1,20 +1,20 @@
 import React from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import Navbar from "../../components/Navbar/Navbar";
+import Navbar from "@components/Navbar/Navbar";
 import styles from "./HomePage.module.css";
 
 // Mengimpor semua 10 aset gambar
-import textLogo from "../../assets/text-logo.svg";
-import shape1 from "../../assets/shape1.svg";
-import shape2 from "../../assets/shape2.svg";
-import shape3 from "../../assets/shape3.svg";
-import shape4 from "../../assets/shape4.svg";
-import shape5 from "../../assets/shape5.svg";
-import shape6 from "../../assets/shape6.svg";
-import shape7 from "../../assets/shape7.svg";
-import shape8 from "../../assets/shape8.svg";
-import shape9 from "../../assets/shape9.svg";
-import shape10 from "../../assets/shape10.svg";
+import textLogo from "@assets/text-logo.svg";
+import shape1 from "@assets/shape1.svg";
+import shape2 from "@assets/shape2.svg";
+import shape3 from "@assets/shape3.svg";
+import shape4 from "@assets/shape4.svg";
+import shape5 from "@assets/shape5.svg";
+import shape6 from "@assets/shape6.svg";
+import shape7 from "@assets/shape7.svg";
+import shape8 from "@assets/shape8.svg";
+import shape9 from "@assets/shape9.svg";
+import shape10 from "@assets/shape10.svg";
 
 export default function HomePage() {
   const { scrollY } = useScroll();

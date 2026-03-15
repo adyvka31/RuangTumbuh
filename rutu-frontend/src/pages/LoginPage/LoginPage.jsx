@@ -4,14 +4,15 @@ import styles from "./LoginPage.module.css";
 import logoGede from "@assets/logo.svg";
 
 export default function Login() {
-
   return (
     <>
       <div className={styles.fullPage}>
         <div className={styles.loginCard}>
           {/* SISI KIRI: BRANDING */}
           <div className={styles.leftSide}>
-            <Link to="/" className={styles.mainLogo} ><img src={logoGede} alt="Logo" className={styles.mainLogo} /></Link>
+            <Link to="/" className={styles.mainLogo}>
+              <img src={logoGede} alt="Logo" className={styles.mainLogo} />
+            </Link>
             <p className={styles.brandText}>
               Temukan Ruang untuk Terus Tumbuh dan Berkembang Bersama Kami.
             </p>
@@ -21,9 +22,7 @@ export default function Login() {
           <div className={styles.rightSide}>
             <div className={styles.formHeader}>
               <h1 className={styles.title}>Welcome Back! 👋</h1>
-              <p className={styles.subtitle}>
-                Sign in to your account
-              </p>
+              <p className={styles.subtitle}>Sign in to your account</p>
             </div>
 
             <form
@@ -64,10 +63,13 @@ export default function Login() {
         </div>
 
         {/* Dekorasi Bintang di luar kartu */}
-        <div className={`${styles.bgStar} ${styles.star1}`}>✦</div>
-        <div className={`${styles.bgStar} ${styles.star2}`}>✦</div>
+        <div className={`${styles.bgStar} ${styles.star1}`} aria-hidden="true">
+          ✦
+        </div>
+        <div className={`${styles.bgStar} ${styles.star2}`} aria-hidden="true">
+          ✦
+        </div>
       </div>
     </>
   );
 }
-

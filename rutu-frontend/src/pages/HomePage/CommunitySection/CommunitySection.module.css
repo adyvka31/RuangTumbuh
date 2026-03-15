@@ -29,7 +29,7 @@
 }
 
 .tag {
-  background: #ffd400;
+  background: var(--primary-yellow);
   border: 2px solid black;
   padding: 6px 16px;
   font-weight: 900;
@@ -67,8 +67,8 @@
   display: flex;
   gap: 20px;
   cursor: default;
-  box-shadow: 6px 6px 0px #000;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: var(--shadow-neo);
+  transition: var(--transition-bouncy);
 }
 
 .featureCard:hover {
@@ -83,7 +83,7 @@
   border: 3px solid #000;
   flex-shrink: 0;
   margin-top: 5px;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: var(--transition-bouncy);
 }
 
 .featureCard:hover .cardIndicator {

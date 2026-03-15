@@ -1,21 +1,38 @@
-import React from "react";
+import React, { lazy, Suspense } from "react"; // <-- 1. Tambahkan Suspense di sini
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ReactLenis } from 'lenis/react'
-import HomePage from "./pages/HomePage/HomePage";
-import Login from "./pages/LoginPage/LoginPage";
-import Register from "./pages/RegisterPage/RegisterPage";
-import CustomCursor from "./components/CustomCursor/CustomCursor";
+import { ReactLenis } from "lenis/react";
+import CustomCursor from "@components/CustomCursor/CustomCursor";
+
+const HomePage = lazy(() => import("@pages/HomePage/HomePage"));
+const Login = lazy(() => import("@pages/LoginPage/LoginPage"));
+const Register = lazy(() => import("@pages/RegisterPage/RegisterPage"));
+
+const PageLoader = () => (
+  <div
+    style={{
+      height: "100vh",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      fontWeight: "bold",
+    }}
+  >
+    Loading...
+  </div>
+);
 
 export default function App() {
   return (
     <ReactLenis root>
       <BrowserRouter>
         <CustomCursor />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-        </Routes>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Routes>
+        </Suspense>
       </BrowserRouter>
     </ReactLenis>
   );

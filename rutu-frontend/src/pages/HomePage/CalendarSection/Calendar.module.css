@@ -72,7 +72,7 @@
 .day:hover {
   transform: translate(-3px, -3px);
   box-shadow: 4px 4px 0px black;
-  background: #f4f0ea; 
+  background: #f4f0ea;
   z-index: 10;
 }
 

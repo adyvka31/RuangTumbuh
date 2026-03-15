@@ -9,7 +9,7 @@ export const COMMUNITY_FEATURES = [
     id: 2,
     title: "Circle Belajar Spesifik",
     desc: "Gabung ke grup-grup kecil berdasarkan minat. Mulai dari Web Dev, UI/UX, Data Science, sampai persiapan karir.",
-    color: "#4ade80", // Hijau
+    color: "var(--primary-green)", // Hijau
   },
   {
     id: 3,
@@ -21,6 +21,6 @@ export const COMMUNITY_FEATURES = [
     id: 4,
     title: "Event & Webinar",
     desc: "Dapatkan akses eksklusif ke webinar mingguan, sesi live coding, dan acara networking bareng expert di industrinya.",
-    color: "#00f2fe", // Biru
+    color: "var(--primary-blue)", // Biru
   },
 ];

@@ -5,7 +5,7 @@ import { useCalendarScroll } from "@/hooks/useCalendarScroll";
 import Calendar from "./Calendar";
 import TimelineItem from "./TimelineItem";
 import styles from "./CalendarSection.module.css";
-import shape9 from "@/assets/shape9.svg";
+import shape9 from "@assets/shape9.svg";
 
 export default function CalendarSection() {
   // Panggil logika dari Hook

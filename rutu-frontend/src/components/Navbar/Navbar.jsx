@@ -1,7 +1,7 @@
 import styles from "./Navbar.module.css";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom"; // <-- IMPORT ROUTER HOOKS
-import logo from "../../assets/logo.svg";
+import logo from "@assets/logo.svg";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
