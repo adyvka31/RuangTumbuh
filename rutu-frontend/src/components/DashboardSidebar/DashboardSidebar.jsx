@@ -7,7 +7,6 @@ import logo from "@/assets/logo.svg";
 const navItems = [
   { id: "dashboard", icon: "⊞", path: "/dashboard" },
   { id: "search", icon: "🔍", path: "/search" },
-  { id: "bookmarks", icon: "🔖", path: "/bookmarks" },
   { id: "messages", icon: "💬", path: "/messages" },
 ];
 

@@ -1,0 +1,177 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.header {
+  margin-bottom: 10px;
+}
+
+.date {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #3b82f6;
+  text-decoration: underline;
+}
+
+.searchBarRow {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.searchContainer {
+  flex: 1;
+  max-width: 400px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 12px 25px;
+  border: 3px solid #000;
+  border-radius: 40px;
+  font-size: 1rem;
+  font-weight: 600;
+  outline: none;
+}
+
+.filterBtn {
+  width: 50px;
+  height: 50px;
+  background-color: #fff;
+  border: 3px solid #000;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 4px 4px 0px #000;
+}
+
+.filterIcon {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.filterIcon span {
+    width: 20px;
+    height: 3px;
+    background-color: #000;
+    position: relative;
+}
+
+.filterIcon span:nth-child(1)::after,
+.filterIcon span:nth-child(2)::before,
+.filterIcon span:nth-child(3)::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background-color: #fff;
+    border: 2px solid #000;
+    top: -3px;
+}
+
+.filterIcon span:nth-child(1)::after { right: 4px; }
+.filterIcon span:nth-child(2)::before { left: 4px; }
+.filterIcon span:nth-child(3)::after { right: 4px; }
+
+.courseGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+}
+
+.courseCard {
+  border: 4px solid #000;
+  border-radius: 35px;
+  padding: 20px;
+  box-shadow: 6px 6px 0px #000;
+  color: #fff;
+  overflow: hidden;
+}
+
+.cardHeader {
+    display: flex;
+    gap: 15px;
+}
+
+.imagePlaceholder {
+    width: 120px;
+    height: 120px;
+    background-color: #fff;
+    border: 3px solid #000;
+    border-radius: 25px;
+    flex-shrink: 0;
+    background-image: linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%, #eee), 
+                      linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%, #eee);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
+}
+
+.cardInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.courseTitle {
+    font-size: 1.2rem;
+    font-weight: 900;
+    margin: 0;
+}
+
+.courseAuthor {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.courseDuration {
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.rating {
+    color: #ffd700;
+    font-size: 1rem;
+    margin: 5px 0;
+}
+
+.seeMoreBtn {
+    background-color: #fff;
+    color: #000;
+    border: 3px solid #000;
+    border-radius: 20px;
+    padding: 5px 15px;
+    font-weight: 800;
+    font-size: 0.8rem;
+    width: fit-content;
+    cursor: pointer;
+    box-shadow: 2px 2px 0px #000;
+    transition: all 0.2s;
+}
+
+.seeMoreBtn:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0px #000;
+}
+
+@media (max-width: 480px) {
+    .courseGrid {
+        grid-template-columns: 1fr;
+    }
+    
+    .cardHeader {
+        flex-direction: column;
+    }
+    
+    .imagePlaceholder {
+        width: 100%;
+        height: 150px;
+    }
+}

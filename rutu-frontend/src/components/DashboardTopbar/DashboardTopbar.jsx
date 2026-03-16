@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./DashboardTopbar.module.css";
+import { Link } from "react-router-dom";
 
 export default function DashboardTopbar({ title, onMenuClick }) {
   return (
@@ -10,12 +11,10 @@ export default function DashboardTopbar({ title, onMenuClick }) {
         </button>
         <div className={styles.titleGroup}>
           <h1>{title}</h1>
-          <p>Monday, 12 Januari 2026</p>
         </div>
       </div>
       <div className={styles.topBarRight}>
-        <button className={styles.iconBtn} aria-label="Messages">✉</button>
-        <button className={styles.iconBtn} aria-label="Notifications">🔔</button>
+        <Link to="/notifications" className={styles.iconBtn} aria-label="Notifications">🔔</Link>
         <div className={styles.avatar}>AJ</div>
       </div>
     </header>

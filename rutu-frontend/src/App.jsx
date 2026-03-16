@@ -9,7 +9,8 @@ const Register = lazy(() => import("@pages/RegisterPage/RegisterPage"));
 const DashboardPage = lazy(() => import("@pages/DashboardPage/DashboardPage"));
 const SearchPage = lazy(() => import("@pages/SearchPage/SearchPage"));
 const BookmarksPage = lazy(() => import("@pages/BookmarksPage/BookmarksPage"));
-const MessagesPage = lazy(() => import("@pages/DashboardPage/DashboardPage"));
+const MessagesPage = lazy(() => import("@pages/MessagesPage/MessagesPage"));
+const NotificationPage = lazy(() => import("@pages/NotificationPage/NotificationPage"));
 
 const PageLoader = () => (
   <div
@@ -39,6 +40,7 @@ export default function App() {
             <Route path="/search" element={<SearchPage />} />
             <Route path="/bookmarks" element={<BookmarksPage />} />
             <Route path="/messages" element={<MessagesPage />} />
+            <Route path="/notifications" element={<NotificationPage />} />
           </Routes>
         </Suspense>
       </BrowserRouter>
