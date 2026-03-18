@@ -1,0 +1,138 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.bookingCard {
+  background-color: #f7ede2; /* Light beige from image */
+  border: 4px solid #000;
+  border-radius: 40px;
+  padding: 40px;
+  box-shadow: 10px 10px 0px #000;
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 950;
+  margin: 0;
+  color: #1a1a1a;
+}
+
+.author {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0;
+  color: #555;
+}
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.inputGroup {
+  width: 100%;
+}
+
+.input, .textarea {
+  width: 100%;
+  padding: 15px 25px;
+  border: 3px solid #000;
+  border-radius: 20px;
+  background-color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+  outline: none;
+  transition: all 0.2s;
+  box-shadow: 4px 4px 0px #000;
+}
+
+.textarea {
+  resize: none;
+}
+
+.input:focus, .textarea:focus {
+  transform: translate(-1px, -1px);
+  box-shadow: 6px 6px 0px #000;
+}
+
+.input::placeholder, .textarea::placeholder {
+  color: #888;
+  font-weight: 600;
+}
+
+.selectWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.dropdownIcon {
+  position: absolute;
+  right: 25px;
+  font-size: 0.9rem;
+  pointer-events: none;
+}
+
+.actionRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.backBtn {
+  width: 60px;
+  height: 60px;
+  border: 4px solid #000;
+  border-radius: 50%;
+  background-color: #fff;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 4px 4px 0px #000;
+  transition: all 0.2s;
+}
+
+.backBtn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0px #000;
+}
+
+.submitBtn {
+  background-color: #fff;
+  color: #000;
+  border: 4px solid #000;
+  border-radius: 40px;
+  padding: 12px 40px;
+  font-size: 1.2rem;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 6px 6px 0px #000;
+  transition: all 0.2s;
+}
+
+.submitBtn:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 9px 9px 0px #000;
+  background-color: #fbbf24;
+}
+
+@media (max-width: 600px) {
+  .title {
+    font-size: 2rem;
+  }
+}

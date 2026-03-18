@@ -1,0 +1,191 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.detailCard {
+  background-color: #f7ede2; /* Light beige from image */
+  border: 4px solid #000;
+  border-radius: 40px;
+  padding: 40px;
+  box-shadow: 10px 10px 0px #000;
+  position: relative;
+  overflow: hidden;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.cardContent {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+.imageSection {
+  flex: 1;
+  position: relative;
+}
+
+.mainImage {
+  width: 100%;
+  aspect-ratio: 1;
+  background-color: #fff;
+  border: 4px solid #000;
+  border-radius: 35px;
+  box-shadow: 6px 6px 0px #000;
+  position: relative;
+  overflow: hidden;
+}
+
+.imagePlaceholder {
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%, #eee), 
+    linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%, #eee);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+}
+
+.starIcon {
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  width: 60px;
+  height: 60px;
+  background-color: #38bdf8;
+  color: #fff;
+  border: 4px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.hexIcon {
+  position: absolute;
+  bottom: -15px;
+  right: -15px;
+  width: 50px;
+  height: 50px;
+  background-color: #a855f7;
+  color: #fff;
+  border: 4px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+}
+
+.infoSection {
+  flex: 1.5;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 950;
+  margin: 0;
+  color: #1a1a1a;
+}
+
+.duration {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0;
+  color: #555;
+}
+
+.author {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0;
+  color: #333;
+}
+
+.description {
+  margin: 15px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #444;
+  line-height: 1.6;
+}
+
+.rating {
+  color: #fbbf24;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.actionRow {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.bookBtn {
+  background-color: #fff;
+  color: #000;
+  border: 4px solid #000;
+  border-radius: 40px;
+  padding: 12px 35px;
+  font-size: 1.2rem;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 6px 6px 0px #000;
+  transition: all 0.2s;
+}
+
+.bookBtn:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 9px 9px 0px #000;
+  background-color: #fbbf24;
+}
+
+.relatedHeader {
+  margin-top: 20px;
+}
+
+.relatedTitle {
+  font-size: 1.8rem;
+  font-weight: 850;
+  color: #1a1a1a;
+}
+
+.courseGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+}
+
+@media (max-width: 900px) {
+  .cardContent {
+    flex-direction: column;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .imageSection {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+}

@@ -12,6 +12,9 @@ const BookmarksPage = lazy(() => import("@pages/BookmarksPage/BookmarksPage"));
 const MessagesPage = lazy(() => import("@pages/MessagesPage/MessagesPage"));
 const NotificationPage = lazy(() => import("@pages/NotificationPage/NotificationPage"));
 const BookingPage = lazy(() => import("@pages/BookingPage/BookingPage"));
+const CourseDetailPage = lazy(() => import("@pages/CourseDetailPage/CourseDetailPage"));
+const CourseBookingPage = lazy(() => import("@pages/CourseBookingPage/CourseBookingPage"));
+
 
 
 const PageLoader = () => (
@@ -44,6 +47,9 @@ export default function App() {
             <Route path="/messages" element={<MessagesPage />} />
             <Route path="/notifications" element={<NotificationPage />} />
             <Route path="/booking" element={<BookingPage />} />
+            <Route path="/course/:id" element={<CourseDetailPage />} />
+            <Route path="/course-booking/:id" element={<CourseBookingPage />} />
+
 
           </Routes>
         </Suspense>

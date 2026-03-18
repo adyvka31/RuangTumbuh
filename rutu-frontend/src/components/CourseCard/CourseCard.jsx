@@ -1,8 +1,11 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import styles from "./CourseCard.module.css";
 
 export default function CourseCard({ course, index }) {
+  const navigate = useNavigate();
+
   return (
     <motion.div
       initial={{ scale: 0.9, opacity: 0 }}
@@ -24,6 +27,7 @@ export default function CourseCard({ course, index }) {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className={styles.seeMoreBtn}
+            onClick={() => navigate(`/course/${course.id}`)}
           >
             See More
           </motion.button>
