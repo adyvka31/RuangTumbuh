@@ -6,11 +6,10 @@ import logo from "@/assets/logo.svg";
 
 const navItems = [
   { id: "dashboard", icon: "⊞", label: "Dashboard", path: "/dashboard" },
-  { id: "search", icon: "🔍", label: "Search", path: "/search" },
-  { id: "booking", icon: "📅", label: "Booking", path: "/booking" },
+  { id: "booking", icon: "📦", label: "My Courses", path: "/booking" },
+  { id: "learn", icon: "💡", label: "Learn", path: "/search" },
   { id: "messages", icon: "💬", label: "Messages", path: "/messages" },
   { id: "schedule", icon: "🗓️", label: "Schedule", path: "/schedule" },
-
 ];
 
 

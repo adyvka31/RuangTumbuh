@@ -17,6 +17,8 @@ const CourseBookingPage = lazy(() => import("@pages/CourseBookingPage/CourseBook
 const SchedulePage = lazy(() => import("@pages/SchedulePage/SchedulePage"));
 const AddCoursePage = lazy(() => import("@pages/AddCoursePage/AddCoursePage"));
 const ProfilePage = lazy(() => import("@pages/ProfilePage/ProfilePage"));
+const PresencePage = lazy(() => import("@pages/PresencePage/PresencePage"));
+
 
 
 
@@ -57,6 +59,8 @@ export default function App() {
             <Route path="/schedule" element={<SchedulePage />} />
             <Route path="/add-course" element={<AddCoursePage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/presence" element={<PresencePage />} />
+
 
           </Routes>
         </Suspense>

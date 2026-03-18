@@ -1,7 +1,7 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 60px;
   padding: 10px;
 }
 
@@ -179,7 +179,7 @@
   gap: 10px;
 }
 
-.acceptBtn, .declineBtn {
+.acceptBtn, .declineBtn, .presenceBtn {
   padding: 8px 20px;
   border: 3px solid #000;
   border-radius: 10px;
@@ -191,6 +191,11 @@
 
 .acceptBtn {
   background-color: #10b981;
+  color: #fff;
+}
+
+.presenceBtn {
+  background-color: #0095ff;
   color: #fff;
 }
 
@@ -209,11 +214,11 @@
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .actionButtons {
     width: 100%;
   }
-  
+
   .acceptBtn, .declineBtn {
     flex: 1;
   }
@@ -225,18 +230,18 @@
     flex-direction: column;
     gap: 30px;
   }
-  
+
   .line {
     width: 10px;
     height: 50px;
     margin-top: 0;
     margin-bottom: 0;
   }
-  
+
   .cardFooter {
     justify-content: center;
   }
-  
+
   .backBtn {
     width: 100%;
   }
