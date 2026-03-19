@@ -1,0 +1,268 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 120px);
+  gap: 15px;
+  position: relative;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #fff;
+  border: 4px solid #000;
+  border-radius: 20px;
+  box-shadow: 6px 6px 0px #000;
+  gap: 15px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.backButton {
+  background-color: #FACC15;
+  border: 3px solid #000;
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 4px 4px 0px #000;
+  transition: all 0.2s;
+}
+
+.backButton:active {
+  box-shadow: 0px 0px 0px #000;
+  transform: translate(4px, 4px);
+}
+
+.userInfo {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 45px;
+  height: 45px;
+  border: 3px solid #000;
+  border-radius: 12px;
+  background-color: #d1d5db;
+}
+
+.userDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.userName {
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin: 0;
+  color: #000;
+}
+
+.status {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.menuButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Chat Area */
+.chatArea {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 10px;
+  padding-bottom: 20px;
+}
+
+/* Scrollbar Style */
+.chatArea::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chatArea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chatArea::-webkit-scrollbar-thumb {
+  background: #000;
+  border-radius: 4px;
+}
+
+.dateSeparator {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.dateSeparator span {
+  padding: 5px 20px;
+  background-color: #000;
+  color: #fff;
+  font-weight: 700;
+  border-radius: 10px;
+  font-size: 0.8rem;
+}
+
+.messageWrapper {
+  display: flex;
+  width: 100%;
+}
+
+.me {
+  justify-content: flex-end;
+}
+
+.other {
+  justify-content: flex-start;
+}
+
+.messageBubble {
+  max-width: 80%;
+  padding: 12px 18px;
+  border: 4px solid #000;
+  border-radius: 18px;
+  box-shadow: 4px 4px 0px #000;
+  position: relative;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.me .messageBubble {
+  background-color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.other .messageBubble {
+  border-bottom-left-radius: 4px;
+  color: #fff;
+}
+
+.time {
+  font-size: 0.7rem;
+  font-weight: 700;
+  opacity: 0.8;
+  display: block;
+  margin-top: 5px;
+  text-align: right;
+}
+
+/* Input Area */
+.inputArea {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 15px;
+  background-color: #fff;
+  border: 4px solid #000;
+  border-radius: 18px;
+  box-shadow: 6px 6px 0px #000;
+}
+
+.inputWrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background-color: #f3f4f6;
+  border: 3px solid #000;
+  border-radius: 12px;
+  padding: 5px 10px;
+}
+
+.input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 8px 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  outline: none;
+}
+
+.iconButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  transition: transform 0.2s;
+}
+
+.iconButton:hover {
+  transform: scale(1.1);
+}
+
+.sendButton {
+  background-color: #4ade80;
+  border: 3px solid #000;
+  color: #000;
+  width: 45px;
+  height: 45px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 4px 4px 0px #000;
+}
+
+.sendButton:active:not(:disabled) {
+  box-shadow: 0px 0px 0px #000;
+  transform: translate(4px, 4px);
+}
+
+.sendButton:disabled {
+  background-color: #e5e7eb;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .container {
+    height: calc(100vh - 100px);
+  }
+
+  .header {
+    padding: 10px 15px;
+  }
+
+  .userName {
+    font-size: 1rem;
+  }
+
+  .messageBubble {
+    max-width: 85%;
+    padding: 10px 15px;
+  }
+
+  .inputArea {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .sendButton {
+    width: 40px;
+    height: 40px;
+  }
+}

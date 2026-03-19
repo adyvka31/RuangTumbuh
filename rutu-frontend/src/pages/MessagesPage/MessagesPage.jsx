@@ -1,9 +1,11 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import DashboardLayout from "@/layouts/DashboardLayout/DashboardLayout";
 import styles from "./MessagesPage.module.css";
 
 export default function MessagesPage() {
+  const navigate = useNavigate();
   const messages = [
     { id: 1, name: "Grace Ashcroft", text: "ayo masuk ke ke zoom meetingnya", time: "12.30", color: "#38BDF8" },
     { id: 2, name: "Carloz", text: "Pe, info mabar", time: "11.30", color: "#FB923C" },
@@ -37,6 +39,7 @@ export default function MessagesPage() {
               whileHover={{ scale: 1.02 }}
               className={styles.messageItem}
               style={{ backgroundColor: msg.color }}
+              onClick={() => navigate(`/message/${msg.id}`)}
             >
               <div className={styles.avatar}></div>
               <div className={styles.textGroup}>
