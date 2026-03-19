@@ -44,7 +44,7 @@
   align-items: center;
   gap: 30px;
   background: var(--primary-red);
-  padding: 5px 10px;
+  padding: 12px 20px;
   border-radius: 20px;
   border: var(--border-thick);
   box-shadow: 8px 8px 0px #000;
@@ -64,6 +64,8 @@
 }
 
 .dashboard img {
+  width: 55px;
+  height: 55px;
   cursor: pointer !important;
   transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }

@@ -15,17 +15,17 @@
   right: 0;
   bottom: 0;
   background-image: url("../../assets/logo.svg");
-  background-repeat: repeat;
-  background-size: 120px; 
-  opacity: 0.06;
+  background-repeat: space; 
+  background-size: 100px; 
+  background-origin: content-box;
+  opacity: 0.05;
   filter: grayscale(100%);
   z-index: -1;
 }
 
 .authContainer {
   display: flex;
-  gap: 20px;
-  overflow: hidden;
+  gap: 1.5rem;
   align-items: stretch;
   width: 90%;
   height: 90%;
@@ -38,17 +38,17 @@
 
 .containerImage {
   position: relative;
-  width: 55%;
+  width: 53%;
   border-radius: 1rem;
   background-color: var(--primary-yellow);
   background-size: cover;
   background-position: center;
+  border: 1px solid #000;
 }
 
 .containerForm {
-  width: 45%;
+  width: 47%;
   padding: 4rem;
-  border: 1px solid #e0e0e0;
   background-color: #ffffff;
   border-radius: 1rem;
   display: flex;
@@ -57,8 +57,8 @@
   position: relative;
   overflow: hidden;
   z-index: 1;
+  border: 1px solid #000;
 }
-
 /* Shape Blur */
 .decorativeShape {
   position: absolute;
@@ -98,8 +98,14 @@
   background-color: rgba(255, 215, 0, 0.2);
 }
 
+.logo {
+  width: 80px;
+  height: 80px;
+}
+
 /* Title, Deskripsi */
 .titleForm {
+  text-transform: uppercase;
   font-size: 2rem;
   font-weight: 700;
   color: #000;

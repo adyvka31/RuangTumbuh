@@ -25,10 +25,10 @@ export const LoginForm = ({}) => {
         <div className={styles.passwordActionsForm}>
           <div className={styles.rememberMeGroup}>
             <input type="checkbox" name="Rememberme" id="rememberme" />
-            <label htmlFor="rememberme">Remember Me</label>
+            <label htmlFor="rememberme">Ingatkan Saya</label>
           </div>
           <Link to="/forgot-password" className={styles.forgotPassword}>
-            Forgot Password
+            Lupa Password
           </Link>
         </div>
       </div>

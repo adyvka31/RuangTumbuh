@@ -15,7 +15,7 @@ export const RegisterForm = () => {
             type="email"
             id="email"
             name="email"
-            label="Email Address"
+            label="Email"
             icon={FiAtSign}
           />
           {/* ... input password ... */}

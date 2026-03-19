@@ -2,7 +2,6 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  cursor: none !important;
   ::-webkit-scrollbar {
     display: none;
   }
@@ -14,6 +13,20 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
   cursor: none;
+}
+
+.custom-cursor-active * {
+  cursor: none !important;
+}
+.custom-cursor-active a,
+.custom-cursor-active button,
+.custom-cursor-active [role="button"] {
+  /* Tambahkan ini juga */
+  cursor: pointer !important;
+}
+.custom-cursor-active input,
+.custom-cursor-active textarea {
+  cursor: text !important;
 }
 
 a,

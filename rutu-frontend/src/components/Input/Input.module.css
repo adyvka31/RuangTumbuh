@@ -24,10 +24,12 @@
   padding: 1rem 3rem 1rem 1rem;
   border: 1px solid #e1e5ee;
   border-radius: 10px;
-  background-color: #fbfcff;
+  background-color: #fffffb;
   font-size: 0.9rem;
   color: #333;
   transition: all 0.2s ease;
+  cursor: text !important;
+
 }
 
 .floatingLabel {
@@ -65,11 +67,14 @@
 
 .inputForm:focus {
   outline: none;
-  border: 1px solid var(--primary-yellow);
+  border: 1px solid #000;
+  outline: none !important;
+  border-radius: 10px;
+  box-shadow: 4px 4px 0px #000;
 }
 
 .inputForm:hover {
-  border: 1px solid var(--primary-yellow);
+  border: 1px solid #000;
   background-color: #ffffff;
   transition: all 0.2s ease-in-out;
 }

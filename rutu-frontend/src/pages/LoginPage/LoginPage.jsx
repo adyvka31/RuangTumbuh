@@ -4,10 +4,10 @@ import { AuthLayout } from "@layouts/AuthLayout/AuthLayout";
 export default function LoginPage() {
   return (
     <AuthLayout
-      title="Welcome To RuangTumbuh"
-      description="Before start, Fill in your details to login to Dashboard RuangTumbuh."
-      linkText="Don't have an account yet?"
-      linkActionText="Sign Up"
+      title="Selamat Datang, Bro!"
+      description="Sebelum memulai, isi detail Anda untuk masuk ke Dasbor RuangTumbuh."
+      linkText="Belum mempunyai akun?"
+      linkActionText="Daftar"
       linkTo="/register"
     >
       <LoginForm />

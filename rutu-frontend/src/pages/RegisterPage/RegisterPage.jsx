@@ -4,10 +4,10 @@ import { AuthLayout } from "@layouts/AuthLayout/AuthLayout";
 export default function RegisterPage() {
   return (
     <AuthLayout
-      title="Create an account!"
-      description="Fill in the credentials to create a new RuangTumbuh account!"
-      linkText="Already have an account?"
-      linkActionText="Sign In"
+      title="Buat Akunmu!"
+      description="Isi kredensial untuk membuat akun RuangTumbuh baru!"
+      linkText="Sudah mempunyai akun?"
+      linkActionText="Masuk"
       linkTo="/login"
       reverse={true} // Posisi dibalik (Form kiri, Gambar kanan)
     >

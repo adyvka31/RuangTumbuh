@@ -1,12 +1,14 @@
 .button {
   background-color: var(--primary-yellow);
-  color: #ffffff;
+  color: #000;
   font-size: 1rem;
+  text-transform: uppercase;
   font-weight: 600;
   border-radius: 10px;
-  border: none;
+  border: 2px solid #000;
+  box-shadow: 4px 4px 0px #000;
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -14,5 +16,11 @@
 }
 
 .button:hover {
-  background-color: #2852e2;
+  box-shadow: 8px 8px 0px #000;
+  transform: translateY(-2px) scale(1);
+}
+
+.button:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #000;
 }

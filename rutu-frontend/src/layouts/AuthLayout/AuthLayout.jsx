@@ -28,7 +28,7 @@ export const AuthLayout = ({
             className={`${styles.decorativeShape} ${reverse ? styles.shapeBottomRegister : styles.shapeBottomLogin}`}
           ></div>
 
-          <img src={logo} alt="Logo Ruang Tumbuh" />
+          <img src={logo} alt="Logo Ruang Tumbuh" className={styles.logo} />
 
           <h1 className={styles.titleForm}>{title}</h1>
           <p className={styles.descForm}>{description}</p>
