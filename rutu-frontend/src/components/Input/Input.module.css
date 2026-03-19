@@ -1,0 +1,161 @@
+.loginForm {
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.inputContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column; /* Susun atas-bawah */
+  margin-bottom: 1rem; /* Beri jarak antar input */
+}
+
+.inputWrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.inputForm {
+  width: 100%;
+  padding: 1rem 3rem 1rem 1rem;
+  border: 1px solid #e1e5ee;
+  border-radius: 10px;
+  background-color: #fffffb;
+  font-size: 0.9rem;
+  color: #333;
+  transition: all 0.2s ease;
+  cursor: text !important;
+
+}
+
+.floatingLabel {
+  position: absolute;
+  left: 0.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #fbfcff;
+  padding: 0 0.2rem;
+  padding-bottom: -2rem;
+  color: #b0b7c3;
+  font-size: 0.95rem;
+  font-weight: 400;
+  transition: all 0.2s ease-in-out;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.inputForm:focus ~ .floatingLabel,
+.inputForm:not(:placeholder-shown) ~ .floatingLabel {
+  top: 0;
+  font-size: 0.75rem;
+  color: var(--primary-yellow);
+  background-color: #ffffff;
+  font-weight: 500;
+}
+
+.inputForm:not(:placeholder-shown):not(:focus) ~ .floatingLabel {
+  color: #b0b7c3;
+}
+
+.inputForm::placeholder {
+  color: #b0b7c3;
+}
+
+.inputForm:focus {
+  outline: none;
+  border: 1px solid #000;
+  outline: none !important;
+  border-radius: 10px;
+  box-shadow: 4px 4px 0px #000;
+}
+
+.inputForm:hover {
+  border: 1px solid #000;
+  background-color: #ffffff;
+  transition: all 0.2s ease-in-out;
+}
+
+.inputIcon {
+  position: absolute;
+  right: 1.25rem;
+  color: #b0b7c3;
+  font-size: 1.3rem;
+  pointer-events: none;
+  transition: color 0.2s;
+}
+
+.inputWrapper:focus-within .inputIcon {
+  color: var(--primary-yellow);
+}
+.inputWrapper:hover .inputIcon {
+  color: var(--primary-yellow);
+}
+.inputWrapper:hover .floatingLabel {
+  color: var(--primary-yellow);
+}
+
+.inputForm.error {
+  border-color: #ef4444 !important;
+}
+
+.passwordToggle {
+  position: absolute;
+  right: 1.25rem;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #b0b7c3;
+  padding: 0;
+  outline: none;
+}
+
+.passwordToggle:hover,
+.passwordToggle:focus {
+  color: var(--primary-yellow);
+}
+
+.inputIconClickable {
+  font-size: 1.3rem;
+  transition: color 0.2s;
+  animation: iconSwap 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.errorMessage {
+  color: #ef4444;
+  font-size: 0.8rem;
+  margin-top: 0.35rem;
+  margin-left: 0.2rem;
+  display: block;
+  text-align: left;
+  font-weight: 500;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes iconSwap {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) rotate(-15deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
