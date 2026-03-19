@@ -9,7 +9,7 @@ export const FLOW_DATA = [
     id: 2,
     title: "Pilih Jadwal & Durasi Sesi",
     desc: "Kalender otomatis yang jagain jadwal kamu. Sesuaikan waktu belajar dengan kesibukanmu tanpa perlu takut bentrok.",
-    color: "#ffd54f",
+    color: "var(--primary-yellow)",
   },
   {
     id: 3,
@@ -21,6 +21,6 @@ export const FLOW_DATA = [
     id: 4,
     title: "Feedback Tutor & Selesai",
     desc: "Berikan ulasan, kumpulkan lencana, dan pantau terus perkembangan skill-mu lewat dashboard portofolio.",
-    color: "var(--primary-blue)",
+    color: "var(--primary-green)",
   },
 ];
