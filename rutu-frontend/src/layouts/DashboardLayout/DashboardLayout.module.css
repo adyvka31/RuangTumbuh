@@ -1,7 +1,6 @@
 .layoutContainer {
   display: flex;
   min-height: 100vh;
-  background-color: #fff9f0;
   color: #000;
   width: 100%;
 }
@@ -19,10 +18,14 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+  margin-left: 280px;
+  width: calc(100% - 280px);
+  min-height: 100vh;
+  transition: all 0.3s ease;
 }
 
 .contentArea {
-  padding: 40px;
+  padding: 35px;
   width: 100%;
   max-width: 1600px;
   margin: 0 auto;

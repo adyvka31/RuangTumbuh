@@ -1,23 +1,34 @@
 import React from "react";
 import styles from "./DashboardTopbar.module.css";
-import { Link } from "react-router-dom";
+import { CiLight } from "react-icons/ci";
+import { IoIosAddCircleOutline } from "react-icons/io";
+import { IoIosNotificationsOutline } from "react-icons/io";
+import { FaUser } from "react-icons/fa";
 
 export default function DashboardTopbar({ title, onMenuClick }) {
   return (
     <header className={styles.topBar}>
       <div className={styles.topBarLeft}>
-        <button className={styles.mobileNavToggle} onClick={onMenuClick}>
-          ☰
-        </button>
         <div className={styles.titleGroup}>
           <h1>{title}</h1>
         </div>
       </div>
-      <div className={styles.topBarRight}>
-        <Link to="/notifications" className={styles.iconBtn} aria-label="Notifications">🔔</Link>
-        <Link to="/profile" className={styles.avatar}>AJ</Link>
+      <div className={styles.navButtonsContainer}>
+        <div className={styles.navItems}>
+          <IoIosNotificationsOutline className={styles.navItem} role="button" />
+          <IoIosAddCircleOutline className={styles.navItem} role="button" />
+          <CiLight
+            className={`${styles.navItem} ${styles.setThickness}`}
+            role="button"
+          />
+        </div>
+        <button className={styles.profileBtn}>
+          <div className={styles.avatar}>
+            <FaUser className={styles.guestIcon} />
+          </div>
+          <span className={styles.userName}>Adyvka Pratama</span>
+        </button>
       </div>
-
     </header>
   );
 }

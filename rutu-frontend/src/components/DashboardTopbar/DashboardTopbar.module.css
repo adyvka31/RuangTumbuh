@@ -1,11 +1,11 @@
 .topBar {
   height: 100px;
-    border-bottom: 4px solid #000;
+  border-bottom: 4px solid #000;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 40px;
-  background-color: #fff9f0;
+  background-color: var(--primary-yellow);
   position: sticky;
   top: 0;
   z-index: 900;
@@ -18,6 +18,7 @@
 }
 
 .titleGroup h1 {
+  text-transform: uppercase;
   font-size: 2rem;
   font-weight: 800;
   margin: 0;
@@ -49,56 +50,103 @@
   transform: scale(1.05);
 }
 
-.topBarRight {
+.navButtonsContainer {
+  height: 100%;
+  width: 45%;
   display: flex;
+  flex-direction: row;
   align-items: center;
+  justify-content: flex-end;
+}
+
+.navItems {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
   gap: 20px;
 }
 
-.iconBtn {
-  width: 45px;
-  height: 45px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.5rem;
-  cursor: pointer;
-  background: none;
-  border: none;
-  transition: transform 0.2s ease;
+.navItem {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  padding: 10px;
+  background-color: #fff;
+  color: #000;
+  border: 2px solid #000;
+  box-shadow: 3px 3px 0px #000;
+  transition: all 0.2s ease;
+  stroke-width: 12px;
 }
 
-.iconBtn:hover {
-  transform: scale(1.2) rotate(5deg);
+.setThickness path {
+  stroke-width: 1.1px;
+}
+
+.navItem:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px var(--shadow-color);
+  background-color: var(--primary-green);
+}
+
+.profileBtn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: var(--primary-red);
+  border: 2px solid #000;
+  border-radius: 10px;
+  padding: 6px 20px 6px 10px;
+  margin-left: 20px;
+  cursor: pointer;
+  box-shadow: 4px 4px 0px #000;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.profileBtn:hover {
+  transform: translate(-2.5px, -2.5px);
+  box-shadow: 6px 6px 0px #000;
+}
+
+.profileBtn:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0px 0px 0px #000; 
 }
 
 .avatar {
-  width: 50px;
-  height: 50px;
-  background: #fff;
-  border: 3px solid #000;
-  border-radius: 12px;
+  background-color: #fff;
+  color: #000;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  border: 2px solid #000;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+}
+
+.guestIcon {
+  width: 18px;
+  height: 18px;
+  color: #000;
+}
+
+.userName {
+  font-family: "Fredoka", "plus-jakarta", sans-serif;
   font-weight: 800;
-  box-shadow: 4px 4px 0px #000;
+  font-size: 1rem;
+  color: #000;
+  text-transform: uppercase; 
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.mobileNavToggle {
-  display: none;
-  background: #ffcc33;
-  border: 3px solid #000;
-  border-radius: 10px;
-  width: 45px;
-  height: 45px;
-  font-size: 1.5rem;
-  cursor: pointer;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 3px 3px 0px #000;
-}
-
+/* --- RESPONSIVE MOBILE (Ganti/Timpa Media Query Anda) --- */
 @media (max-width: 1024px) {
   .mobileNavToggle {
     display: flex;
@@ -115,27 +163,21 @@
     font-size: 1.5rem;
   }
 
-  .titleGroup p {
-    font-size: 0.75rem;
+  .navItems {
+    display: none; /* Menyembunyikan ikon notif dll di HP agar tidak sesak */
   }
 
-  .iconBtn {
-    width: 35px;
-    height: 35px;
-    font-size: 1.2rem;
-  }
-
-  .avatar {
-    width: 40px;
-    height: 40px;
-    font-size: 0.9rem;
-  }
-
-  .textLogo {
-    height: 30px;
-  }
-
-  .topBarCenter {
+  .divider {
     display: none;
+  }
+
+  /* Ubah kapsul jadi lingkaran di layar kecil */
+  .profileBtn {
+    padding: 6px;
+    border-radius: 50%;
+  }
+
+  .userName {
+    display: none; /* Sembunyikan nama dan panah di HP */
   }
 }

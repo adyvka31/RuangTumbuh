@@ -1,86 +1,233 @@
-.sidebar {
-  width: 250px;
-  background-color: #ffcc33;
-  border-right: 4px solid #000;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 30px 20px;
-  position: sticky;
+:root {
+  --primary-yellow: #ffd400;
+  --primary-blue: #00f2fe;
+  --bg-sidebar: #fdfdfd;
+  --text-dark: #000;
+  --text-gray: #555;
+  --border-width: 4px;
+  --shadow-color: #000;
+}
+
+.overlay {
+  position: fixed;
   top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.overlayOpen {
+  opacity: 1;
+  visibility: visible;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 280px;
   height: 100vh;
-  z-index: 1000;
-  transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-.logoWrapper {
-  margin-bottom: 50px;
-  cursor: pointer;
-  align-self: center;
-}
-
-.sidebarLogo {
-  width: 70px;
-  height: 70px;
-  filter: drop-shadow(4px 4px 0px rgba(0,0,0,1));
-}
-
-.navItems {
+  background-color: var(--primary-yellow);
+  border-right: var(--border-width) solid #000;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  width: 100%;
+  z-index: 1000;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  font-family: "plus-jakarta", "Fredoka", sans-serif;
+  overflow-y: auto;
 }
 
-.navItem {
-  width: 100%;
-  height: 60px;
-  background: #fff;
-  border: 4px solid #000;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  padding: 0 15px;
-  gap: 15px;
-  box-shadow: 4px 4px 0px #000;
-  transition: all 0.2s ease;
-  cursor: pointer;
+@media (max-width: 1023px) {
+  .sidebar {
+    transform: translateX(-105%);
+    box-shadow: none;
+  }
+  .sidebarOpen {
+    transform: translateX(0);
+    box-shadow: 12px 0px 0px var(--shadow-color);
+  }
 }
 
-.icon {
-  font-size: 1.5rem;
+.header {
+  padding: 30px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  background: var(--primary-yellow);
+}
+
+.logoLink {
+  text-decoration: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 18px;
+}
+
+.logo {
+  width: 50px;
+  height: 50px;
+  filter: drop-shadow(3px 3px 0px #000);
+}
+
+.logoTextWrapper {
+  display: flex;
+  flex-direction: column;
   justify-content: center;
 }
 
-.label {
+.logoRuang {
+  font-family: "Fredoka", sans-serif;
+  font-weight: 900;
+  font-size: 1.8rem;
+  color: #333;
+  line-height: 1;
+}
+
+.logoTumbuh {
+  font-family: "Fredoka", sans-serif;
+  font-weight: 900;
+  font-size: 1.5rem;
+  color: #fff;
+  line-height: 1;
+}
+
+.closeBtn {
+  display: none;
+  background: none;
+  border: 3px solid #000;
+  border-radius: 8px;
+  font-size: 1.2rem;
   font-weight: 800;
-  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 6px 10px;
+  box-shadow: 3px 3px 0px #000;
 }
 
-.navItem:hover {
-  transform: translate(-3px, -3px);
-  box-shadow: 7px 7px 0px #000;
-  background-color: #ff90e8;
-}
-
-.navItemActive {
-  background-color: #ff90e8;
-  transform: translate(-3px, -3px);
-  box-shadow: 7px 7px 0px #000;
-}
-
-
-@media (max-width: 1024px) {
-  .sidebar {
-    position: fixed;
-    left: 0;
-    transform: translateX(-100%);
+@media (max-width: 1023px) {
+  .header {
+    padding: 16px;
   }
-
-  .sidebarOpen {
-    transform: translateX(0);
-    box-shadow: 10px 0px 40px rgba(0,0,0,0.2);
+  .logoLink {
+    font-size: 1.6rem;
   }
+  .closeBtn {
+    display: block;
+  }
+}
+
+.nav {
+  padding: 35px 23px;
+  display: flex;
+  flex-direction: column;
+  gap: 35px;
+  flex: 1;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.section:last-child {
+  margin-top: auto;
+}
+
+.sectionTitle {
+  font-size: 0.9rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.linkItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-decoration: none;
+  color: var(--text-dark);
+  padding: 16px 20px;
+  border-radius: 12px;
+  background: #fff;
+  border: 2.5px solid #000;
+  box-shadow: 3.5px 3.5px 0px var(--shadow-color);
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.linkContent {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.linkIcon {
+  font-size: 1.4rem;
+  color: #000;
+  stroke-width: 2.5;
+}
+
+.linkLabel {
+  font-family: "plus-jakarta", sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+.linkArrow {
+  font-size: 1.2rem;
+  color: #aaa;
+  stroke-width: 3;
+}
+
+.linkItem:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 6px 6px 0px var(--shadow-color);
+  background-color: var(--primary-green);
+}
+
+.linkItem:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px var(--shadow-color);
+}
+
+.linkActive {
+  background-color: var(--primary-green);
+  transform: translate(-3px, -3px);
+  box-shadow: 7px 7px 0px var(--shadow-color);
+}
+
+.linkActive .linkIcon,
+.linkActive .linkLabel {
+  color: #000;
+}
+
+.linkActive .linkArrow {
+  color: #000;
+}
+
+.linkItem:hover .linkArrow {
+  color: #000;
+}
+
+.logoutBtn {
+  width: 100%;
+  border: 3px solid #000;
+  cursor: pointer;
+  background: #fff;
+}
+
+.logoutBtn:hover {
+  background-color: #ff5e62;
+  color: #fff;
+}
+.logoutBtn:hover .linkIcon,
+.logoutBtn:hover .linkLabel,
+.logoutBtn:hover .linkArrow {
+  color: #fff;
 }
