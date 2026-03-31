@@ -31,7 +31,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 280px;
+  width: 270px;
   height: 100vh;
   background-color: var(--primary-yellow);
   border-right: var(--border-width) solid #000;
