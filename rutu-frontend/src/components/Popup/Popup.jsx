@@ -18,6 +18,9 @@ export const Popup = ({
   const iconColorClass =
     type === "danger" ? styles.iconDanger : styles.iconSuccess;
 
+  const buttonColorClass =
+    type === "danger" ? styles.actionBtnDanger : styles.actionBtnSuccess;
+
   return (
     <div className={styles.overlay}>
       <div className={styles.content}>
@@ -34,7 +37,7 @@ export const Popup = ({
               {secondaryButtonText}
             </button>
           )}
-          <button className={styles.actionBtn} onClick={onAction}>
+          <button className={buttonColorClass} onClick={onAction}>
             {buttonText}
           </button>
         </div>
