@@ -141,7 +141,7 @@
   text-transform: uppercase; 
   letter-spacing: 0.5px;
   white-space: nowrap;
-  max-width: 150px;
+  max-width: 200px;
   overflow: hidden;
   text-overflow: ellipsis;
 }

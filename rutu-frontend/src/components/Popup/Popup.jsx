@@ -1,28 +1,44 @@
-import { memo } from "react";
+import React from "react";
 import styles from "./Popup.module.css";
-import { createPortal } from "react-dom";
-import { Button } from "../Button/Button";
 
-export const Popup = memo(
-  ({ isOpen, icon, title, description, buttonText, onAction }) => {
-    if (!isOpen) return null;
+export const Popup = ({
+  isOpen,
+  icon,
+  title,
+  description,
+  buttonText,
+  onAction,
+  secondaryButtonText,
+  onSecondaryAction,
+  type = "success",
+}) => {
+  if (!isOpen) return null;
 
-    return createPortal(
-      <div className={styles.overlay}>
-        <div className={styles.content}>
-          <div className={styles.iconWrapper}>
-            <div className={styles.iconCircle}>{icon}</div>
-          </div>
-          <h3 className={styles.title}>{title}</h3>
-          <p className={styles.description}>{description}</p>
-          <div className={styles.buttonWrapper}>
-            <Button onClick={onAction} type="button">
-              {buttonText}
-            </Button>
-          </div>
+  // Menentukan class warna berdasarkan tipe
+  const iconColorClass =
+    type === "danger" ? styles.iconDanger : styles.iconSuccess;
+
+  return (
+    <div className={styles.overlay}>
+      <div className={styles.content}>
+        <div className={styles.iconWrapper}>
+          <div className={`${styles.iconCircle} ${iconColorClass}`}>{icon}</div>
         </div>
-      </div>,
-      document.body,
-    );
-  },
-);
+
+        <h2 className={styles.title}>{title}</h2>
+        <p className={styles.description}>{description}</p>
+
+        <div className={styles.buttonGroup}>
+          {secondaryButtonText && (
+            <button className={styles.cancelBtn} onClick={onSecondaryAction}>
+              {secondaryButtonText}
+            </button>
+          )}
+          <button className={styles.actionBtn} onClick={onAction}>
+            {buttonText}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
