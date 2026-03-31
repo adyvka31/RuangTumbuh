@@ -1,14 +1,20 @@
 .contentFlex {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 40px;
+  padding-bottom: 40px;
 }
 
-/* Banner */
+/* =========================================
+   BANNER
+========================================= */
 .banner {
-  background-color: #ff66aa;
+  background-color: var(
+    --primary-green,
+    
+  ); /* Menggunakan warna hijau cerah / pink */
   border: 4px solid #000;
-  border-radius: 40px;
+  border-radius: 30px;
   padding: 40px;
   display: flex;
   justify-content: space-between;
@@ -19,12 +25,12 @@
 }
 
 .bannerContent {
-  color: #fff;
   z-index: 2;
+  max-width: 60%;
 }
 
 .bannerTitle {
-  font-size: 3rem;
+  font-size: 3.5rem;
   font-weight: 800;
   margin-bottom: 10px;
   display: flex;
@@ -32,32 +38,68 @@
   gap: 15px;
 }
 
+.waveEmoji {
+  display: inline-block;
+  transform-origin: 70% 70%;
+  animation: wave 2.5s infinite;
+}
+
+@keyframes wave {
+  0% {
+    transform: rotate(0deg);
+  }
+  10% {
+    transform: rotate(14deg);
+  }
+  20% {
+    transform: rotate(-8deg);
+  }
+  30% {
+    transform: rotate(14deg);
+  }
+  40% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(10deg);
+  }
+  60%,
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
 .bannerSub {
   font-size: 1.2rem;
-  font-weight: 500;
-  margin-bottom: 25px;
-  opacity: 0.9;
+  font-weight: 600;
+  margin-bottom: 30px;
 }
 
 .bannerButtons {
   display: flex;
-  gap: 20px;
+  gap: 15px;
+  flex-wrap: wrap;
 }
 
 .bannerBtn {
-  padding: 12px 30px;
+  padding: 12px 24px;
   background: #fff;
   border: 3px solid #000;
-  border-radius: 25px;
+  border-radius: 20px;
+  font-family: "plus-jakarta", sans-serif;
   font-weight: 800;
-  font-size: 1.1rem;
+  font-size: 1rem;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   box-shadow: 4px 4px 0px #000;
   transition: all 0.2s ease;
   cursor: pointer;
   color: #000;
+}
+
+.btnSecondary {
+  background: #ffcc33;
 }
 
 .bannerBtn:hover {
@@ -65,104 +107,159 @@
   box-shadow: 7px 7px 0px #000;
 }
 
+.bannerBtn:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0px 0px 0px #000; /* Efek tombol fisik ditekan */
+}
+
 .bannerBtnArrow {
-  width: 24px;
-  height: 24px;
-  background: #ffcc33;
-  border: 2px solid #000;
+  width: 26px;
+  height: 26px;
+  background: #000;
+  color: #fff;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
 }
 
 .bannerDecor {
   display: flex;
   gap: 15px;
+  position: absolute;
+  right: -20px;
+  bottom: -20px;
 }
 
 .mascot {
-  width: 80px;
+  width: 120px;
   height: auto;
-  filter: drop-shadow(4px 4px 0px #000);
 }
 
-/* Stats Grid */
+/* =========================================
+   STATS GRID
+========================================= */
 .statsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px;
 }
 
 .statCard {
   border: 4px solid #000;
-  border-radius: 20px;
-  padding: 20px;
+  border-radius: 25px;
+  padding: 25px;
   box-shadow: 6px 6px 0px #000;
-  transition: transform 0.2s ease;
+  transition: all 0.2s ease;
+  cursor: default;
 }
 
 .statCard:hover {
-  transform: translate(-3px, -3px);
-  box-shadow: 9px 9px 0px #000;
+  transform: translate(-4px, -4px);
+  box-shadow: 10px 10px 0px #000;
+}
+
+.statHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
 }
 
 .statLabel {
-  font-size: 1rem;
-  font-weight: 700;
-  margin-bottom: 10px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #000;
+}
+
+.statIcon {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.4);
+  border: 2px solid #000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
 }
 
 .statValue {
-  font-size: 2.5rem;
-  font-weight: 800;
-  text-align: center;
+  font-size: 2.3rem;
+  font-weight: 700;
+  color: #000;
+  line-height: 1;
 }
 
-/* Mentoring Section */
+/* =========================================
+   MENTORING SECTION
+========================================= */
 .mentoringSection {
-  margin-top: 20px;
+  background: #fff;
+  border: 4px solid #000;
+  border-radius: 30px;
+  padding: 30px;
+  box-shadow: 8px 8px 0px #000;
 }
 
 .sectionHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  padding-bottom: 25px;
+  border-bottom: 3px dashed #000;
 }
 
 .sectionHeader h2 {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: 800;
+  margin: 0;
 }
 
 .seeAll {
   font-weight: 800;
-  color: #3b82f6;
-  text-decoration: underline;
+  color: #000;
+  background: #ffcc33;
+  padding: 8px 16px;
+  border: 2px solid #000;
+  border-radius: 12px;
   cursor: pointer;
+  box-shadow: 3px 3px 0px #000;
+  transition: all 0.2s ease;
+}
+
+.seeAll:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px #000;
+}
+
+.seeAll:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0px 0px 0px #000;
 }
 
 .mentoringList {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 25px;
 }
 
 .mentoringItem {
   border: 4px solid #000;
-  border-radius: 30px;
-  padding: 20px 40px;
+  border-radius: 20px;
+  padding: 20px 30px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 6px 6px 0px #000;
-  transition: transform 0.2s ease;
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .mentoringItem:hover {
-  transform: scale(1.01);
+  transform: translate(-3px, -3px);
+  box-shadow: 4px 4px 0px #000;
 }
 
 .itemContent {
@@ -177,94 +274,110 @@
   height: 60px;
   background: #fff;
   border: 3px solid #000;
-  border-radius: 12px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  box-shadow: inset -3px -3px 0px rgba(0, 0, 0, 0.1);
 }
 
 .itemText {
   display: flex;
   flex-direction: column;
+  gap: 5px;
 }
 
 .itemTitle {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #000;
+}
+
+.itemMeta {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.itemTime {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.95rem;
   font-weight: 700;
+  color: #000;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid #000;
 }
 
 .itemUrl {
-  font-size: 0.9rem;
-  color: #3b82f6;
+  font-size: 0.95rem;
+  color: #000;
   text-decoration: underline;
-  font-weight: 600;
-  word-break: break-all;
+  font-weight: 800;
+  transition: color 0.2s;
+}
+
+.itemUrl:hover {
+  color: #fff;
 }
 
 .statusBadge {
-  padding: 10px 25px;
+  padding: 10px 20px;
   border: 3px solid #000;
-  border-radius: 20px;
+  border-radius: 15px;
   font-weight: 800;
   color: #fff;
   box-shadow: 3px 3px 0px #000;
   white-space: nowrap;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-size: 0.85rem;
 }
 
-/* Responsive adjustments */
+/* =========================================
+   RESPONSIVE MOBILE
+========================================= */
 @media (max-width: 1024px) {
   .banner {
     flex-direction: column;
     align-items: flex-start;
-    padding: 30px;
   }
-
+  .bannerContent {
+    max-width: 100%;
+  }
   .bannerDecor {
-    margin-top: 20px;
+    position: relative;
+    right: 0;
+    bottom: 0;
+    margin-top: 30px;
     justify-content: center;
     width: 100%;
   }
-
-  .bannerTitle {
-    font-size: 2rem;
+  .mascot {
+    width: 80px;
   }
 }
 
 @media (max-width: 768px) {
-  .statsGrid {
-    grid-template-columns: 1fr 1fr;
+  .bannerTitle {
+    font-size: 2.5rem;
   }
-
   .mentoringItem {
     flex-direction: column;
     align-items: flex-start;
-    gap: 15px;
-    padding: 20px;
+    gap: 20px;
   }
-
-  .itemContent {
-    width: 100%;
-  }
-
   .statusBadge {
-    align-self: flex-end;
+    align-self: stretch;
+    text-align: center;
   }
-}
-
-@media (max-width: 480px) {
-  .statsGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .bannerButtons {
+  .itemMeta {
     flex-direction: column;
-    width: 100%;
-  }
-
-  .bannerBtn {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .bannerTitle {
-    font-size: 1.8rem;
+    align-items: flex-start;
+    gap: 5px;
   }
 }
