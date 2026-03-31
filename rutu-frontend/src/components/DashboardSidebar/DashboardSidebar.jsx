@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import styles from "./DashboardSidebar.module.css";
 import logo from "../../assets/logo.svg";
+import { Popup } from "../Popup/Popup";
+import { FiAlertCircle } from "react-icons/fi";
 
 // 1. IMPORT REACT ICONS (Feather Icons)
 import {
@@ -41,9 +43,16 @@ export default function DashboardSidebar({ isOpen, toggleSidebar }) {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    toggleSidebar();
-    navigate("/logout");
+  const [showLogoutPopup, setShowLogoutPopup] = useState(false);
+
+  const handleLogoutClick = () => {
+    setShowLogoutPopup(true);
+  };
+
+  const confirmLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    window.location.replace("/login");
   };
 
   return (
@@ -103,7 +112,7 @@ export default function DashboardSidebar({ isOpen, toggleSidebar }) {
             </Link>
             <button
               className={`${styles.linkItem} ${styles.logoutBtn}`}
-              onClick={handleLogout}
+              onClick={handleLogoutClick}
             >
               <div className={styles.linkContent}>
                 <FiLogOut className={styles.linkIcon} />
@@ -114,6 +123,20 @@ export default function DashboardSidebar({ isOpen, toggleSidebar }) {
           </div>
         </nav>
       </div>
+
+      {showLogoutPopup && (
+        <Popup
+          isOpen={true}
+          type="danger"
+          icon={<FiAlertCircle />}
+          title="Keluar dari Akun?"
+          description="Apakah kamu yakin ingin keluar dari RuangTumbuh?"
+          buttonText="Lanjutkan"
+          onAction={confirmLogout}
+          secondaryButtonText="Batal"
+          onSecondaryAction={() => setShowLogoutPopup(false)}
+        />
+      )}
     </>
   );
 }
