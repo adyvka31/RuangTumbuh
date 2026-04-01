@@ -234,9 +234,9 @@
   box-shadow: 6px 6px 0px #000;
 }
 .boxTitle {
-  font-family: "Fredoka", sans-serif;
   font-size: 1.2rem;
-  margin: 0 0 15px 0;
+  font-weight: 800;
+  margin: 0 0 30px 0;
 }
 
 .categoryWrap {
@@ -362,7 +362,7 @@
   flex-wrap: wrap;
   gap: 15px;
   border-bottom: 2px dashed #f3f4f6;
-  padding-bottom: 15px;
+  padding-bottom: 20px;
 }
 
 .timeBadgeInside {
@@ -410,7 +410,6 @@
   letter-spacing: 0.5px;
 }
 .courseTitle {
-  font-family: "Fredoka", sans-serif;
   font-size: 1.35rem;
   font-weight: 800;
   color: #000;
