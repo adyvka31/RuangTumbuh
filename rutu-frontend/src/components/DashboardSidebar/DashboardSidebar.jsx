@@ -52,7 +52,7 @@ export default function DashboardSidebar({ isOpen, toggleSidebar }) {
   const confirmLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    window.location.replace("/login");
+    window.location.replace("/");
   };
 
   return (

@@ -1,88 +1,222 @@
-.courseCard {
+/* =========================================
+   CARD CONTAINER (Neo-Brutalism Base)
+========================================= */
+.neoCard {
+  background-color: #fff;
   border: 4px solid #000;
-  border-radius: 35px;
-  padding: 20px;
+  border-radius: 25px;
+  display: flex;
+  flex-direction: column;
   box-shadow: 6px 6px 0px #000;
-  color: #fff;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   overflow: hidden;
+  height: 100%;
 }
 
-.cardHeader {
-    display: flex;
-    gap: 15px;
+.neoCard:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 9px 9px 0px #000;
 }
 
-.imagePlaceholder {
-    width: 120px;
-    height: 120px;
-    background-color: #fff;
-    border: 3px solid #000;
-    border-radius: 25px;
-    flex-shrink: 0;
-    background-image: linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%, #eee), 
-                      linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%, #eee);
-    background-size: 20px 20px;
-    background-position: 0 0, 10px 10px;
+/* =========================================
+   BANNER / HEADER (Dinamis)
+========================================= */
+.cardBanner {
+  height: 150px;
+  border-bottom: 4px solid #000;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Pola garis-garis diagonal tipis ala komik retro */
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(0, 0, 0, 0.05) 0px,
+    rgba(0, 0, 0, 0.05) 2px,
+    transparent 2px,
+    transparent 8px
+  );
 }
 
-.cardInfo {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+.bannerIcon {
+  font-size: 5.7rem;
+  color: #000;
+  opacity: 0.15;
+  transform: rotate(-10deg);
+}
+
+.categoryBadge {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background-color: #fff;
+  border: 3px solid #000;
+  padding: 7px 14px;
+  border-radius: 12px;
+  font-family: "plus-jakarta", sans-serif;
+  font-weight: 800;
+  font-size: 0.8rem;
+  color: #000;
+  box-shadow: 3px 3px 0px #000;
+  z-index: 2;
+}
+
+/* =========================================
+   CARD BODY
+========================================= */
+.cardBody {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
 }
 
 .courseTitle {
-    font-size: 1.2rem;
-    font-weight: 900;
-    margin: 0;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #000;
+  margin: 0;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.courseAuthor {
-    font-size: 0.9rem;
-    font-weight: 700;
-    margin: 0;
+.mentorInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.courseDuration, .courseDate {
+.mentorAvatar {
+  width: 45px;
+  height: 45px;
+  background-color: var(--primary-yellow);
+  border: 3px solid #000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 1.2rem;
+  color: #000;
+  box-shadow: 2px 2px 0px #000;
+  flex-shrink: 0;
+}
+
+.mentorText {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.mentorName {
+  font-weight: 800;
+  font-size: 1rem;
+  color: #000;
+}
+
+.mentorRole {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.metaGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.metaBadge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #f8f9fa;
+  border: 2px solid #000;
+  padding: 6px 12px;
+  border-radius: 10px;
   font-size: 0.8rem;
-  font-weight: 700;
+  font-weight: 800;
   color: #333;
-  margin-bottom: 2px;
+  box-shadow: 2px 2px 0px #000;
 }
 
-
-.rating {
-    color: #ffd700;
-    font-size: 1rem;
-    margin: 5px 0;
+.ratingBadge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background-color: #fff;
+  border: 2px solid #000;
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #000;
+  box-shadow: 2px 2px 0px #000;
 }
 
-.seeMoreBtn {
-    background-color: #fff;
-    color: #000;
-    border: 3px solid #000;
-    border-radius: 20px;
-    padding: 5px 15px;
-    font-weight: 800;
-    font-size: 0.8rem;
-    width: fit-content;
-    cursor: pointer;
-    box-shadow: 2px 2px 0px #000;
-    transition: all 0.2s;
+.starIcon {
+  fill: var(--primary-yellow, #facc15); 
+  color: #000; 
+  font-size: 1rem;
 }
 
-.seeMoreBtn:hover {
-    transform: translate(-1px, -1px);
-    box-shadow: 3px 3px 0px #000;
+.metaIcon {
+  font-size: 1rem;
+  color: #000;
 }
 
-@media (max-width: 480px) {
-    .cardHeader {
-        flex-direction: column;
-    }
-    
-    .imagePlaceholder {
-        width: 100%;
-        height: 150px;
-    }
+/* =========================================
+   CARD FOOTER (2 Tombol)
+========================================= */
+.cardFooter {
+  padding: 20px;
+  border-top: 4px solid #000;
+  background-color: #f3f4f6;
+  display: flex;
+  gap: 12px;
+}
+
+.actionBtn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #000;
+  border-radius: 12px;
+  padding: 12px;
+  font-family: "plus-jakarta", sans-serif;
+  font-weight: 800;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 3px 3px 0px #000;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.actionBtn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px #000;
+}
+
+.actionBtn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px #000;
+}
+
+.btnDetail {
+  background-color: #fff;
+  color: #000;
+}
+
+.btnBooking {
+  background-color: var(--primary-yellow);
+  color: #000;
 }

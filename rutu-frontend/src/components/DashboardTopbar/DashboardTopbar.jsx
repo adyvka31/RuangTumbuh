@@ -6,6 +6,9 @@ import { IoIosNotificationsOutline } from "react-icons/io";
 import { FaUser } from "react-icons/fa";
 
 export default function DashboardTopbar({ title, onMenuClick }) {
+  const userString = localStorage.getItem("user");
+  const user = userString ? JSON.parse(userString) : null;
+  const userName = user ? user.name : "Pengguna";
   return (
     <header className={styles.topBar}>
       <div className={styles.topBarLeft}>
@@ -26,7 +29,7 @@ export default function DashboardTopbar({ title, onMenuClick }) {
           <div className={styles.avatar}>
             <FaUser className={styles.guestIcon} />
           </div>
-          <span className={styles.userName}>Adyvka Pratama</span>
+          <span className={styles.userName}>{userName}</span>
         </button>
       </div>
     </header>
