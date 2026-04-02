@@ -21,6 +21,10 @@
   position: relative;
   overflow: hidden;
   box-shadow: 8px 8px 0px #000;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.05) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.05) 2px, transparent 2px);
+  background-size: 30px 30px;
 }
 
 .bannerContent {

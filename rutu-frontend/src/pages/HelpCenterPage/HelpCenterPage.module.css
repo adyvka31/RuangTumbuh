@@ -1,128 +1,409 @@
-:global(body) {
-  background-color: #f3f3f3;
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding-bottom: 40px;
 }
 
-.helpTitle {
-  color: #000;
+/* =========================================
+   HERO & SEARCH BANNER
+========================================= */
+.heroBanner {
+  background-color: var(--primary-green);
+  border: 4px solid #000;
+  border-radius: 30px;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 8px 8px 0px #000;
+  position: relative;
+  overflow: hidden; 
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.05) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.05) 2px, transparent 2px);
+  background-size: 30px 30px;
+}
+
+/* --- DEKORASI ASSET SHAPES --- */
+.bannerDecor {
+  position: absolute;
+  bottom: -30px; 
+  left: -15px;
+  right: -20px;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+  z-index: 1; 
+}
+
+.shapeLeft,
+.shapeRight {
+  width: 110px; 
+  height: auto;
+  opacity: 0.85;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2; 
+  width: 100%;
+  max-width: 800px;
+}
+
+.heroContent h2 {
+  font-size: 2.8rem;
   font-weight: 800;
-  letter-spacing: 1px;
+  color: #000;
+  margin: 0 0 15px 0;
 }
 
-.helpSubtitle {
-  color: #444;
+.heroContent p {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #222;
+  margin: 0 0 30px 0;
 }
 
-.searchBar :global(.input-group-text) {
-  background-color: #facc15;
-  border: 3px solid #000;
-  border-radius: 50px;
-  color: black;
-}
-
-.searchBar :global(input) {
-  border: 3px solid #000;
-  border-radius: 50px;
-  border-left: none;
-}
-
-.searchBar :global(input:focus) {
-  box-shadow: none;
-}
-
-.helpCard,
-.sectionCard {
+.searchContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border: 4px solid #000;
   border-radius: 20px;
-  border: 3px solid #000;
-  background-color: #ffffff;
-  box-shadow: 6px 6px 0px #000;
+  background-color: #fff;
+  box-shadow: 5px 5px 0px #000;
   transition: all 0.2s ease;
 }
 
-.helpCard:hover,
-.sectionCard:hover {
+.searchContainer:focus-within {
   transform: translate(-3px, -3px);
+  box-shadow: 8px 8px 0px #000;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 25px;
+  font-size: 1.8rem;
+  color: #555;
+  stroke-width: 3px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 20px 25px 20px 65px;
+  border: none;
+  background: transparent;
+  font-family: "plus-jakarta", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: #888;
+}
+
+/* =========================================
+   SECTION TITLE
+========================================= */
+.sectionTitle {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #000;
+  margin: 0 0 20px 0;
+}
+
+/* =========================================
+   CATEGORY GRID (QUICK LINKS)
+========================================= */
+.categorySection {
+  display: flex;
+  flex-direction: column;
+}
+
+.categoryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 25px;
+}
+
+.categoryCard {
+  background-color: #fff;
+  border: 4px solid #000;
+  border-radius: 25px;
+  padding: 25px;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  box-shadow: 5px 5px 0px #000;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.categoryCard:hover {
+  transform: translate(-4px, -4px) !important;
   box-shadow: 9px 9px 0px #000;
 }
 
-.helpGreen {
-  background-color: #4ade80;
+.categoryCard:active {
+  transform: translate(4px, 4px) !important;
+  box-shadow: 0px 0px 0px #000;
 }
 
-.helpBlue {
-  background-color: #3b82f6;
+.catIconWrap {
+  width: 60px;
+  height: 60px;
+  border: 3px solid #000;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  color: #000;
+  box-shadow: 2px 2px 0px #000;
+  flex-shrink: 0;
 }
 
-.sectionPink {
-  background-color: #ff66aa;
+.catText {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.sectionOrange {
-  background-color: #fdba74;
-}
-
-.sectionYellow {
-  background-color: #ffcc33;
-}
-.helpGreen,
-.helpBlue,
-.sectionPink,
-.sectionOrange,
-.sectionYellow {
+.catText h4 {
+  font-family: "Fredoka", sans-serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0;
   color: #000;
 }
 
-.helpCard :global(.text-muted),
-.sectionCard :global(.text-muted) {
-  color: #111 !important;
-}
-
-.helpCard:hover,
-.sectionCard:hover {
-  transform: translate(-4px, -4px) rotate(-0.5deg);
-  box-shadow: 10px 10px 0px #000;
-}
-.icon {
-  color: black;
-  background-color: #f97316;
-  padding: 6px;
-  border-radius: 8px;
-  border: 2px solid black;
-}
-
-.sectionTitle {
-  font-weight: 800;
-  margin-bottom: 12px;
-}
-
-.helpList li {
-  margin-bottom: 6px;
-}
-
-:global(.accordion-item) {
-  border: 3px solid #000;
-  border-radius: 14px;
-  margin-bottom: 10px;
-  overflow: hidden;
-  box-shadow: 4px 4px 0px #000;
-}
-
-:global(.accordion-button) {
+.catText p {
+  font-size: 0.95rem;
   font-weight: 600;
+  color: #555;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* =========================================
+   FAQ ACCORDION
+========================================= */
+.faqSection {
   background-color: #fff;
+  border: 4px solid #000;
+  border-radius: 30px;
+  padding: 35px;
+  box-shadow: 8px 8px 0px #000;
+  display: flex;
+  flex-direction: column;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 25px;
+  border-bottom: 3px dashed #000;
+}
+
+.sectionHeader h3 {
+  font-family: "Fredoka", sans-serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #000;
+  margin: 0;
+}
+
+.accordionContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.accordionItem {
+  background-color: #fff;
+  border: 4px solid #000;
+  border-radius: 20px;
+  box-shadow: 5px 5px 0px #000;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.accordionItem:hover {
+  transform: translate(3px, 3px);
+  box-shadow: 2px 2px 0px #000;
+}
+
+.accordionActive {
+  transform: translate(3px, 3px);
+  box-shadow: 2px 2px 0px var(--primary-yellow);
+  border-color: var(--primary-yellow);
+}
+
+.accordionBtn {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+  background: transparent;
   border: none;
+  cursor: pointer;
+  text-align: left;
 }
 
-:global(.accordion-button:not(.collapsed)) {
-  background-color: #facc15;
-  color: black;
+.questionText {
+  font-family: "plus-jakarta", sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #000;
+  padding-right: 20px;
+  line-height: 1.4;
 }
 
-:global(.accordion-button:focus) {
-  box-shadow: none;
+.chevronIcon {
+  font-size: 1.5rem;
+  color: #000;
+  flex-shrink: 0;
+}
+
+.accordionContentWrapper {
+  overflow: hidden;
+}
+
+.accordionContent {
+  padding: 0 25px 25px 25px;
+}
+
+.accordionContent p {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #444;
+  margin: 0;
+  line-height: 1.6;
+  border-top: 2px dashed #ccc;
+  padding-top: 15px;
+}
+
+/* =========================================
+   CONTACT SECTION (CTA Bawah)
+========================================= */
+.contactSection {
+  background-color: var(--primary-green);
+  border: 4px solid #000;
+  border-radius: 25px;
+  padding: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 6px 6px 0px #000;
+  gap: 30px;
+}
+
+.contactText {
+  flex: 1;
+}
+
+.contactText h3 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #000;
+  margin: 0 0 10px 0;
+}
+
+.contactText p {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #222;
+  max-width: 600px;
+  margin: 0;
+}
+
+.contactBtn {
+  background-color: var(--primary-yellow);
+  color: #000;
+  border: 4px solid #000;
+  border-radius: 20px;
+  padding: 12px 25px;
+  font-family: "plus-jakarta", sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  box-shadow: 4px 4px 0px #000;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.contactBtn:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 7px 7px 0px #000;
+}
+
+.contactBtn:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0px 0px 0px #000;
+}
+
+/* =========================================
+   EMPTY STATE (Search Not Found)
+========================================= */
+.emptyState {
+  background-color: #f9fafb;
+  border: 4px dashed #ccc;
+  border-radius: 20px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 15px;
+}
+
+.emptyState p {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #555;
+  margin: 0;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+@media (max-width: 1024px) {
+  .heroBanner {
+    padding: 40px 20px;
+  }
+  .contactSection {
+    flex-direction: column;
+    text-align: center;
+  }
+  .contactBtn {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 @media (max-width: 768px) {
-  .searchBar {
-    width: 100% !important;
+  .heroContent h2 {
+    font-size: 2.2rem;
+  }
+  .searchInput {
+    padding: 18px 20px 18px 55px;
+    font-size: 1rem;
+  }
+  .categoryGrid {
+    grid-template-columns: 1fr;
+  }
+  .questionText {
+    font-size: 1.05rem;
   }
 }
