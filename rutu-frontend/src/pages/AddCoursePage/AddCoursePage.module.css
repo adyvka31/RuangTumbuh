@@ -156,14 +156,15 @@
   display: flex;
   align-items: center;
   gap: 15px;
+  box-shadow: 3px 3px 0px #000;
   transition: all 0.2s ease;
 }
 
 .moduleItem:focus-within,
 .moduleItem:hover {
   border-color: #000;
-  transform: translate(-2px, -2px);
-  box-shadow: 4px 4px 0px #000;
+  transform: translate(-2px, -2px) !important;
+  box-shadow: 6px 6px 0px #000;
 }
 
 .moduleNumber {
