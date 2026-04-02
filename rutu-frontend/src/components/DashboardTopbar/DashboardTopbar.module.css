@@ -112,7 +112,7 @@
 
 .profileBtn:active {
   transform: translate(3px, 3px);
-  box-shadow: 0px 0px 0px #000; 
+  box-shadow: 0px 0px 0px #000;
 }
 
 .avatar {
@@ -138,12 +138,253 @@
   font-weight: 800;
   font-size: 1rem;
   color: #000;
-  text-transform: uppercase; 
+  text-transform: uppercase;
   letter-spacing: 0.5px;
   white-space: nowrap;
   max-width: 200px;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* =========================================
+   POPUP DROPDOWN NOTIFIKASI 
+========================================= */
+/* =========================================
+   POPUP DROPDOWN NOTIFIKASI 
+========================================= */
+.notifWrapper {
+  position: relative;
+}
+
+.navItemActive {
+  background-color: var(--primary-green) !important;
+  transform: translate(-2.5px, -2.5px);
+  box-shadow: 6px 6px 0px var(--shadow-color, #000);
+}
+
+.badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #ef4444;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  width: 24px;
+  height: 24px;
+  border: 2px solid #000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.notifPopup {
+  position: absolute;
+  top: 65px;
+  right: -20px;
+  width: 340px;
+  background-color: #fff;
+  border: 4px solid #000;
+  border-radius: 20px;
+  box-shadow: 6px 6px 0px #000;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+}
+
+.notifHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 3px solid #000;
+  background-color: #f9fafb;
+}
+
+.notifHeader h3 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin: 0;
+  color: #000;
+  text-transform: none;
+}
+
+.unreadPill {
+  background-color: #facc15;
+  color: #000;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 4px 8px;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 2px 2px 0px #000;
+}
+
+.notifList {
+  max-height: 200px; 
+  overflow-y: auto; 
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+}
+
+.notifList::-webkit-scrollbar {
+  width: 6px;
+}
+.notifList::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 10px;
+}
+.notifList::-webkit-scrollbar-thumb:hover {
+  background-color: #000;
+}
+
+.notifItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 15px 20px; 
+  border-bottom: 2px solid #e5e7eb;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.notifItem:hover {
+  background-color: #f3f4f6;
+}
+
+.notifUnread {
+  background-color: #f0fdf4;
+}
+
+.notifUnread:hover {
+  background-color: #dcfce7;
+}
+
+.notifIconWrap {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #000;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  color: #000;
+  box-shadow: 2px 2px 0px #000;
+  flex-shrink: 0;
+}
+
+.notifText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  text-align: left;
+}
+
+.notifText h4 {
+  font-family: "plus-jakarta", sans-serif;
+  font-size: 0.95rem; 
+  font-weight: 800;
+  color: #000;
+  margin: 0;
+  text-transform: none;
+}
+
+.notifText p {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #555;
+  margin: 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-transform: none;
+}
+
+.notifTime {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #888;
+  margin-top: 5px;
+}
+
+.notifUnread .notifText h4,
+.notifUnread .notifText p {
+  color: #000;
+}
+
+.unreadDot {
+  width: 10px;
+  height: 10px;
+  background-color: #ef4444;
+  border: 2px solid #000;
+  border-radius: 50%;
+  position: absolute;
+  top: 20px;
+  right: 15px;
+}
+
+.notifFooter {
+  padding: 15px;
+  border-top: 3px solid #000;
+  background-color: #fff;
+}
+
+.notifFooter button {
+  width: 100%;
+  background-color: var(--primary-yellow);
+  border: 3px solid #000;
+  border-radius: 15px;
+  padding: 10px;
+  font-family: "plus-jakarta", sans-serif;
+  font-weight: 800;
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow: 3px 3px 0px #000;
+  transition: all 0.2s ease;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.notifFooter button:hover:not(:disabled) {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px #000;
+}
+
+.notifFooter button:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px #000;
+}
+
+/* Style Jika tombol di-disable (sudah terbaca semua) */
+.btnDisabled {
+  opacity: 0.5;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* Responsivitas Pop-up di layar kecil */
+@media (max-width: 768px) {
+  .notifPopup {
+    position: fixed;
+    top: 80px;
+    left: 20px;
+    right: 20px;
+    width: auto;
+  }
 }
 
 /* --- RESPONSIVE MOBILE (Ganti/Timpa Media Query Anda) --- */
