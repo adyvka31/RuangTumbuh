@@ -228,42 +228,44 @@ export default function CourseDetailPage() {
           <div className={styles.sidebarWrap}>
             <div className={styles.mentorCard}>
               <div className={styles.mentorHeader}>
+                <FiUser className={styles.mentorHeaderIcon} />
                 <h3 className={styles.mentorHeaderTitle}>Mentor Eksklusif</h3>
               </div>
 
               <div className={styles.mentorContent}>
-                <motion.div
-                  whileHover={{ rotate: -5, scale: 1.05 }}
-                  className={styles.mentorAvatarLg}
-                >
-                  {courseData.instructor.charAt(0)}
-                </motion.div>
-
-                <h2 className={styles.mentorName}>{courseData.instructor}</h2>
-                <span className={styles.mentorRole}>
-                  {courseData.instructorRole}
-                </span>
-
-                <div className={styles.mentorStats}>
-                  <FiStar
-                    style={{
-                      fill: "#facc15",
-                      color: "#facc15",
-                      fontSize: "1.2rem",
-                    }}
-                  />
-                  <span>{courseData.rating}</span>
-                  <span
-                    style={{
-                      fontSize: "0.9rem",
-                      color: "#666",
-                      fontWeight: 700,
-                    }}
+                {/* Bagian Atas: Profil Row (Avatar + Identitas) */}
+                <div className={styles.mentorProfileRow}>
+                  <motion.div
+                    whileHover={{ rotate: -5, scale: 1.05 }}
+                    className={styles.mentorAvatar}
                   >
-                    ({courseData.reviews} ulasan)
-                  </span>
+                    {courseData.instructor.charAt(0)}
+                  </motion.div>
+
+                  <div className={styles.mentorIdentity}>
+                    <span className={styles.mentorRole}>
+                      {courseData.instructorRole}
+                    </span>
+                    <h2 className={styles.mentorName}>
+                      {courseData.instructor}
+                    </h2>
+                    <div className={styles.mentorStats}>
+                      <FiStar
+                        style={{
+                          fill: "#facc15",
+                          color: "#facc15",
+                          fontSize: "1.1rem",
+                        }}
+                      />
+                      <span>{courseData.rating}</span>
+                      <span className={styles.reviewText}>
+                        ({courseData.reviews} ulasan)
+                      </span>
+                    </div>
+                  </div>
                 </div>
 
+                {/* Bagian Bawah: Deskripsi Mentor */}
                 <p className={styles.mentorBio}>
                   Membantu Anda menguasai teknologi web modern dengan pendekatan
                   praktis, studi kasus dunia nyata, dan standar industri.
