@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import DashboardLayout from "@/layouts/DashboardLayout/DashboardLayout";
-import styles from "./BookingPage.module.css";
+import styles from "./MyCoursePage.module.css";
 import { useNavigate } from "react-router-dom";
 
 // Icons
@@ -21,6 +21,7 @@ import {
   FiSend,
   FiEye,
   FiAlertCircle,
+  FiUser,
 } from "react-icons/fi";
 
 // --- DUMMY DATA ---
@@ -122,9 +123,15 @@ const completedCourses = [
 
 export default function BookingPage() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("Pengajuan"); // Tab default
+  const [activeTab, setActiveTab] = useState("Kursus Saya"); // Tab default
 
   const tabs = [
+    {
+      id: "Kursus Saya",
+      label: "Kursus Saya",
+      icon: <FiUser />,
+      count: myRequests.length,
+    },
     {
       id: "Pengajuan",
       label: "Pengajuan Saya",
@@ -215,6 +222,118 @@ export default function BookingPage() {
         {/* --- KONTEN TAB --- */}
         <div className={styles.tabContentArea}>
           <AnimatePresence mode="wait">
+
+            {/* 1. TAB PENGAJUAN SAYA (User melamar ke Mentor) */}
+            {activeTab === "Kursus Saya" && (
+              <motion.div
+                key="kursus"
+                variants={tabVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                className={styles.gridContainer}
+              >
+                {myRequests.length === 0 ? (
+                  <div className={styles.emptyState}>
+                    Kamu belum mengajukan kursus ke mentor manapun.
+                  </div>
+                ) : (
+                  myRequests.map((req) => (
+                    <div key={req.id} className={styles.neoCard}>
+                      <div className={styles.neoCardHeader}>
+                        <div
+                          className={styles.avatarWrap}
+                          style={{ backgroundColor: req.color }}
+                        >
+                          {req.emoji}
+                        </div>
+                        <div className={styles.headerInfo}>
+                          <h4>{req.mentorName}</h4>
+                          <span>Mentor</span>
+                        </div>
+                        <button className={styles.iconBtn}>
+                          <FiMoreHorizontal />
+                        </button>
+                      </div>
+
+                      <div className={styles.cardBody}>
+                        <h3 className={styles.topicTitle}>
+                          <FiBookOpen /> {req.topic}
+                        </h3>
+                        <div className={styles.timeInfo}>
+                          <div className={styles.timeBadge}>
+                            <FiCalendar /> {req.date}
+                          </div>
+                          <div className={styles.timeBadge}>
+                            <FiClock /> {req.time}
+                          </div>
+                        </div>
+
+                        {/* MINI STATUS TRACKER */}
+                        <div className={styles.miniTracker}>
+                          <div className={styles.miniStep}>
+                            <div
+                              className={`${styles.miniCircle} ${styles.circleDone}`}
+                            >
+                              <FiCheck />
+                            </div>
+                            <span>Diajukan</span>
+                          </div>
+                          <div
+                            className={`${styles.miniLine} ${req.status !== "Diajukan" ? styles.lineActive : ""}`}
+                          ></div>
+                          <div className={styles.miniStep}>
+                            <div
+                              className={`${styles.miniCircle} ${req.status === "Ditinjau" ? styles.circleReview : req.status === "Ditolak" ? styles.circleDone : ""}`}
+                            >
+                              {req.status === "Ditinjau" ? (
+                                <FiEye />
+                              ) : req.status === "Diajukan" ? (
+                                <FiClock />
+                              ) : (
+                                <FiCheck />
+                              )}
+                            </div>
+                            <span>Ditinjau</span>
+                          </div>
+                          <div
+                            className={`${styles.miniLine} ${req.status === "Ditolak" ? styles.lineReject : ""}`}
+                          ></div>
+                          <div className={styles.miniStep}>
+                            <div
+                              className={`${styles.miniCircle} ${req.status === "Ditolak" ? styles.circleReject : ""}`}
+                            >
+                              {req.status === "Ditolak" ? (
+                                <FiX />
+                              ) : (
+                                <FiAlertCircle />
+                              )}
+                            </div>
+                            <span>Keputusan</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className={styles.neoCardFooter}>
+                        <button
+                          className={`${styles.actionBtn} ${styles.btnChat}`}
+                        >
+                          <FiMessageCircle /> Chat Mentor
+                        </button>
+                        {req.status === "Ditolak" && (
+                          <button
+                            className={`${styles.actionBtn} ${styles.btnSecondary}`}
+                          >
+                            Cari Lain
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </motion.div>
+            )}
+
             {/* 1. TAB PENGAJUAN SAYA (User melamar ke Mentor) */}
             {activeTab === "Pengajuan" && (
               <motion.div

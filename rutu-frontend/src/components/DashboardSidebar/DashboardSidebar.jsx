@@ -21,7 +21,7 @@ const mainMenu = [
   {
     id: 2,
     label: "Kursus Saya",
-    link: "/booking",
+    link: "/mycourses",
     icon: FiBookOpen,
   },
   {

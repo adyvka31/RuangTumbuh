@@ -102,12 +102,28 @@ export default function CourseCard({ course, index }) {
         >
           Lihat Detail
         </button>
-        <button
-          className={`${styles.actionBtn} ${styles.btnBooking}`}
-          onClick={() => navigate(`/booking`)}
-        >
-          Booking <FiArrowRight />
-        </button>
+
+        {/* Cek apakah pembuat kelas adalah user yang sedang login */}
+        {(() => {
+          const user = JSON.parse(localStorage.getItem("user") || "{}");
+          const isOwner = user.name === course.author;
+
+          return isOwner ? (
+            <button
+              className={`${styles.actionBtn} ${styles.btnEdit}`}
+              onClick={() => navigate(`/mycourses`)}
+            >
+              Edit <FiArrowRight />
+            </button>
+          ) : (
+            <button
+              className={`${styles.actionBtn} ${styles.btnBooking}`}
+              onClick={() => navigate(`/booking`)}
+            >
+              Booking <FiArrowRight />
+            </button>
+          );
+        })()}
       </div>
     </div>
   );

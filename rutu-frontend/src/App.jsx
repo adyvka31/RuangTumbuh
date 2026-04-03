@@ -13,7 +13,7 @@ const SearchPage = lazy(() => import("@pages/SearchPage/SearchPage"));
 const BookmarksPage = lazy(() => import("@pages/BookmarksPage/BookmarksPage"));
 const MessagesPage = lazy(() => import("@pages/MessagesPage/MessagesPage"));
 const NotificationPage = lazy(() => import("@pages/NotificationPage/NotificationPage"));
-const BookingPage = lazy(() => import("@pages/BookingPage/BookingPage"));
+const MyCoursePage = lazy(() => import("@/pages/MyCoursePage/MyCoursePage"));
 const CourseDetailPage = lazy(() => import("@pages/CourseDetailPage/CourseDetailPage"));
 const CourseBookingPage = lazy(() => import("@pages/CourseBookingPage/CourseBookingPage"));
 const SchedulePage = lazy(() => import("@pages/SchedulePage/SchedulePage"));
@@ -60,7 +60,7 @@ export default function App() {
               <Route path="/bookmarks" element={<BookmarksPage />} />
               <Route path="/messages" element={<MessagesPage />} />
               <Route path="/notifications" element={<NotificationPage />} />
-              <Route path="/booking" element={<BookingPage />} />
+              <Route path="/mycourses" element={<MyCoursePage />} />
               <Route path="/course/:id" element={<CourseDetailPage />} />
               <Route path="/course-booking/:id" element={<CourseBookingPage />} />
               <Route path="/schedule" element={<SchedulePage />} />
