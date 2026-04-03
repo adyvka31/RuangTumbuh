@@ -25,6 +25,7 @@ router.post("/", async (req, res) => {
             data: {
                 name,
                 tutor: user.name, // Ambil nama asli dari database
+                tutorId, // Simpan ID pembuat
                 kategori,
                 durasi: String(durasi),
                 deskripsi,
@@ -54,7 +55,15 @@ router.post("/", async (req, res) => {
 // GET: All Courses (for SearchPage later)
 router.get("/", async (req, res) => {
     try {
+        const { tutorId } = req.query;
+        let where = {};
+        
+        if (tutorId) {
+            where.tutorId = tutorId;
+        }
+
         const courses = await prisma.course.findMany({
+            where,
             orderBy: { createdAt: "desc" },
         });
         res.status(200).json(courses);
@@ -84,6 +93,27 @@ router.get("/:id", async (req, res) => {
         console.error("❌ Fetch Single Course Error:", error);
         res.status(500).json({
             message: "Terjadi kesalahan server saat mengambil data kursus",
+            error: error.message,
+        });
+    }
+});
+
+// DELETE: Specific Course by ID
+router.delete("/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedCourse = await prisma.course.delete({
+            where: { id: parseInt(id) },
+        });
+
+        res.status(200).json({
+            message: "Kursus berhasil dihapus!",
+            course: deletedCourse,
+        });
+    } catch (error) {
+        console.error("❌ Delete Course Error:", error);
+        res.status(500).json({
+            message: "Terjadi kesalahan server saat menghapus kursus",
             error: error.message,
         });
     }

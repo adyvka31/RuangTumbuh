@@ -22,7 +22,26 @@ import {
   FiEye,
   FiAlertCircle,
   FiUser,
+  FiSearch,
 } from "react-icons/fi";
+
+import MyCourseCard from "@/components/MyCourseCard/MyCourseCard";
+
+// Helper to match SearchPage aesthetics
+const getCourseExtras = (category) => {
+  const mapping = {
+    "Frontend": { color: "#38BDF8", emoji: "👩‍💻" },
+    "Backend": { color: "#F472B6", emoji: "⚙️" },
+    "UI/UX Design": { color: "#FACC15", emoji: "🎨" },
+    "Mobile Dev": { color: "#10B981", emoji: "📱" },
+    "Data Science": { color: "#A78BFA", emoji: "📊" },
+    "Matematika": { color: "#FB923C", emoji: "📐" },
+    "Bahasa Inggris": { color: "#6366F1", emoji: "🇬🇧" },
+    "Bahasa Indonesia": { color: "#EF4444", emoji: "🇮🇩" },
+    "Fisika": { color: "#14B8A6", emoji: "⚛️" },
+  };
+  return mapping[category] || { color: "#94A3B8", emoji: "📚" };
+};
 
 // --- DUMMY DATA ---
 // 1. Pengajuan yang dilakukan User ke Mentor
@@ -124,13 +143,50 @@ const completedCourses = [
 export default function BookingPage() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("Kursus Saya"); // Tab default
+  const [myCreatedCourses, setMyCreatedCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchMyCourses = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      if (!user.id) return;
+
+      const response = await fetch(`http://localhost:5001/api/course?tutorId=${user.id}`);
+      const data = await response.json();
+
+      // Map backend fields to frontend expected fields
+      const formattedData = data.map(item => {
+        const extras = getCourseExtras(item.kategori);
+        return {
+          id: item.id,
+          title: item.name,
+          author: item.tutor,
+          category: item.kategori,
+          duration: item.durasi,
+          description: item.deskripsi,
+          ...extras
+        };
+      });
+
+      setMyCreatedCourses(formattedData);
+    } catch (error) {
+      console.error("Error fetching my courses:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Get current user and fetch their courses
+  React.useEffect(() => {
+    fetchMyCourses();
+  }, []);
 
   const tabs = [
     {
       id: "Kursus Saya",
       label: "Kursus Saya",
       icon: <FiUser />,
-      count: myRequests.length,
+      count: myCreatedCourses.length,
     },
     {
       id: "Pengajuan",
@@ -233,102 +289,19 @@ export default function BookingPage() {
                 exit="exit"
                 className={styles.gridContainer}
               >
-                {myRequests.length === 0 ? (
+                {loading ? (
+                  <div className={styles.emptyState}>Memuat kursus Anda...</div>
+                ) : myCreatedCourses.length === 0 ? (
                   <div className={styles.emptyState}>
-                    Kamu belum mengajukan kursus ke mentor manapun.
+                    Anda belum membuat kursus apapun. Yuk, bagikan ilmu Anda!
                   </div>
                 ) : (
-                  myRequests.map((req) => (
-                    <div key={req.id} className={styles.neoCard}>
-                      <div className={styles.neoCardHeader}>
-                        <div
-                          className={styles.avatarWrap}
-                          style={{ backgroundColor: req.color }}
-                        >
-                          {req.emoji}
-                        </div>
-                        <div className={styles.headerInfo}>
-                          <h4>{req.mentorName}</h4>
-                          <span>Mentor</span>
-                        </div>
-                        <button className={styles.iconBtn}>
-                          <FiMoreHorizontal />
-                        </button>
-                      </div>
-
-                      <div className={styles.cardBody}>
-                        <h3 className={styles.topicTitle}>
-                          <FiBookOpen /> {req.topic}
-                        </h3>
-                        <div className={styles.timeInfo}>
-                          <div className={styles.timeBadge}>
-                            <FiCalendar /> {req.date}
-                          </div>
-                          <div className={styles.timeBadge}>
-                            <FiClock /> {req.time}
-                          </div>
-                        </div>
-
-                        {/* MINI STATUS TRACKER */}
-                        <div className={styles.miniTracker}>
-                          <div className={styles.miniStep}>
-                            <div
-                              className={`${styles.miniCircle} ${styles.circleDone}`}
-                            >
-                              <FiCheck />
-                            </div>
-                            <span>Diajukan</span>
-                          </div>
-                          <div
-                            className={`${styles.miniLine} ${req.status !== "Diajukan" ? styles.lineActive : ""}`}
-                          ></div>
-                          <div className={styles.miniStep}>
-                            <div
-                              className={`${styles.miniCircle} ${req.status === "Ditinjau" ? styles.circleReview : req.status === "Ditolak" ? styles.circleDone : ""}`}
-                            >
-                              {req.status === "Ditinjau" ? (
-                                <FiEye />
-                              ) : req.status === "Diajukan" ? (
-                                <FiClock />
-                              ) : (
-                                <FiCheck />
-                              )}
-                            </div>
-                            <span>Ditinjau</span>
-                          </div>
-                          <div
-                            className={`${styles.miniLine} ${req.status === "Ditolak" ? styles.lineReject : ""}`}
-                          ></div>
-                          <div className={styles.miniStep}>
-                            <div
-                              className={`${styles.miniCircle} ${req.status === "Ditolak" ? styles.circleReject : ""}`}
-                            >
-                              {req.status === "Ditolak" ? (
-                                <FiX />
-                              ) : (
-                                <FiAlertCircle />
-                              )}
-                            </div>
-                            <span>Keputusan</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className={styles.neoCardFooter}>
-                        <button
-                          className={`${styles.actionBtn} ${styles.btnChat}`}
-                        >
-                          <FiMessageCircle /> Chat Mentor
-                        </button>
-                        {req.status === "Ditolak" && (
-                          <button
-                            className={`${styles.actionBtn} ${styles.btnSecondary}`}
-                          >
-                            Cari Lain
-                          </button>
-                        )}
-                      </div>
-                    </div>
+                  myCreatedCourses.map((course) => (
+                    <MyCourseCard 
+                      key={course.id} 
+                      course={course} 
+                      onRefresh={fetchMyCourses}
+                    />
                   ))
                 )}
               </motion.div>

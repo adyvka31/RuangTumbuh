@@ -142,6 +142,7 @@ model Course {
   id          Int      @id @default(autoincrement())
   name        String
   tutor       String
+  tutorId     String   @default("") // ID user yang membuat kursus
   kategori    String
   durasi      String
   deskripsi   String
