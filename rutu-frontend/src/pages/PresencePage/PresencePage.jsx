@@ -4,17 +4,20 @@ import DashboardLayout from "@/layouts/DashboardLayout/DashboardLayout";
 import styles from "./PresencePage.module.css";
 import shape4 from "@assets/shape4.svg";
 import shape7 from "@assets/shape7.svg";
+import { Popup } from "@/components/Popup/Popup";
+import { FiCheckCircle } from "react-icons/fi";
 
 export default function PresencePage() {
   const [token, setToken] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     // Simulate API call
     setTimeout(() => {
-      alert("Presensi berhasil dicatat!");
+      setShowPopup(true);
       setIsSubmitting(false);
       setToken("");
     }, 1500);
@@ -83,6 +86,16 @@ export default function PresencePage() {
           </motion.div>
         </div>
       </div>
+
+      <Popup
+        isOpen={showPopup}
+        type="success"
+        icon={<FiCheckCircle />}
+        title="Presensi Tercatat! ✅"
+        description="Kehadiranmu berhasil dicatat. Selamat mengikuti kelas!"
+        buttonText="OK, Mengerti"
+        onAction={() => setShowPopup(false)}
+      />
     </DashboardLayout>
   );
 }

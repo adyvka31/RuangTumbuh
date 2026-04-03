@@ -6,16 +6,17 @@ import {
   FiBookOpen,
   FiCalendar,
   FiClock,
-  FiPlayCircle,
   FiEdit3,
   FiTrash2,
   FiEye,
   FiAlertCircle,
+  FiCheckCircle,
 } from "react-icons/fi";
 
 export default function MyCourseCard({ course, onRefresh }) {
   const navigate = useNavigate();
   const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [popup, setPopup] = useState({ isOpen: false, type: "success", title: "", description: "" });
 
   const handleDelete = async () => {
     try {
@@ -28,11 +29,23 @@ export default function MyCourseCard({ course, onRefresh }) {
         if (onRefresh) onRefresh();
       } else {
         const result = await response.json();
-        alert(`Gagal menghapus: ${result.message}`);
+        setShowDeletePopup(false);
+        setPopup({
+          isOpen: true,
+          type: "danger",
+          title: "Gagal Menghapus",
+          description: result.message || "Terjadi kesalahan saat menghapus kursus.",
+        });
       }
     } catch (error) {
       console.error("Delete error:", error);
-      alert("Terjadi kesalahan saat menghapus kursus.");
+      setShowDeletePopup(false);
+      setPopup({
+        isOpen: true,
+        type: "danger",
+        title: "Kesalahan Koneksi",
+        description: "Terjadi kesalahan saat menghapus kursus. Periksa koneksi Anda.",
+      });
     }
   };
 
@@ -81,7 +94,7 @@ export default function MyCourseCard({ course, onRefresh }) {
           </button>
           <button
             className={`${styles.actionBtn} ${styles.btnEdit}`}
-            onClick={() => alert("Fitur Edit segera hadir!")}
+            onClick={() => navigate(`/edit-course/${course.id}`)}
           >
             <FiEdit3 size={18} /> Edit
           </button>
@@ -94,6 +107,7 @@ export default function MyCourseCard({ course, onRefresh }) {
         </div>
       </div>
 
+      {/* Konfirmasi Hapus */}
       {showDeletePopup && (
         <Popup
           isOpen={true}
@@ -107,6 +121,17 @@ export default function MyCourseCard({ course, onRefresh }) {
           onSecondaryAction={() => setShowDeletePopup(false)}
         />
       )}
+
+      {/* Error Popup */}
+      <Popup
+        isOpen={popup.isOpen}
+        type={popup.type}
+        icon={popup.type === "success" ? <FiCheckCircle /> : <FiAlertCircle />}
+        title={popup.title}
+        description={popup.description}
+        buttonText="Tutup"
+        onAction={() => setPopup((p) => ({ ...p, isOpen: false }))}
+      />
     </>
   );
 }

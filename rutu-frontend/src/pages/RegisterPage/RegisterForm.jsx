@@ -19,6 +19,7 @@ export const RegisterForm = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const [errorPopup, setErrorPopup] = useState({ isOpen: false, description: "" });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -46,9 +47,10 @@ export const RegisterForm = () => {
       }, 3000);
     } catch (error) {
       console.error("Gagal register:", error);
-      alert(
-        error.response?.data?.message || "Terjadi kesalahan saat registrasi",
-      );
+      setErrorPopup({
+        isOpen: true,
+        description: error.response?.data?.message || "Terjadi kesalahan saat registrasi",
+      });
     }
   };
 
@@ -124,6 +126,16 @@ export const RegisterForm = () => {
           onAction={() => navigate("/login")}
         />
       )}
+
+      <Popup
+        isOpen={errorPopup.isOpen}
+        type="danger"
+        icon={<MdCheckCircle />}
+        title="Registrasi Gagal"
+        description={errorPopup.description}
+        buttonText="Coba Lagi"
+        onAction={() => setErrorPopup({ isOpen: false, description: "" })}
+      />
     </>
   );
 };

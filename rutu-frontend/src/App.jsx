@@ -23,6 +23,7 @@ const PresencePage = lazy(() => import("@pages/PresencePage/PresencePage"));
 const MessageDetailPage = lazy(() => import("@pages/MessageDetailPage/MessageDetailPage"));
 const HelpCenterPage = lazy(() => import("@pages/HelpCenterPage/HelpCenterPage"));
 const EditProfilePage = lazy(() => import("@pages/EditProfilePage/EditProfilePage"));
+const EditCoursePage = lazy(() => import("@pages/EditCoursePage/EditCoursePage"));
 
 const PageLoader = () => (
   <div
@@ -70,6 +71,7 @@ export default function App() {
               <Route path="/message/:id" element={<MessageDetailPage />} />
               <Route path="/help" element={<HelpCenterPage />} />
               <Route path="/edit-profile" element={<EditProfilePage />} />
+              <Route path="/edit-course/:id" element={<EditCoursePage />} />
             </Route>
           </Routes>
         </Suspense>

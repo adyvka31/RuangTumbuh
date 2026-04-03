@@ -98,6 +98,40 @@ router.get("/:id", async (req, res) => {
     }
 });
 
+// PUT: Update Course by ID
+router.put("/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, kategori, durasi, deskripsi, modules } = req.body;
+
+        if (!name || !kategori || !durasi || !deskripsi) {
+            return res.status(400).json({ message: "Semua field harus diisi!" });
+        }
+
+        const updatedCourse = await prisma.course.update({
+            where: { id: parseInt(id) },
+            data: {
+                name,
+                kategori,
+                durasi: String(durasi),
+                deskripsi,
+                modules: modules || [],
+            },
+        });
+
+        res.status(200).json({
+            message: "Kursus berhasil diperbarui!",
+            course: updatedCourse,
+        });
+    } catch (error) {
+        console.error("❌ Update Course Error:", error);
+        res.status(500).json({
+            message: "Terjadi kesalahan server saat memperbarui kursus",
+            error: error.message,
+        });
+    }
+});
+
 // DELETE: Specific Course by ID
 router.delete("/:id", async (req, res) => {
     try {

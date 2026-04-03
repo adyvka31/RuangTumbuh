@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import DashboardLayout from "@/layouts/DashboardLayout/DashboardLayout";
-import styles from "./AddCoursePage.module.css";
+import styles from "../AddCoursePage/AddCoursePage.module.css";
 import { Popup } from "@/components/Popup/Popup";
 
 // --- Import Komponen & Style Input dari halaman Auth ---
@@ -23,31 +23,71 @@ import {
   FiAlertCircle,
 } from "react-icons/fi";
 
-export default function AddCoursePage() {
+export default function EditCoursePage() {
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const [formData, setFormData] = useState({
     title: "",
     category: "",
-    duration: "", // Diubah dari price ke duration agar sesuai input
+    duration: "",
     description: "",
-    tutorId: "", // Otomatis dari ID user yang login
   });
-
-  const [popup, setPopup] = useState({ isOpen: false, type: "success", title: "", description: "" });
-
-  // Get current user as tutor
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
-    if (user.id) {
-      setFormData((prev) => ({ ...prev, tutorId: user.id }));
-    }
-  }, []);
-
 
   const [modules, setModules] = useState([
     { id: Date.now(), title: "", duration: "" },
   ]);
+
+  const [loading, setLoading] = useState(true);
+  const [popup, setPopup] = useState({ isOpen: false, type: "success", title: "", description: "" });
+
+  // Fetch existing course data
+  useEffect(() => {
+    const fetchCourse = async () => {
+      try {
+        const response = await fetch(`http://localhost:5001/api/course/${id}`);
+        const data = await response.json();
+
+        if (response.ok) {
+          setFormData({
+            title: data.name || "",
+            category: data.kategori || "",
+            duration: data.durasi || "",
+            description: data.deskripsi || "",
+          });
+
+          if (data.modules && data.modules.length > 0) {
+            setModules(
+              data.modules.map((m, idx) => ({
+                id: idx + Date.now(),
+                title: m.title || "",
+                duration: m.duration || "",
+              }))
+            );
+          }
+        } else {
+          setPopup({
+            isOpen: true,
+            type: "danger",
+            title: "Kursus Tidak Ditemukan",
+            description: "Data kursus tidak dapat ditemukan. Silakan kembali.",
+          });
+        }
+      } catch (error) {
+        console.error("Fetch error:", error);
+        setPopup({
+          isOpen: true,
+          type: "danger",
+          title: "Kesalahan Koneksi",
+          description: "Tidak dapat terhubung ke server. Periksa koneksi Anda.",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourse();
+  }, [id]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -58,22 +98,21 @@ export default function AddCoursePage() {
     setModules([...modules, { id: Date.now(), title: "", duration: "" }]);
   };
 
-  const removeModule = (id) => {
+  const removeModule = (moduleId) => {
     if (modules.length > 1) {
-      setModules(modules.filter((m) => m.id !== id));
+      setModules(modules.filter((m) => m.id !== moduleId));
     }
   };
 
-  const updateModule = (id, field, value) => {
+  const updateModule = (moduleId, field, value) => {
     setModules(
-      modules.map((m) => (m.id === id ? { ...m, [field]: value } : m)),
+      modules.map((m) => (m.id === moduleId ? { ...m, [field]: value } : m))
     );
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // --- Simple Form Validation ---
     if (
       !formData.title ||
       !formData.category ||
@@ -89,7 +128,6 @@ export default function AddCoursePage() {
       return;
     }
 
-    // Pastikan setidaknya ada data di modul
     if (modules.some((m) => !m.title || !m.duration)) {
       setPopup({
         isOpen: true,
@@ -101,21 +139,17 @@ export default function AddCoursePage() {
     }
 
     try {
-      // Mapping ke model backend "Course"
       const courseData = {
         name: formData.title,
-        tutorId: formData.tutorId,
         kategori: formData.category,
         durasi: formData.duration,
         deskripsi: formData.description,
         modules: modules.map((m) => ({ title: m.title, duration: m.duration })),
       };
 
-      const response = await fetch("http://localhost:5001/api/course", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const response = await fetch(`http://localhost:5001/api/course/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(courseData),
       });
 
@@ -125,19 +159,18 @@ export default function AddCoursePage() {
         setPopup({
           isOpen: true,
           type: "success",
-          title: "Kursus Berhasil Ditambahkan! 🚀",
-          description: "Kursus baru berhasil ditambahkan ke Pusat Course! Mengalihkan ke dashboard...",
+          title: "Kursus Berhasil Diperbarui! 🎉",
+          description: "Data kursus telah berhasil disimpan. Mengalihkan ke halaman kursus...",
         });
-        console.log("Response:", result);
         setTimeout(() => {
-          navigate("/dashboard");
+          navigate("/mycourses");
         }, 2000);
       } else {
         setPopup({
           isOpen: true,
           type: "danger",
-          title: "Gagal Menambahkan",
-          description: result.message || "Terjadi kesalahan saat menambahkan kursus.",
+          title: "Gagal Menyimpan",
+          description: result.message || "Terjadi kesalahan saat menyimpan data.",
         });
       }
     } catch (error) {
@@ -151,9 +184,18 @@ export default function AddCoursePage() {
     }
   };
 
+  if (loading) {
+    return (
+      <DashboardLayout title="Edit Kursus">
+        <div style={{ textAlign: "center", padding: "80px 0", color: "#888", fontWeight: 600 }}>
+          Memuat data kursus...
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
-    <DashboardLayout title="Tambah Kursus Baru">
+    <DashboardLayout title="Edit Kursus">
       <form onSubmit={handleSubmit} className={styles.container}>
         <div className={styles.splitLayout}>
           {/* KOLOM KIRI: Informasi Utama */}
@@ -165,10 +207,10 @@ export default function AddCoursePage() {
               >
                 <FiBookOpen />
               </div>
-              <h3>Informasi Utama</h3>
+              <h3>Edit Informasi Utama</h3>
             </div>
 
-            {/* Input Judul Menggunakan Komponen Input Reusable */}
+            {/* Input Judul */}
             <Input
               type="text"
               id="title"
@@ -179,7 +221,7 @@ export default function AddCoursePage() {
             />
 
             <div className={styles.rowGroup}>
-              {/* Select Kategori (Meniru style Input) */}
+              {/* Select Kategori */}
               <div
                 className={inputStyles.inputContainer}
                 style={{ marginBottom: 0 }}
@@ -217,7 +259,7 @@ export default function AddCoursePage() {
                 </div>
               </div>
 
-              {/* Input Harga Menggunakan Komponen Input Reusable */}
+              {/* Input Durasi */}
               <div style={{ marginBottom: "-1rem" }}>
                 <Input
                   type="number"
@@ -231,7 +273,7 @@ export default function AddCoursePage() {
               </div>
             </div>
 
-            {/* Textarea Deskripsi (Meniru style Input) */}
+            {/* Textarea Deskripsi */}
             <div className={inputStyles.inputContainer}>
               <div className={inputStyles.inputWrapper}>
                 <textarea
@@ -256,9 +298,6 @@ export default function AddCoursePage() {
                 </label>
               </div>
             </div>
-
-            {/* Thumbnail Upload */}
-            
           </div>
 
           {/* KOLOM KANAN: Modul / Silabus */}
@@ -274,8 +313,7 @@ export default function AddCoursePage() {
             </div>
 
             <p className={styles.moduleDesc}>
-              Tambahkan video atau materi yang akan dipelajari dalam kursus ini
-              secara berurutan.
+              Edit daftar video atau materi yang akan dipelajari dalam kursus ini.
             </p>
 
             <div className={styles.moduleList}>
@@ -350,13 +388,13 @@ export default function AddCoursePage() {
           transition={{ delay: 0.2 }}
         >
           <div className={styles.actionText}>
-            <h3>Sudah selesai? 🚀</h3>
+            <h3>Simpan Perubahan? ✏️</h3>
             <p>
-              Pastikan semua data sudah terisi dengan benar sebelum menyimpan.
+              Pastikan semua data sudah diperbarui dengan benar sebelum menyimpan.
             </p>
           </div>
           <button type="submit" className={styles.saveBtn}>
-            <FiSave size={20} /> Simpan Kursus
+            <FiSave size={20} /> Simpan Perubahan
           </button>
         </motion.div>
       </form>

@@ -11,7 +11,9 @@ import {
   FiChevronDown,
   FiPlayCircle,
   FiUser,
+  FiAlertCircle,
 } from "react-icons/fi";
+import { Popup } from "@/components/Popup/Popup";
 
 // --- HELPER UNTUK EXTRAS (Sama dengan SearchPage) ---
 const getCourseExtras = (category) => {
@@ -75,6 +77,7 @@ export default function CourseDetailPage() {
   const [activeTab, setActiveTab] = useState("about");
   const [courseData, setCourseData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [popup, setPopup] = useState({ isOpen: false });
 
   useEffect(() => {
     const fetchCourseDetail = async () => {
@@ -365,7 +368,7 @@ export default function CourseDetailPage() {
                   }}
                   whileTap={{ y: 2, boxShadow: "0px 0px 0px #000" }}
                   className={styles.secondaryBtn}
-                  onClick={() => alert("Menuju profil mentor...")}
+                  onClick={() => setPopup({ isOpen: true })}
                 >
                   Lihat Profil Lengkap
                 </motion.button>
@@ -374,6 +377,16 @@ export default function CourseDetailPage() {
           </div>
         </div>
       </div>
+
+      <Popup
+        isOpen={popup.isOpen}
+        type="success"
+        icon={<FiAlertCircle />}
+        title="Fitur Segera Hadir 🚧"
+        description="Tampilan profil lengkap mentor akan segera tersedia. Nantikan update berikutnya!"
+        buttonText="OK, Mengerti"
+        onAction={() => setPopup({ isOpen: false })}
+      />
     </DashboardLayout>
   );
 }
