@@ -14,12 +14,14 @@ const bookingRoutes = require("./CourseBooking.js");
 const PORT = process.env.PORT || 5001;
 const JWT_SECRET = process.env.JWT_SECRET || "rahasia-ruang-tumbuh-super-aman";
 
+const path = require("path");
+
 app.use(cors());
 app.use(express.json());
 app.use("/api/user", userRoutes);
 app.use("/api/course", courseRoutes);
 app.use("/api/booking", bookingRoutes);
-
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Endpoint Test
 app.get("/api/test", (req, res) => {

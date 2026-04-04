@@ -18,8 +18,13 @@ model User {
   name           String
   email          String   @unique
   password       String
-  timeBalance    Int      @default(30) // Saldo awal (misal: gratis 30 menit saat daftar)
+  timeBalance    Int      @default(30) // Saldo awal
   profilePicture String?
+  location       String?  @default("Indonesia")
+  birthday       String?
+  school         String?
+  description    String?
+  passions       Json?    // Disimpan sebagai array JSON
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
