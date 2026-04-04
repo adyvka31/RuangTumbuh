@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "@/layouts/DashboardLayout/DashboardLayout";
 import styles from "./ProfilePage.module.css";
 import {
-FiEdit3,
+  FiEdit3,
   FiMail,
   FiUser,
   FiLogOut,
@@ -14,44 +14,84 @@ FiEdit3,
   FiBookOpen,
   FiInfo,
   FiGift,
+  FiCalendar,
   FiClock,
-  FiZap
+  FiZap,
 } from "react-icons/fi";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
+  const [userProfile, setUserProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Data User yang sudah dipersonalisasi
-  const user = {
-    name: "Adyvka Pratama",
-    email: "rafifsava@example.com",
-    role: "Siswa",
-    location: "Indonesia",
-    joined: "1 Januari 2024",
-    birthday: "15 Agustus 2005",
-    timeBalance: "120 Menit",
-    school: "Universitas Muhammadiyah Jakarta",
-    description:
-      "Seorang pelajar yang antusias belajar teknologi web dan Artificial Intelligence. Saat ini fokus memperdalam React JS dan Flutter untuk membangun project sistem manajemen yang scalable.",
-    passions: [
-      "React JS",
-      "Flutter",
-      "Artificial Intelligence",
-      "Web Development",
-      "UI/UX Design",
-    ],
-    avatar: "🧔",
-    stats: {
-      learningHours: 120,
-      teachingSessions: 15,
-    },
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const localUser = JSON.parse(localStorage.getItem("user") || "{}");
+        if (!localUser.id) {
+          navigate("/login");
+          return;
+        }
+
+        const response = await fetch(
+          `http://localhost:5001/api/user/profile/${localUser.id}`,
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setUserProfile(data);
+        }
+      } catch (error) {
+        console.error("Gagal mengambil data profil:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    navigate("/login");
   };
+
+  if (loading)
+    return (
+      <DashboardLayout title="Profil Saya">
+        <p style={{ padding: "20px" }}>Memuat Profil...</p>
+      </DashboardLayout>
+    );
+  if (!userProfile)
+    return (
+      <DashboardLayout title="Profil Saya">
+        <p style={{ padding: "20px" }}>Data profil tidak ditemukan.</p>
+      </DashboardLayout>
+    );
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "Belum diatur";
+
+    const date = new Date(dateString);
+    return date.toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  // Format inisial avatar (2 huruf pertama nama)
+  const initials = userProfile.name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .substring(0, 2)
+    .toUpperCase();
 
   const containerVariants = {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.1 } },
   };
-
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     show: {
@@ -73,7 +113,7 @@ export default function ProfilePage() {
         <motion.div variants={itemVariants} className={styles.profileHeroCard}>
           <div className={styles.heroBanner}>
             <motion.button
-              whileTap={{ y: 2, boxShadow: "0px 0px 0px #000" }}
+              whileTap={{ scale: 0.95 }}
               className={styles.editBtnBanner}
               onClick={() => navigate("/edit-profile")}
             >
@@ -82,53 +122,63 @@ export default function ProfilePage() {
           </div>
 
           <div className={styles.heroContent}>
-            {/* Stat Kiri */}
             <div className={styles.sideStat}>
               <div
                 className={styles.statBox}
                 style={{ backgroundColor: "var(--primary-blue)" }}
               >
                 <span className={styles.statNumber}>
-                  {user.stats.learningHours}
+                  {userProfile.stats?.learningMinutes || 0}
                 </span>
-                <span className={styles.statLabel}>Jam Belajar</span>
+                <span className={styles.statLabel}>Menit Belajar</span>
               </div>
             </div>
 
-            {/* Profil Tengah */}
             <div className={styles.centerProfile}>
-              <motion.div
-                whileHover={{ rotate: -5, scale: 1.05 }}
+              <div
                 className={styles.avatarLarge}
+                style={{ overflow: "hidden" }}
               >
-                {user.avatar}
-              </motion.div>
-              <h1 className={styles.userName}>{user.name}</h1>
+                {userProfile.profilePicture ? (
+                  <img
+                    src={`http://localhost:5001${userProfile.profilePicture}`}
+                    alt="Profile"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                ) : (
+                  initials
+                )}
+              </div>
+              <h1 className={styles.userName}>{userProfile.name}</h1>
               <div className={styles.userDetails}>
                 <span className={styles.detailItem}>
-                  <FiUser /> {user.role}
+                  <FiUser /> Siswa
                 </span>
                 <span className={styles.detailDot}>•</span>
                 <span className={styles.detailItem}>
-                  <FiMapPin /> {user.location}
+                  <FiMapPin /> {userProfile.location || "Belum diatur"}
                 </span>
                 <span className={styles.detailDot}>•</span>
                 <span className={styles.detailItem}>
-                  <FiClock /> Bergabung {user.joined}
+                  <FiCalendar /> Bergabung Pada{" "}
+                  {formatDate(userProfile.createdAt)}
                 </span>
               </div>
             </div>
 
-            {/* Stat Kanan */}
             <div className={styles.sideStat}>
               <div
                 className={styles.statBox}
                 style={{ backgroundColor: "var(--primary-green)" }}
               >
                 <span className={styles.statNumber}>
-                  {user.stats.teachingSessions}
+                  {userProfile.stats?.teachingSessions || 0}
                 </span>
-                <span className={styles.statLabel}>Sesi Selesai</span>
+                <span className={styles.statLabel}>Sesi Mengajar</span>
               </div>
             </div>
           </div>
@@ -136,36 +186,22 @@ export default function ProfilePage() {
 
         {/* --- BOTTOM GRID CONTENT --- */}
         <div className={styles.contentGrid}>
-          {/* KOLOM KIRI: Informasi Akademik & Bio */}
+          {/* KOLOM KIRI (Info & Bio) */}
           <div className={styles.leftColumn}>
             <motion.div variants={itemVariants} className={styles.infoCard}>
               <div className={styles.cardHeader}>
                 <FiInfo
                   className={styles.cardIcon}
-                  style={{ color: "#38bdf8" }}
+                  style={{ color: "var(--primary-blue)" }}
                 />
                 <h2 className={styles.cardTitle}>Tentang Saya</h2>
               </div>
-
               <div className={styles.bioContent}>
-                {/* 1. Teks Deskripsi Diri */}
-                <p className={styles.descriptionText}>{user.description}</p>
-
-                {/* 3. List Informasi Tambahan */}
+                <p className={styles.descriptionText}>
+                  {userProfile.description ||
+                    "Halo! Saya belum menuliskan deskripsi diri. Saya sedang semangat belajar hal baru!"}
+                </p>
                 <div className={styles.infoList}>
-                  <div className={styles.infoItem}>
-                    <div
-                      className={styles.infoItemIcon}
-                      style={{ backgroundColor: "var(--primary-green)" }}
-                    >
-                      <FiGift />
-                    </div>
-                    <div className={styles.infoItemText}>
-                      <p className={styles.infoLabel}>Tanggal Lahir</p>
-                      <p className={styles.infoValue}>{user.birthday}</p>
-                    </div>
-                  </div>
-
                   <div className={styles.infoItem}>
                     <div
                       className={styles.infoItemIcon}
@@ -175,14 +211,13 @@ export default function ProfilePage() {
                     </div>
                     <div className={styles.infoItemText}>
                       <p className={styles.infoLabel}>Kontak Email</p>
-                      <p className={styles.infoValue}>{user.email}</p>
+                      <p className={styles.infoValue}>{userProfile.email}</p>
                     </div>
                   </div>
-
                   <div className={styles.infoItem}>
                     <div
                       className={styles.infoItemIcon}
-                      style={{ backgroundColor: "var(--primary-blue)" }}
+                      style={{ backgroundColor: "var(--primary-red)" }}
                     >
                       <FiBookOpen />
                     </div>
@@ -190,52 +225,75 @@ export default function ProfilePage() {
                       <p className={styles.infoLabel}>
                         Asal Sekolah / Institusi
                       </p>
-                      <p className={styles.infoValue}>{user.school}</p>
+                      <p className={styles.infoValue}>
+                        {userProfile.school || "-"}
+                      </p>
+                    </div>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <div
+                      className={styles.infoItemIcon}
+                      style={{ backgroundColor: "var(--primary-blue)" }}
+                    >
+                      <FiGift />
+                    </div>
+                    <div className={styles.infoItemText}>
+                      <p className={styles.infoLabel}>Tanggal Lahir</p>
+                      <p className={styles.infoValue}>
+                        {userProfile.birthday || "-"}
+                      </p>
                     </div>
                   </div>
                 </div>
-                {/* 2. Card Sub-Section untuk Passion */}
                 <div className={styles.passionSection}>
                   <h3 className={styles.subTitle}>Keahlian & Minat</h3>
                   <div className={styles.passionWrapper}>
-                    {user.passions.map((item, index) => (
-                      <span key={index} className={styles.passionTag}>
-                        {item}
+                    {userProfile.passions && userProfile.passions.length > 0 ? (
+                      userProfile.passions.map((item, index) => (
+                        <span key={index} className={styles.passionTag}>
+                          {item}
+                        </span>
+                      ))
+                    ) : (
+                      <span
+                        className={styles.passionTag}
+                        style={{ backgroundColor: "#e5e7eb", color: "#666" }}
+                      >
+                        Belum ada minat yang ditambahkan.
                       </span>
-                    ))}
+                    )}
                   </div>
                 </div>
               </div>
             </motion.div>
           </div>
 
-          {/* KOLOM KANAN: Settings */}
+          {/* KOLOM KANAN (Saldo & Pengaturan) */}
           <div className={styles.rightColumn}>
-            {/* CARD 1: Saldo Waktu */}
             <motion.div variants={itemVariants} className={styles.balanceCard}>
               <div className={styles.cardHeader}>
                 <FiClock
                   className={styles.cardIcon}
-                  style={{ color: "#10b981" }}
+                  style={{ color: "var(--primary-green)" }}
                 />
                 <h2 className={styles.cardTitle}>Saldo Waktu</h2>
               </div>
               <div className={styles.balanceContent}>
-                <h2 className={styles.balanceValue}>{user.timeBalance}</h2>
+                <h2 className={styles.balanceValue}>
+                  {userProfile.timeBalance} Menit
+                </h2>
                 <p className={styles.balanceSub}>
                   Tersedia untuk pendaftaran kelas
                 </p>
                 <motion.button
-                  whileHover={{ y: -3, boxShadow: "7px 7px 0px #000" }}
-                  whileTap={{ y: 2, boxShadow: "0px 0px 0px #000" }}
                   className={styles.topUpBtn}
+                  onClick={() => navigate("/help")}
                 >
                   <FiZap /> Isi Saldo ⚡
                 </motion.button>
               </div>
             </motion.div>
 
-            {/* CARD 2: Pengaturan */}
             <motion.div variants={itemVariants} className={styles.actionCard}>
               <div className={styles.cardHeader}>
                 <FiSettings
@@ -249,16 +307,12 @@ export default function ProfilePage() {
                   Kelola keamanan atau keluar dari sesi aktif Anda saat ini.
                 </p>
                 <motion.button
-                  whileHover={{ y: -3, boxShadow: "7px 7px 0px #000" }}
-                  whileTap={{ y: 2, boxShadow: "0px 0px 0px #000" }}
                   className={`${styles.actionBtn} ${styles.logoutBtn}`}
-                  onClick={() => navigate("/login")}
+                  onClick={handleLogout}
                 >
                   <FiLogOut /> Keluar Akun
                 </motion.button>
                 <motion.button
-                  whileHover={{ y: -3, boxShadow: "7px 7px 0px #000" }}
-                  whileTap={{ y: 2, boxShadow: "0px 0px 0px #000" }}
                   className={`${styles.actionBtn} ${styles.deleteBtn}`}
                 >
                   <FiTrash2 /> Hapus Akun Permanen

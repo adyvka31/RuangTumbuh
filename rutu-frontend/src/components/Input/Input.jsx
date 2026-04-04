@@ -11,31 +11,49 @@ export const Input = ({
   errorMessage,
   value,
   onChange,
+  isTextarea, 
+  ...props
 }) => {
-  // State untuk melacak apakah password ditampilkan atau tidak
   const [showPassword, setShowPassword] = useState(false);
-
-  // Mengecek apakah type nya password
   const isPassword = type === "password";
-
-  // Tentukan type yang akan dirender ke layar (berubah jadi "text" jika mata di klik)
   const inputType = isPassword ? (showPassword ? "text" : "password") : type;
+
   return (
     <div className={styles.inputContainer}>
       <div className={styles.inputWrapper}>
-        <input
-          className={`${styles.inputForm} ${errorMessage ? styles.error : ""}`}
-          type={inputType}
-          id={id}
-          name={name}
-          placeholder=" "
-          value={value}
-          onChange={onChange}
-        />
+        {isTextarea ? (
+          <textarea
+            className={`${styles.inputForm} ${errorMessage ? styles.error : ""}`}
+            id={id}
+            name={name}
+            placeholder=" "
+            value={value}
+            onChange={onChange}
+            style={{
+              resize: "vertical",
+              minHeight: "120px",
+              lineHeight: "1.6",
+            }} 
+            {...props}
+          />
+        ) : (
+          <input
+            className={`${styles.inputForm} ${errorMessage ? styles.error : ""}`}
+            type={inputType}
+            id={id}
+            name={name}
+            placeholder=" "
+            value={value}
+            onChange={onChange}
+            {...props}
+          />
+        )}
+
         <label htmlFor={id} className={styles.floatingLabel}>
           {label}
         </label>
-        {isPassword ? (
+
+        {isPassword && !isTextarea ? (
           <button
             type="button"
             className={styles.passwordToggle}
@@ -52,7 +70,6 @@ export const Input = ({
           Icon && <Icon className={styles.inputIcon} />
         )}
       </div>
-      {/* Pesan error */}
       {errorMessage && (
         <span className={styles.errorMessage}>{errorMessage}</span>
       )}
