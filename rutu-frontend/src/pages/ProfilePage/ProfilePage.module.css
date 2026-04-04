@@ -318,7 +318,6 @@
   margin: 0;
 }
 
-/* --- CARD PASSION DI DALAM "TENTANG SAYA" --- */
 .passionSection {
   background-color: #f9fafb;
   border: 3px solid #000;
@@ -327,7 +326,6 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
-  box-shadow: inset 4px 4px 0px rgba(0, 0, 0, 0.05); /* Bayangan ke dalam agar terlihat seperti cekungan/wadah */
 }
 
 .subTitle {
@@ -432,6 +430,12 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.topUpBtn:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 7px 7px 0px #000;
 }
 
 /* Penyesuaian Action Card (Pengaturan) */

@@ -179,10 +179,9 @@ export default function MyCoursePage() {
   }, []);
 
   const tabs = [
-    { id: "Kursus Saya", label: "Kursus Saya", icon: <FiUser />, count: myCreatedCourses.length },
-    { id: "Pengajuan", label: "Pengajuan Saya", icon: <FiSend />, count: myBookings.length },
+    { id: "Kursus Saya", label: "Sesi Mentor Saya", icon: <FiUser />, count: myCreatedCourses.length },
     { id: "Permintaan", label: "Permintaan Masuk", icon: <FiBell />, count: incomingBookings.length },
-    { id: "Berlangsung", label: "Sedang Berlangsung", icon: <FiPlayCircle />, count: activeCourses.length },
+    { id: "Pengajuan", label: "Pengajuan Saya", icon: <FiSend />, count: myBookings.length },
     { id: "Selesai", label: "Riwayat Selesai", icon: <FiCheckCircle />, count: completedCourses.length },
   ];
 
@@ -328,31 +327,6 @@ export default function MyCoursePage() {
                     );
                   })
                 }
-              </motion.div>
-            )}
-
-            {activeTab === "Berlangsung" && (
-              <motion.div key="berlangsung" variants={tabVariants} initial="hidden" animate="visible" exit="exit" className={styles.gridContainer}>
-                {activeCourses.map((course) => (
-                  <div key={course.id} className={`${styles.neoCard} ${styles.cardActive}`}>
-                    <div className={styles.neoCardHeader}>
-                      <div className={styles.avatarWrap} style={{ backgroundColor: course.color }}>{course.emoji}</div>
-                      <div className={styles.headerInfo}><h4>{course.name}</h4><span>{course.role}</span></div>
-                      <div className={styles.statusLive}>ONGOING</div>
-                    </div>
-                    <div className={styles.cardBody}>
-                      <h3 className={styles.topicTitle}>{course.topic}</h3>
-                      <div className={styles.progressSection}>
-                        <div className={styles.progressText}><span>Progres Belajar</span><span>{course.progress}%</span></div>
-                        <div className={styles.progressBarBg}><div className={styles.progressBarFill} style={{ width: `${course.progress}%`, backgroundColor: course.color }}></div></div>
-                      </div>
-                    </div>
-                    <div className={styles.neoCardFooter}>
-                      <button className={`${styles.actionBtn} ${styles.btnChat}`}><FiMessageCircle /> Chat</button>
-                      <button className={`${styles.actionBtn} ${styles.btnJoin}`} onClick={() => navigate("/presence")}>Masuk Kelas</button>
-                    </div>
-                  </div>
-                ))}
               </motion.div>
             )}
 

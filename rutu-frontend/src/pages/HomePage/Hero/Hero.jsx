@@ -67,7 +67,7 @@ export default function HeroSection() {
             src={TEXT_LOGO}
             alt="Ruang Tumbuh Logo"
             className={styles.textLogo}
-            fetchpriority="high"
+            fetchPriority="high"
           />
           <p className={styles.subtitle}>Learn, Grow, and Explore Together</p>
         </motion.div>

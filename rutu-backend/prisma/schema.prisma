@@ -18,8 +18,13 @@ model User {
   name           String
   email          String   @unique
   password       String
-  timeBalance    Int      @default(30) // Saldo awal (misal: gratis 30 menit saat daftar)
+  timeBalance    Int      @default(30) // Saldo awal
   profilePicture String?
+  location       String?  @default("Indonesia")
+  birthday       String?
+  school         String?
+  description    String?
+  passions       Json?    // Disimpan sebagai array JSON
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
@@ -61,11 +66,12 @@ model Booking {
   id              String   @id @default(uuid())
   tutorId         String   // Yang mengajar
   studentId       String   // Yang belajar (membayar dengan waktu)
-  skillId         String   // Skill yang dipelajari
+  skillId         String?  
   scheduledAt     DateTime // Waktu belajar
   durationMinutes Int      // Durasi belajar (misal: 60 menit)
   status          Status   @default(PENDING) // PENDING, ACCEPTED, COMPLETED, CANCELED
   meetingLink     String?  // Link GMeet/Zoom jika online
+  notes           String?  
   createdAt       DateTime @default(now())
 
   // --- FITUR VERIFIKASI ---
@@ -76,9 +82,9 @@ model Booking {
   disputeReason     String?  // Alasan Tutor melaporkan Siswa (misal: "Siswa kabur")
 
   // Relasi
-  tutor   User  @relation("TutorSessions", fields: [tutorId], references: [id])
-  student User  @relation("StudentSessions", fields: [studentId], references: [id])
-  skill   Skill @relation(fields: [skillId], references: [id])
+  tutor   User   @relation("TutorSessions", fields: [tutorId], references: [id])
+  student User   @relation("StudentSessions", fields: [studentId], references: [id])
+  skill   Skill? @relation(fields: [skillId], references: [id])
 
   review  Review?
 }
@@ -171,4 +177,5 @@ enum CourseBookingStatus {
   PENDING
   ACCEPTED
   REJECTED
+  COMPLETED
 }
