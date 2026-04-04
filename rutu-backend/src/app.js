@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
+const { globalLimiter } = require("./middlewares/rateLimit.middleware");
 
 // Import semua routes
 const authRoutes = require("./routes/auth.routes");
@@ -15,6 +16,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+app.use("/api", globalLimiter);
 
 // Daftarkan Routes
 app.use("/api/auth", authRoutes);
