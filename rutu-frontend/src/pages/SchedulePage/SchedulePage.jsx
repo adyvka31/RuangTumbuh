@@ -67,7 +67,7 @@ export default function SchedulePage() {
         if (!localUser.id) return;
 
         const response = await fetch(
-          `http://localhost:5001/api/user/schedule/${localUser.id}`,
+          `http://localhost:5001/api/schedules/user/${localUser.id}`,
         );
         if (response.ok) {
           const data = await response.json();

@@ -111,7 +111,7 @@ export default function AddCoursePage() {
         modules: modules.map((m) => ({ title: m.title, duration: m.duration })),
       };
 
-      const response = await fetch("http://localhost:5001/api/course", {
+      const response = await fetch("http://localhost:5001/api/courses", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

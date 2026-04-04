@@ -95,8 +95,8 @@ export default function AddSchedulePage() {
 
       // Logika Endpoint Dinamis (POST untuk Baru, PUT untuk Edit)
       const endpoint = isEdit
-        ? `http://localhost:5001/api/user/schedule/${editData.id}`
-        : `http://localhost:5001/api/user/schedule/add`;
+        ? `http://localhost:5001/api/schedules/${editData.id}`
+        : `http://localhost:5001/api/schedules`;
 
       const method = isEdit ? "PUT" : "POST";
 

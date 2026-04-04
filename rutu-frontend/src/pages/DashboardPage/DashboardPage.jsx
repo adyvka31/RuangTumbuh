@@ -57,7 +57,7 @@ export default function DashboardPage() {
         if (!localUser.id) return;
 
         const response = await fetch(
-          `http://localhost:5001/api/user/dashboard-stats/${localUser.id}`,
+          `http://localhost:5001/api/users/${localUser.id}/dashboard-stats`,
         );
         if (response.ok) {
           const data = await response.json();
