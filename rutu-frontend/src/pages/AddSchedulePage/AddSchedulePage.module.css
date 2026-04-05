@@ -1,0 +1,252 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* =========================================
+   PAGE HEADER (Judul Halaman)
+========================================= */
+.pageHeader {
+  background-color: var(--primary-green, #4ade80);
+  border: 4px solid #000;
+  border-radius: 25px;
+  padding: 30px 40px;
+  box-shadow: 8px 8px 0px #000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.pageTitle {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #000;
+  margin: 0;
+}
+
+.backBtn {
+  width: auto;
+  padding: 12px 24px;
+  background-color: #fff;
+  color: #000;
+  border: 3px solid #000;
+  border-radius: 18px;
+  font-weight: 800;
+  font-family: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 4px 4px 0px #000;
+  transition: all 0.2s ease;
+}
+
+.backBtn:hover {
+  box-shadow: 6px 6px 0px #000;
+}
+
+/* =========================================
+   SPLIT LAYOUT (GRID KONTEN)
+========================================= */
+.contentGrid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 30px;
+  align-items: stretch;
+}
+
+.mainCard,
+.sidebarCard {
+  background-color: #fff;
+  border: 4px solid #000;
+  border-radius: 30px;
+  padding: 35px;
+  box-shadow: 8px 8px 0px #000;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sidebarCard {
+  background-color: #f9fafb;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding-bottom: 20px;
+  border-bottom: 3px dashed #000;
+  margin-bottom: 5px;
+}
+
+.headerIconWrap {
+  width: 45px;
+  height: 45px;
+  border: 3px solid #000;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  color: #000;
+  box-shadow: 2px 2px 0px #000;
+}
+
+.cardHeader h3 {
+  font-family: "Fredoka", sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #000;
+  margin: 0;
+}
+
+.rowGroup {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* Kotak Informasi Tambahan */
+.infoBox {
+  background-color: #eff6ff;
+  border: 2px dashed #3b82f6;
+  border-radius: 15px;
+  padding: 20px;
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+  margin-top: auto;
+}
+
+.infoIcon {
+  color: #3b82f6;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.infoBox p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #1e3a8a;
+  line-height: 1.5;
+}
+
+/* =========================================
+   ACTION BAR (BAWAH)
+========================================= */
+.actionBar {
+  background-color: var(--primary-green);
+  border: 4px solid #000;
+  border-radius: 25px;
+  padding: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 8px 8px 0px #000;
+  gap: 30px;
+}
+
+.actionText h3 {
+  font-family: "Fredoka", sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #000;
+  margin: 0 0 5px 0;
+}
+
+.actionText p {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.saveBtn {
+  background-color: var(--primary-yellow);
+  color: #000;
+  border: 3px solid #000;
+  border-radius: 18px;
+  padding: 15px 30px;
+  font-family: "plus-jakarta", sans-serif;
+  font-weight: 800;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: 4px 4px 0px #000;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.cancelBtn {
+  background-color: #fff;
+  color: #000;
+  border: 3px solid #000;
+  border-radius: 18px;
+  padding: 15px 30px;
+  font-family: "plus-jakarta", sans-serif;
+  font-weight: 800;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: 4px 4px 0px #000;
+  transition: all 0.2s ease;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+@media (max-width: 1024px) {
+  .contentGrid {
+    grid-template-columns: 1fr;
+  }
+  .actionBar {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+  .actionButtons {
+    width: 100%;
+    flex-direction: column;
+  }
+  .saveBtn,
+  .cancelBtn {
+    width: 100%;
+    justify-content: center;
+  }
+  .pageHeader {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .rowGroup {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .mainCard,
+  .sidebarCard,
+  .pageHeader,
+  .actionBar {
+    padding: 25px;
+    border-radius: 20px;
+  }
+}

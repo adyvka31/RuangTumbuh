@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "@/layouts/DashboardLayout/DashboardLayout";
@@ -29,32 +28,48 @@ export default function AddCoursePage() {
   const [formData, setFormData] = useState({
     title: "",
     category: "",
-    duration: "", // Diubah dari price ke duration agar sesuai input
+    duration: "",
     description: "",
-    tutorId: "", // Otomatis dari ID user yang login
+    tutorId: "",
   });
 
-  const [popup, setPopup] = useState({ isOpen: false, type: "success", title: "", description: "" });
+  const [modules, setModules] = useState([
+    { id: Date.now(), title: "", duration: "" },
+  ]);
+
+  // State untuk UX & Notifikasi
+  const [error, setError] = useState(""); // <-- Kotak Error Merah
+  const [popup, setPopup] = useState({
+    isOpen: false,
+    type: "success",
+    title: "",
+    description: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Get current user as tutor
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
     if (user.id) {
       setFormData((prev) => ({ ...prev, tutorId: user.id }));
+    } else {
+      navigate("/login");
     }
-  }, []);
-
-
-  const [modules, setModules] = useState([
-    { id: Date.now(), title: "", duration: "" },
-  ]);
+  }, [navigate]);
 
   const handleInputChange = (e) => {
+    if (error) setError(""); // Hapus error saat mengetik ulang
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const addModule = () => {
+    if (modules.length >= 20) {
+      setError(
+        "Batas maksimal tercapai! Anda hanya dapat menambahkan 20 modul.",
+      );
+      return;
+    }
     setModules([...modules, { id: Date.now(), title: "", duration: "" }]);
   };
 
@@ -65,6 +80,7 @@ export default function AddCoursePage() {
   };
 
   const updateModule = (id, field, value) => {
+    if (error) setError(""); // Hapus error saat memodifikasi modul
     setModules(
       modules.map((m) => (m.id === id ? { ...m, [field]: value } : m)),
     );
@@ -72,50 +88,69 @@ export default function AddCoursePage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(""); // Reset error setiap submit
 
-    // --- Simple Form Validation ---
-    if (
-      !formData.title ||
-      !formData.category ||
-      !formData.duration ||
-      !formData.description
-    ) {
-      setPopup({
-        isOpen: true,
-        type: "danger",
-        title: "Form Tidak Lengkap",
-        description: "Harap isi semua field informasi utama sebelum menyimpan!",
-      });
+    // ==========================================
+    // 🛡️ FRONTEND FORM VALIDATION
+    // ==========================================
+    const { title, category, duration, description } = formData;
+
+    if (!title || title.length < 5 || title.length > 100) {
+      setError("Judul kursus harus diisi antara 5 hingga 100 karakter.");
+      return;
+    }
+    if (!category) {
+      setError("Kategori kursus wajib dipilih.");
+      return;
+    }
+    if (!duration || isNaN(duration) || parseInt(duration) <= 0) {
+      setError(
+        "Durasi kursus wajib diisi dengan angka positif (lebih dari 0).",
+      );
+      return;
+    }
+    if (!description || description.length < 20 || description.length > 1000) {
+      setError(
+        "Deskripsi kursus harus jelas dan informatif (antara 20 - 1000 karakter).",
+      );
       return;
     }
 
-    // Pastikan setidaknya ada data di modul
-    if (modules.some((m) => !m.title || !m.duration)) {
-      setPopup({
-        isOpen: true,
-        type: "danger",
-        title: "Data Modul Belum Lengkap",
-        description: "Harap lengkapi semua judul dan durasi modul materi!",
-      });
+    // Validasi Modul
+    if (modules.length === 0) {
+      setError("Anda harus menambahkan minimal 1 modul materi.");
       return;
     }
 
+    for (let i = 0; i < modules.length; i++) {
+      const m = modules[i];
+      if (!m.title || m.title.trim() === "") {
+        setError(`Judul materi pada modul ke-${i + 1} tidak boleh kosong.`);
+        return;
+      }
+      if (!m.duration || isNaN(m.duration) || parseInt(m.duration) <= 0) {
+        setError(
+          `Durasi materi pada modul ke-${i + 1} harus valid (lebih dari 0).`,
+        );
+        return;
+      }
+    }
+    // ==========================================
+
+    setIsSubmitting(true);
     try {
-      // Mapping ke model backend "Course"
       const courseData = {
-        name: formData.title,
+        name: title,
         tutorId: formData.tutorId,
-        kategori: formData.category,
-        durasi: formData.duration,
-        deskripsi: formData.description,
+        kategori: category,
+        durasi: duration,
+        deskripsi: description,
         modules: modules.map((m) => ({ title: m.title, duration: m.duration })),
       };
 
-      const response = await fetch("http://localhost:5001/api/course", {
+      const response = await fetch("http://localhost:5001/api/courses", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(courseData),
       });
 
@@ -125,36 +160,33 @@ export default function AddCoursePage() {
         setPopup({
           isOpen: true,
           type: "success",
-          title: "Kursus Berhasil Ditambahkan! 🚀",
-          description: "Kursus baru berhasil ditambahkan ke Pusat Course! Mengalihkan ke dashboard...",
+          title: "Kursus Diterbitkan! 🚀",
+          description:
+            "Kursus baru Anda berhasil ditambahkan ke Pusat Course! Mengalihkan ke dashboard...",
         });
-        console.log("Response:", result);
         setTimeout(() => {
           navigate("/dashboard");
         }, 2000);
       } else {
-        setPopup({
-          isOpen: true,
-          type: "danger",
-          title: "Gagal Menambahkan",
-          description: result.message || "Terjadi kesalahan saat menambahkan kursus.",
-        });
+        // Tampilkan pesan error dari backend
+        setError(
+          result.message || "Terjadi kesalahan saat menambahkan kursus.",
+        );
       }
     } catch (error) {
       console.error("Submit error:", error);
-      setPopup({
-        isOpen: true,
-        type: "danger",
-        title: "Kesalahan Koneksi",
-        description: "Tidak dapat terhubung ke server. Periksa koneksi Anda.",
-      });
+      setError(
+        "Tidak dapat terhubung ke server. Periksa koneksi internet Anda.",
+      );
+    } finally {
+      setIsSubmitting(false);
     }
   };
-
 
   return (
     <DashboardLayout title="Tambah Kursus Baru">
       <form onSubmit={handleSubmit} className={styles.container}>
+
         <div className={styles.splitLayout}>
           {/* KOLOM KIRI: Informasi Utama */}
           <div className={styles.mainCard}>
@@ -168,7 +200,19 @@ export default function AddCoursePage() {
               <h3>Informasi Utama</h3>
             </div>
 
-            {/* Input Judul Menggunakan Komponen Input Reusable */}
+            {error && (
+              <p
+                style={{
+                  color: "red",
+                  fontWeight: "bold",
+                  marginBottom: "5px",
+                  marginTop: "-15px",
+                }}
+              >
+                {error}
+              </p>
+            )}
+
             <Input
               type="text"
               id="title"
@@ -179,7 +223,6 @@ export default function AddCoursePage() {
             />
 
             <div className={styles.rowGroup}>
-              {/* Select Kategori (Meniru style Input) */}
               <div
                 className={inputStyles.inputContainer}
                 style={{ marginBottom: 0 }}
@@ -191,13 +234,15 @@ export default function AddCoursePage() {
                     className={inputStyles.inputForm}
                     value={formData.category}
                     onChange={handleInputChange}
-                    required
                     style={{ cursor: "pointer", appearance: "none" }}
                   >
                     <option value="" disabled hidden></option>
                     <option value="programming">Pemrograman</option>
                     <option value="design">UI/UX Design</option>
                     <option value="business">Bisnis & Marketing</option>
+                    <option value="Matematika">Matematika</option>
+                    <option value="Bahasa Inggris">Bahasa Inggris</option>
+                    <option value="Fisika">Fisika</option>
                   </select>
                   <label
                     htmlFor="category"
@@ -217,21 +262,20 @@ export default function AddCoursePage() {
                 </div>
               </div>
 
-              {/* Input Harga Menggunakan Komponen Input Reusable */}
               <div style={{ marginBottom: "-1rem" }}>
                 <Input
                   type="number"
                   id="duration"
                   name="duration"
-                  label="Durasi (Menit)"
+                  label="Total Durasi (Menit)"
                   icon={FiClock}
                   value={formData.duration}
                   onChange={handleInputChange}
+                  min="1"
                 />
               </div>
             </div>
 
-            {/* Textarea Deskripsi (Meniru style Input) */}
             <div className={inputStyles.inputContainer}>
               <div className={inputStyles.inputWrapper}>
                 <textarea
@@ -246,19 +290,15 @@ export default function AddCoursePage() {
                   }}
                   value={formData.description}
                   onChange={handleInputChange}
-                  required
                 ></textarea>
                 <label
                   htmlFor="description"
                   className={inputStyles.floatingLabel}
                 >
-                  Deskripsi Singkat
+                  Deskripsi Singkat Kursus
                 </label>
               </div>
             </div>
-
-            {/* Thumbnail Upload */}
-            
           </div>
 
           {/* KOLOM KANAN: Modul / Silabus */}
@@ -274,8 +314,8 @@ export default function AddCoursePage() {
             </div>
 
             <p className={styles.moduleDesc}>
-              Tambahkan video atau materi yang akan dipelajari dalam kursus ini
-              secara berurutan.
+              Tambahkan silabus atau materi yang akan dipelajari dalam kursus
+              ini secara berurutan.
             </p>
 
             <div className={styles.moduleList}>
@@ -315,6 +355,7 @@ export default function AddCoursePage() {
                           onChange={(e) =>
                             updateModule(module.id, "duration", e.target.value)
                           }
+                          min="1"
                         />
                       </div>
                     </div>
@@ -352,23 +393,29 @@ export default function AddCoursePage() {
           <div className={styles.actionText}>
             <h3>Sudah selesai? 🚀</h3>
             <p>
-              Pastikan semua data sudah terisi dengan benar sebelum menyimpan.
+              Pastikan semua data sudah terisi dengan benar sebelum menerbitkan
+              kursus.
             </p>
           </div>
-          <button type="submit" className={styles.saveBtn}>
-            <FiSave size={20} /> Simpan Kursus
+          <button
+            type="submit"
+            className={styles.saveBtn}
+            disabled={isSubmitting}
+          >
+            <FiSave size={20} />{" "}
+            {isSubmitting ? "Menyimpan..." : "Terbitkan Kursus"}
           </button>
         </motion.div>
       </form>
 
-      {/* POPUP */}
+      {/* POPUP SUKSES */}
       <Popup
         isOpen={popup.isOpen}
         type={popup.type}
-        icon={popup.type === "success" ? <FiCheckCircle /> : <FiAlertCircle />}
+        icon={<FiCheckCircle />}
         title={popup.title}
         description={popup.description}
-        buttonText={popup.type === "success" ? "OK" : "Tutup"}
+        buttonText="Tutup"
         onAction={() => setPopup((p) => ({ ...p, isOpen: false }))}
       />
     </DashboardLayout>

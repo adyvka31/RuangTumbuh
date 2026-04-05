@@ -17,6 +17,7 @@ const MyCoursePage = lazy(() => import("@/pages/MyCoursePage/MyCoursePage"));
 const CourseDetailPage = lazy(() => import("@pages/CourseDetailPage/CourseDetailPage"));
 const CourseBookingPage = lazy(() => import("@pages/CourseBookingPage/CourseBookingPage"));
 const SchedulePage = lazy(() => import("@pages/SchedulePage/SchedulePage"));
+const AddSchedulePage = lazy(() => import("@pages/AddSchedulePage/AddSchedulePage"));
 const AddCoursePage = lazy(() => import("@pages/AddCoursePage/AddCoursePage"));
 const ProfilePage = lazy(() => import("@pages/ProfilePage/ProfilePage"));
 const PresencePage = lazy(() => import("@pages/PresencePage/PresencePage"));
@@ -65,6 +66,7 @@ export default function App() {
               <Route path="/course/:id" element={<CourseDetailPage />} />
               <Route path="/course-booking/:id" element={<CourseBookingPage />} />
               <Route path="/schedule" element={<SchedulePage />} />
+              <Route path="/add-schedule" element={<AddSchedulePage />} />
               <Route path="/add-course" element={<AddCoursePage />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/presence" element={<PresencePage />} />

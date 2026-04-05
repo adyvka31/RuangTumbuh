@@ -64,29 +64,30 @@ model UserSkill {
 // TABEL Course BOOKING (Pemesanan Sesi Belajar)
 model Booking {
   id              String   @id @default(uuid())
-  tutorId         String   // Yang mengajar
-  studentId       String   // Yang belajar (membayar dengan waktu)
+  tutorId         String   
+  studentId       String   
   skillId         String?  
-  scheduledAt     DateTime // Waktu belajar
-  durationMinutes Int      // Durasi belajar (misal: 60 menit)
-  status          Status   @default(PENDING) // PENDING, ACCEPTED, COMPLETED, CANCELED
-  meetingLink     String?  // Link GMeet/Zoom jika online
+  scheduledAt     DateTime 
+  durationMinutes Int      
+  status          Status   @default(PENDING) 
+  meetingLink     String?  
   notes           String?  
   createdAt       DateTime @default(now())
 
-  // --- FITUR VERIFIKASI ---
-  verificationToken String?  // Token PIN untuk Tutor
+  verificationToken String?  
   isVerified        Boolean  @default(false)
+  disputeReason     String?  
 
-  // --- FITUR BANDING (DISPUTE) ---
-  disputeReason     String?  // Alasan Tutor melaporkan Siswa (misal: "Siswa kabur")
-
-  // Relasi
   tutor   User   @relation("TutorSessions", fields: [tutorId], references: [id])
   student User   @relation("StudentSessions", fields: [studentId], references: [id])
   skill   Skill? @relation(fields: [skillId], references: [id])
 
   review  Review?
+
+  @@index([studentId])
+  @@index([tutorId])
+  @@index([status])
+  @@index([scheduledAt])
 }
 
 // TABEL REVIEW (Ulasan & Rating setelah sesi terverifikasi)
@@ -119,6 +120,10 @@ model Message {
 
   sender   User @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
   receiver User @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  // Mempercepat load riwayat chat antara dua orang
+  @@index([senderId])
+  @@index([receiverId])
 }
 
 model ForumPost {
@@ -145,32 +150,42 @@ model ForumComment {
 
 // TABEL PUSAT COURSE
 model Course {
-  id          Int             @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   name        String
   tutor       String
-  tutorId     String          @default("") // ID user yang membuat kursus
+  tutorId     String   @default("") 
   kategori    String
   durasi      String
   deskripsi   String
-  modules     Json?           // Daftar modul (title & duration)
-  createdAt   DateTime        @default(now())
+  modules     Json?    
+  createdAt   DateTime @default(now())
 
   bookings    CourseBooking[]
+
+  // Mempercepat fitur pencarian (Search) berdasarkan kategori atau tutor
+  @@index([kategori])
+  @@index([tutorId])
 }
 
 // TABEL BOOKING KURSUS (Siswa -> Course yang dibuat Mentor)
 model CourseBooking {
   id          String              @id @default(uuid())
-  courseId    Int                 // Kursus yang dibooking
-  studentId   String              // User yang melakukan booking
-  studentName String              // Nama siswa (snapshot)
-  scheduledAt DateTime            // Jadwal yang diinginkan
-  note        String?             // Catatan/pertanyaan dari siswa
+  courseId    Int                 
+  studentId   String              
+  studentName String              
+  scheduledAt DateTime            
+  note        String?             
   status      CourseBookingStatus @default(PENDING)
   createdAt   DateTime            @default(now())
   updatedAt   DateTime            @updatedAt
 
   course  Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  // Mempercepat load jadwal kelas di Dashboard dan Kalender
+  @@index([studentId])
+  @@index([courseId])
+  @@index([status])
+  @@index([scheduledAt])
 }
 
 enum CourseBookingStatus {

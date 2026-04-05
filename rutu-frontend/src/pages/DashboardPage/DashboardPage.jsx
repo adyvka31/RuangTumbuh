@@ -57,7 +57,7 @@ export default function DashboardPage() {
         if (!localUser.id) return;
 
         const response = await fetch(
-          `http://localhost:5001/api/user/dashboard-stats/${localUser.id}`,
+          `http://localhost:5001/api/users/${localUser.id}/dashboard-stats`,
         );
         if (response.ok) {
           const data = await response.json();
@@ -154,7 +154,7 @@ export default function DashboardPage() {
                 onClick={() => navigate("/search")}
               >
                 <FiBook /> Mulai Belajar{" "}
-                <div className={styles.bannerBtnArrow}>˃</div>
+                <div className={styles.bannerBtnArrow}></div>
               </button>
               <button
                 className={`${styles.bannerBtn} ${styles.btnSecondary}`}

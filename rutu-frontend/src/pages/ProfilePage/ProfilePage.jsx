@@ -34,7 +34,7 @@ export default function ProfilePage() {
         }
 
         const response = await fetch(
-          `http://localhost:5001/api/user/profile/${localUser.id}`,
+          `http://localhost:5001/api/users/${localUser.id}`,
         );
         if (response.ok) {
           const data = await response.json();

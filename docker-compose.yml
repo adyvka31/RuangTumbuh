@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  # 1. DATABASE POSTGRESQL
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password_super_aman
+      POSTGRES_DB: ruangtumbuh_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  # 2. BACKEND API
+  backend:
+    build: ./rutu-backend
+    restart: always
+    ports:
+      - "5001:5001"
+    environment:
+      # URL Database menunjuk ke nama service 'db'
+      - DATABASE_URL=postgresql://postgres:password_super_aman@db:5432/ruangtumbuh_db?schema=public
+      - JWT_SECRET=ruangtumbuh_jwt_secret_key_production
+    depends_on:
+      - db
+
+  # 3. FRONTEND REACT
+  frontend:
+    build: ./rutu-frontend
+    restart: always
+    ports:
+      - "5173:80" # Akses di browser tetap localhost:5173, tapi dialihkan ke port 80 di container Nginx
+    depends_on:
+      - backend
+
+volumes:
+  pgdata: # Untuk menyimpan data database secara permanen agar tidak hilang saat server restart

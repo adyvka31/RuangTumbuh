@@ -51,7 +51,7 @@ export const LoginForm = () => {
     <>
       <form className={styles.loginForm} onSubmit={handleSubmit}>
         {error && (
-          <p style={{ color: "red", fontWeight: "bold", marginBottom: "10px" }}>
+          <p style={{ color: "red", fontWeight: "bold", marginBottom: "10px", marginTop: "-15px" }}>
             {error}
           </p>
         )}

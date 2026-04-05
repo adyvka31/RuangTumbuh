@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import DashboardLayout from "@/layouts/DashboardLayout/DashboardLayout";
 import styles from "./EditProfilePage.module.css";
 import { Input } from "@/components/Input/Input";
+import { Popup } from "@/components/Popup/Popup"; // Pastikan di-import untuk notifikasi sukses
 import {
   FiSave,
   FiX,
@@ -17,6 +18,7 @@ import {
   FiArrowLeft,
   FiType,
   FiPlus,
+  FiCheckCircle, // Icon untuk popup sukses
 } from "react-icons/fi";
 
 export default function EditProfilePage() {
@@ -43,6 +45,13 @@ export default function EditProfilePage() {
   });
 
   const [newPassion, setNewPassion] = useState("");
+  const [error, setError] = useState("");
+  const [popup, setPopup] = useState({
+    isOpen: false,
+    type: "success",
+    title: "",
+    description: "",
+  });
 
   // 1. MENGAMBIL DATA DARI BACKEND SAAT HALAMAN DIMUAT
   useEffect(() => {
@@ -56,7 +65,7 @@ export default function EditProfilePage() {
         setUserId(localUser.id);
 
         const response = await fetch(
-          `http://localhost:5001/api/user/profile/${localUser.id}`,
+          `http://localhost:5001/api/users/${localUser.id}`,
         );
         if (response.ok) {
           const data = await response.json();
@@ -84,17 +93,24 @@ export default function EditProfilePage() {
 
   // Fungsi Form & Tags
   const handleInputChange = (e) => {
+    if (error) setError("");
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const addPassion = () => {
     if (newPassion && !formData.passions.includes(newPassion)) {
+      // VALIDASI: Maksimal 10 Passion
+      if (formData.passions.length >= 10) {
+        setError("Maksimal hanya boleh menambahkan 10 keahlian/passion.");
+        return;
+      }
       setFormData((prev) => ({
         ...prev,
         passions: [...prev.passions, newPassion],
       }));
       setNewPassion("");
+      setError("");
     }
   };
 
@@ -109,10 +125,18 @@ export default function EditProfilePage() {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // VALIDASI: Ukuran Maksimal 2MB
       if (file.size > 2 * 1024 * 1024) {
-        alert("Ukuran file terlalu besar! Maksimal 2MB.");
+        setError("Ukuran foto terlalu besar! Maksimal 2MB.");
         return;
       }
+      // VALIDASI: Harus berupa file gambar
+      if (!file.type.startsWith("image/")) {
+        setError("Format file tidak didukung. Harap unggah gambar (JPG/PNG).");
+        return;
+      }
+
+      setError("");
       setSelectedFile(file);
       setPreviewImage(URL.createObjectURL(file));
     }
@@ -125,6 +149,56 @@ export default function EditProfilePage() {
   // 2. MENGIRIM DATA KE BACKEND SAAT TOMBOL SIMPAN DIKLIK
   const handleSave = async () => {
     if (!userId) return;
+    setError(""); // Reset error sebelumnya
+
+    const { name, location, birthday, school, description } = formData;
+
+    // 1. Validasi Nama
+    if (name) {
+      const nameRegex = /^[a-zA-Z\s]*$/;
+      const nameWords = name.trim().split(/\s+/);
+      if (
+        !nameRegex.test(name) ||
+        nameWords.length < 2 ||
+        nameWords.length > 5
+      ) {
+        setError(
+          "Nama lengkap harus terdiri dari 2-5 kata dan hanya berisi huruf.",
+        );
+        return;
+      }
+    }
+
+    // 2. Validasi Tanggal Lahir (Masa Depan)
+    if (birthday) {
+      const selectedDate = new Date(birthday);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Reset jam agar adil
+      if (selectedDate > today) {
+        setError(
+          "Hmm, sepertinya Anda belum lahir di tanggal tersebut. Mohon pilih tanggal yang valid.",
+        );
+        return;
+      }
+    }
+
+    // 3. Validasi Panjang Karakter (Bio, Lokasi, Sekolah)
+    if (description && description.length > 500) {
+      setError(
+        `Deskripsi terlalu panjang! Saat ini: ${description.length}/500 karakter.`,
+      );
+      return;
+    }
+    if (location && location.length > 100) {
+      setError("Lokasi terlalu panjang (Maksimal 100 karakter).");
+      return;
+    }
+    if (school && school.length > 100) {
+      setError(
+        "Nama institusi/sekolah terlalu panjang (Maksimal 100 karakter).",
+      );
+      return;
+    }
 
     try {
       const formDataToSend = new FormData();
@@ -135,35 +209,38 @@ export default function EditProfilePage() {
       formDataToSend.append("description", formData.description);
       formDataToSend.append("passions", JSON.stringify(formData.passions));
 
-      // Jika ada file asli yang dipilih dari perangkat, masukkan ke formData
       if (selectedFile) {
         formDataToSend.append("avatar", selectedFile);
       }
 
       const response = await fetch(
-        `http://localhost:5001/api/user/profile/${userId}`,
+        `http://localhost:5001/api/users/${userId}`,
         {
           method: "PUT",
           body: formDataToSend,
         },
       );
 
-      if (response.ok) {
-        alert("Profil berhasil diperbarui!");
+      const result = await response.json();
 
+      if (response.ok) {
         // Update data 'name' di localStorage agar Topbar & Sidebar ikut berubah
         const localUser = JSON.parse(localStorage.getItem("user") || "{}");
         localUser.name = formData.name;
         localStorage.setItem("user", JSON.stringify(localUser));
 
-        navigate("/profile");
+        setPopup({
+          isOpen: true,
+          type: "success",
+          title: "Profil Diperbarui!",
+          description: "Data diri Anda berhasil disimpan.",
+        });
       } else {
-        const errData = await response.json();
-        alert("Gagal memperbarui profil: " + errData.message);
+        setError(result.message || "Gagal memperbarui profil.");
       }
     } catch (error) {
       console.error("Error save profile:", error);
-      alert("Terjadi kesalahan koneksi ke server backend.");
+      setError("Terjadi kesalahan koneksi ke server backend.");
     }
   };
 
@@ -254,8 +331,6 @@ export default function EditProfilePage() {
                   style={{ display: "none" }}
                 />
                 <motion.button
-                  whileHover={{ y: -3, boxShadow: "5px 5px 0px #000" }}
-                  whileTap={{ y: 2, boxShadow: "0px 0px 0px #000" }}
                   className={styles.uploadBtn}
                   onClick={triggerFileInput}
                 >
@@ -263,6 +338,19 @@ export default function EditProfilePage() {
                 </motion.button>
               </div>
             </div>
+
+            {error && (
+              <p
+                style={{
+                  color: "red",
+                  fontWeight: "bold",
+                  marginBottom: "20px",
+                  marginTop: "-15px",
+                }}
+              >
+                {error}
+              </p>
+            )}
 
             <div className={styles.formGrid}>
               <div className={styles.fullWidth}>
@@ -423,6 +511,20 @@ export default function EditProfilePage() {
           </div>
         </motion.div>
       </motion.div>
+
+      {/* POPUP SUKSES */}
+      <Popup
+        isOpen={popup.isOpen}
+        type={popup.type}
+        icon={<FiCheckCircle />}
+        title={popup.title}
+        description={popup.description}
+        buttonText="Oke"
+        onAction={() => {
+          setPopup({ ...popup, isOpen: false });
+          navigate("/profile");
+        }}
+      />
     </DashboardLayout>
   );
 }

@@ -30,18 +30,18 @@ import MyCourseCard from "@/components/MyCourseCard/MyCourseCard";
 // Helper to match SearchPage aesthetics
 const getCourseExtras = (category) => {
   const mapping = {
-    "programming": { color: "#38BDF8", emoji: "👩‍💻" },
-    "design": { color: "#FACC15", emoji: "🎨" },
-    "business": { color: "#F472B6", emoji: "⚙️" },
-    "Frontend": { color: "#38BDF8", emoji: "👩‍💻" },
-    "Backend": { color: "#F472B6", emoji: "⚙️" },
+    programming: { color: "#38BDF8", emoji: "👩‍💻" },
+    design: { color: "#FACC15", emoji: "🎨" },
+    business: { color: "#F472B6", emoji: "⚙️" },
+    Frontend: { color: "#38BDF8", emoji: "👩‍💻" },
+    Backend: { color: "#F472B6", emoji: "⚙️" },
     "UI/UX Design": { color: "#FACC15", emoji: "🎨" },
     "Mobile Dev": { color: "#10B981", emoji: "📱" },
     "Data Science": { color: "#A78BFA", emoji: "📊" },
-    "Matematika": { color: "#FB923C", emoji: "📐" },
+    Matematika: { color: "#FB923C", emoji: "📐" },
     "Bahasa Inggris": { color: "#6366F1", emoji: "🇬🇧" },
     "Bahasa Indonesia": { color: "#EF4444", emoji: "🇮🇩" },
-    "Fisika": { color: "#14B8A6", emoji: "⚛️" },
+    Fisika: { color: "#14B8A6", emoji: "⚛️" },
   };
   return mapping[category] || { color: "#94A3B8", emoji: "📚" };
 };
@@ -84,23 +84,30 @@ export default function MyCoursePage() {
   const [myBookings, setMyBookings] = useState([]);
   const [incomingBookings, setIncomingBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [popup, setPopup] = useState({ isOpen: false, type: "success", title: "", description: "" });
+  const [popup, setPopup] = useState({
+    isOpen: false,
+    type: "success",
+    title: "",
+    description: "",
+  });
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   const fetchMyCreatedCourses = async () => {
     try {
       if (!user.id) return;
-      const response = await fetch(`http://localhost:5001/api/course?tutorId=${user.id}`);
+      const response = await fetch(
+        `http://localhost:5001/api/courses?tutorId=${user.id}`,
+      );
       const data = await response.json();
-      const formattedData = data.map(item => ({
+      const formattedData = data.map((item) => ({
         id: item.id,
         title: item.name,
         author: item.tutor,
         category: item.kategori,
         duration: item.durasi,
         description: item.deskripsi,
-        ...getCourseExtras(item.kategori)
+        ...getCourseExtras(item.kategori),
       }));
       setMyCreatedCourses(formattedData);
     } catch (error) {
@@ -111,7 +118,9 @@ export default function MyCoursePage() {
   const fetchMyBookings = async () => {
     try {
       if (!user.id) return;
-      const response = await fetch(`http://localhost:5001/api/booking/my-bookings?studentId=${user.id}`);
+      const response = await fetch(
+        `http://localhost:5001/api/bookings/student?studentId=${user.id}`,
+      );
       const data = await response.json();
       setMyBookings(data);
     } catch (error) {
@@ -122,7 +131,9 @@ export default function MyCoursePage() {
   const fetchIncomingBookings = async () => {
     try {
       if (!user.id) return;
-      const response = await fetch(`http://localhost:5001/api/booking/incoming?tutorId=${user.id}`);
+      const response = await fetch(
+        `http://localhost:5001/api/bookings/tutor?tutorId=${user.id}`,
+      );
       const data = await response.json();
       setIncomingBookings(data);
     } catch (error) {
@@ -132,11 +143,14 @@ export default function MyCoursePage() {
 
   const handleStatusUpdate = async (bookingId, newStatus) => {
     try {
-      const response = await fetch(`http://localhost:5001/api/booking/${bookingId}/status`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: newStatus, tutorId: user.id }),
-      });
+      const response = await fetch(
+        `http://localhost:5001/api/bookings/${bookingId}/status`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status: newStatus, tutorId: user.id }),
+        },
+      );
       const result = await response.json();
       if (response.ok) {
         setPopup({
@@ -171,7 +185,7 @@ export default function MyCoursePage() {
       await Promise.all([
         fetchMyCreatedCourses(),
         fetchMyBookings(),
-        fetchIncomingBookings()
+        fetchIncomingBookings(),
       ]);
       setLoading(false);
     };
@@ -179,15 +193,39 @@ export default function MyCoursePage() {
   }, []);
 
   const tabs = [
-    { id: "Kursus Saya", label: "Sesi Mentor Saya", icon: <FiUser />, count: myCreatedCourses.length },
-    { id: "Permintaan", label: "Permintaan Masuk", icon: <FiBell />, count: incomingBookings.length },
-    { id: "Pengajuan", label: "Pengajuan Saya", icon: <FiSend />, count: myBookings.length },
-    { id: "Selesai", label: "Riwayat Selesai", icon: <FiCheckCircle />, count: completedCourses.length },
+    {
+      id: "Kursus Saya",
+      label: "Sesi Mentor Saya",
+      icon: <FiUser />,
+      count: myCreatedCourses.length,
+    },
+    {
+      id: "Permintaan",
+      label: "Permintaan Masuk",
+      icon: <FiBell />,
+      count: incomingBookings.length,
+    },
+    {
+      id: "Pengajuan",
+      label: "Pengajuan Saya",
+      icon: <FiSend />,
+      count: myBookings.length,
+    },
+    {
+      id: "Selesai",
+      label: "Riwayat Selesai",
+      icon: <FiCheckCircle />,
+      count: completedCourses.length,
+    },
   ];
 
   const tabVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.4, type: "spring", bounce: 0.3 } },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.4, type: "spring", bounce: 0.3 },
+    },
     exit: { opacity: 0, y: -20, transition: { duration: 0.2 } },
   };
 
@@ -202,13 +240,26 @@ export default function MyCoursePage() {
 
   return (
     <DashboardLayout title="Kursus Saya">
-      <motion.div className={styles.container} variants={containerVariants} initial="hidden" animate="show">
+      <motion.div
+        className={styles.container}
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+      >
         <motion.div variants={itemVariants} className={styles.bookingBanner}>
           <div className={styles.bannerText}>
             <h2>Manajemen Kursus 👨🏻‍💻</h2>
-            <p>Kelola semua pengajuan belajarmu, permintaan mengajar, jadwal aktif, dan riwayat di satu tempat.</p>
+            <p>
+              Kelola semua pengajuan belajarmu, permintaan mengajar, jadwal
+              aktif, dan riwayat di satu tempat.
+            </p>
           </div>
-          <button className={styles.findMentorBtn} onClick={() => navigate("/search")}>+ Cari Mentor Baru</button>
+          <button
+            className={styles.findMentorBtn}
+            onClick={() => navigate("/search")}
+          >
+            + Cari Mentor Baru
+          </button>
         </motion.div>
 
         <motion.div variants={itemVariants} className={styles.tabsContainer}>
@@ -220,7 +271,9 @@ export default function MyCoursePage() {
             >
               {tab.icon}
               <span>{tab.label}</span>
-              {tab.count > 0 && <span className={styles.badge}>{tab.count}</span>}
+              {tab.count > 0 && (
+                <span className={styles.badge}>{tab.count}</span>
+              )}
             </button>
           ))}
         </motion.div>
@@ -228,118 +281,268 @@ export default function MyCoursePage() {
         <div className={styles.tabContentArea}>
           <AnimatePresence mode="wait">
             {activeTab === "Kursus Saya" && (
-              <motion.div key="kursus" variants={tabVariants} initial="hidden" animate="visible" exit="exit" className={styles.gridContainer}>
-                {loading ? <div className={styles.emptyState}>Memuat kursus...</div> : 
-                  myCreatedCourses.length === 0 ? <div className={styles.emptyState}>Anda belum membuat kursus apapun.</div> :
-                  myCreatedCourses.map((course) => <MyCourseCard key={course.id} course={course} onRefresh={fetchMyCreatedCourses} />)
-                }
+              <motion.div
+                key="kursus"
+                variants={tabVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                className={styles.gridContainer}
+              >
+                {loading ? (
+                  <div className={styles.emptyState}>Memuat kursus...</div>
+                ) : myCreatedCourses.length === 0 ? (
+                  <div className={styles.emptyState}>
+                    Anda belum membuat kursus apapun.
+                  </div>
+                ) : (
+                  myCreatedCourses.map((course) => (
+                    <MyCourseCard
+                      key={course.id}
+                      course={course}
+                      onRefresh={fetchMyCreatedCourses}
+                    />
+                  ))
+                )}
               </motion.div>
             )}
 
             {activeTab === "Pengajuan" && (
-              <motion.div key="pengajuan" variants={tabVariants} initial="hidden" animate="visible" exit="exit" className={styles.gridContainer}>
-                {myBookings.length === 0 ? <div className={styles.emptyState}>Kamu belum mengajukan kursus apapun.</div> :
+              <motion.div
+                key="pengajuan"
+                variants={tabVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                className={styles.gridContainer}
+              >
+                {myBookings.length === 0 ? (
+                  <div className={styles.emptyState}>
+                    Kamu belum mengajukan kursus apapun.
+                  </div>
+                ) : (
                   myBookings.map((booking) => {
                     const extras = getCourseExtras(booking.course.kategori);
                     const dateObj = new Date(booking.scheduledAt);
                     return (
                       <div key={booking.id} className={styles.neoCard}>
                         <div className={styles.neoCardHeader}>
-                          <div className={styles.avatarWrap} style={{ backgroundColor: extras.color }}>{extras.emoji}</div>
+                          <div
+                            className={styles.avatarWrap}
+                            style={{ backgroundColor: extras.color }}
+                          >
+                            {extras.emoji}
+                          </div>
                           <div className={styles.headerInfo}>
                             <h4>{booking.course.tutor}</h4>
                             <span>Mentor</span>
                           </div>
-                          <div className={styles.statusBadge} style={{ 
-                            fontSize: "0.8rem", 
-                            fontWeight: "bold",
-                            padding: "4px 10px",
-                            borderRadius: "10px",
-                            backgroundColor: booking.status === "ACCEPTED" ? "#dcfce7" : booking.status === "REJECTED" ? "#fee2e2" : "#fef9c3",
-                            color: booking.status === "ACCEPTED" ? "#16a34a" : booking.status === "REJECTED" ? "#ef4444" : "#ca8a04"
-                          }}>
+                          <div
+                            className={styles.statusBadge}
+                            style={{
+                              fontSize: "0.8rem",
+                              fontWeight: "bold",
+                              padding: "4px 10px",
+                              borderRadius: "10px",
+                              backgroundColor:
+                                booking.status === "ACCEPTED"
+                                  ? "#dcfce7"
+                                  : booking.status === "REJECTED"
+                                    ? "#fee2e2"
+                                    : "#fef9c3",
+                              color:
+                                booking.status === "ACCEPTED"
+                                  ? "#16a34a"
+                                  : booking.status === "REJECTED"
+                                    ? "#ef4444"
+                                    : "#ca8a04",
+                            }}
+                          >
                             {booking.status}
                           </div>
                         </div>
                         <div className={styles.cardBody}>
-                          <h3 className={styles.topicTitle}><FiBookOpen /> {booking.course.name}</h3>
+                          <h3 className={styles.topicTitle}>
+                            <FiBookOpen /> {booking.course.name}
+                          </h3>
                           <div className={styles.timeInfo}>
-                            <div className={styles.timeBadge}><FiCalendar /> {dateObj.toLocaleDateString()}</div>
-                            <div className={styles.timeBadge}><FiClock /> {dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                            <div className={styles.timeBadge}>
+                              <FiCalendar /> {dateObj.toLocaleDateString()}
+                            </div>
+                            <div className={styles.timeBadge}>
+                              <FiClock />{" "}
+                              {dateObj.toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </div>
                           </div>
-                          {booking.note && <div className={styles.requestNote}><strong>Catatan:</strong> <p>"{booking.note}"</p></div>}
+                          {booking.note && (
+                            <div className={styles.requestNote}>
+                              <strong>Catatan:</strong> <p>"{booking.note}"</p>
+                            </div>
+                          )}
                         </div>
                         <div className={styles.neoCardFooter}>
-                          <button className={`${styles.actionBtn} ${styles.btnChat}`}><FiMessageCircle /> Chat Mentor</button>
+                          <button
+                            className={`${styles.actionBtn} ${styles.btnChat}`}
+                          >
+                            <FiMessageCircle /> Chat Mentor
+                          </button>
                         </div>
                       </div>
                     );
                   })
-                }
+                )}
               </motion.div>
             )}
 
             {activeTab === "Permintaan" && (
-              <motion.div key="permintaan" variants={tabVariants} initial="hidden" animate="visible" exit="exit" className={styles.gridContainer}>
-                {incomingBookings.length === 0 ? <div className={styles.emptyState}>Belum ada permintaan masuk.</div> :
+              <motion.div
+                key="permintaan"
+                variants={tabVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                className={styles.gridContainer}
+              >
+                {incomingBookings.length === 0 ? (
+                  <div className={styles.emptyState}>
+                    Belum ada permintaan masuk.
+                  </div>
+                ) : (
                   incomingBookings.map((booking) => {
                     const dateObj = new Date(booking.scheduledAt);
                     return (
                       <div key={booking.id} className={styles.neoCard}>
                         <div className={styles.neoCardHeader}>
-                          <div className={styles.avatarWrap} style={{ backgroundColor: "#38BDF8" }}><FiUser /></div>
+                          <div
+                            className={styles.avatarWrap}
+                            style={{ backgroundColor: "#38BDF8" }}
+                          >
+                            <FiUser />
+                          </div>
                           <div className={styles.headerInfo}>
                             <h4>{booking.studentName}</h4>
                             <span>Siswa</span>
                           </div>
                           {booking.status !== "PENDING" && (
-                             <div className={styles.statusBadge} style={{ 
-                               fontSize: "0.8rem", 
-                               fontWeight: "bold",
-                               padding: "4px 10px",
-                               borderRadius: "10px",
-                               backgroundColor: booking.status === "ACCEPTED" ? "#dcfce7" : "#fee2e2",
-                               color: booking.status === "ACCEPTED" ? "#16a34a" : "#ef4444"
-                             }}>{booking.status}</div>
+                            <div
+                              className={styles.statusBadge}
+                              style={{
+                                fontSize: "0.8rem",
+                                fontWeight: "bold",
+                                padding: "4px 10px",
+                                borderRadius: "10px",
+                                backgroundColor:
+                                  booking.status === "ACCEPTED"
+                                    ? "#dcfce7"
+                                    : "#fee2e2",
+                                color:
+                                  booking.status === "ACCEPTED"
+                                    ? "#16a34a"
+                                    : "#ef4444",
+                              }}
+                            >
+                              {booking.status}
+                            </div>
                           )}
                         </div>
                         <div className={styles.cardBody}>
-                          <h3 className={styles.topicTitle}><FiBookOpen /> {booking.course.name}</h3>
+                          <h3 className={styles.topicTitle}>
+                            <FiBookOpen /> {booking.course.name}
+                          </h3>
                           <div className={styles.timeInfo}>
-                            <div className={styles.timeBadge}><FiCalendar /> {dateObj.toLocaleDateString()}</div>
-                            <div className={styles.timeBadge}><FiClock /> {dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-                            <div className={styles.timeBadge}><FiPlayCircle /> {booking.course.durasi} Min</div>
+                            <div className={styles.timeBadge}>
+                              <FiCalendar /> {dateObj.toLocaleDateString()}
+                            </div>
+                            <div className={styles.timeBadge}>
+                              <FiClock />{" "}
+                              {dateObj.toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </div>
+                            <div className={styles.timeBadge}>
+                              <FiPlayCircle /> {booking.course.durasi} Min
+                            </div>
                           </div>
-                          {booking.note && <div className={styles.requestNote}><strong>Catatan Siswa:</strong> <p>"{booking.note}"</p></div>}
+                          {booking.note && (
+                            <div className={styles.requestNote}>
+                              <strong>Catatan Siswa:</strong>{" "}
+                              <p>"{booking.note}"</p>
+                            </div>
+                          )}
                         </div>
                         {booking.status === "PENDING" && (
                           <div className={styles.neoCardFooter}>
-                            <button className={`${styles.actionBtn} ${styles.btnDecline}`} onClick={() => handleStatusUpdate(booking.id, "REJECTED")}><FiX /> Tolak</button>
-                            <button className={`${styles.actionBtn} ${styles.btnAccept}`} onClick={() => handleStatusUpdate(booking.id, "ACCEPTED")}><FiCheck /> Terima</button>
+                            <button
+                              className={`${styles.actionBtn} ${styles.btnDecline}`}
+                              onClick={() =>
+                                handleStatusUpdate(booking.id, "REJECTED")
+                              }
+                            >
+                              <FiX /> Tolak
+                            </button>
+                            <button
+                              className={`${styles.actionBtn} ${styles.btnAccept}`}
+                              onClick={() =>
+                                handleStatusUpdate(booking.id, "ACCEPTED")
+                              }
+                            >
+                              <FiCheck /> Terima
+                            </button>
                           </div>
                         )}
                         {booking.status === "ACCEPTED" && (
-                           <div className={styles.neoCardFooter}>
-                              <button className={`${styles.actionBtn} ${styles.btnChat}`}><FiMessageCircle /> Chat Siswa</button>
-                           </div>
+                          <div className={styles.neoCardFooter}>
+                            <button
+                              className={`${styles.actionBtn} ${styles.btnChat}`}
+                            >
+                              <FiMessageCircle /> Chat Siswa
+                            </button>
+                          </div>
                         )}
                       </div>
                     );
                   })
-                }
+                )}
               </motion.div>
             )}
 
             {activeTab === "Selesai" && (
-              <motion.div key="selesai" variants={tabVariants} initial="hidden" animate="visible" exit="exit" className={styles.gridContainer}>
+              <motion.div
+                key="selesai"
+                variants={tabVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                className={styles.gridContainer}
+              >
                 {completedCourses.map((course) => (
-                  <div key={course.id} className={`${styles.neoCard} ${styles.cardCompleted}`}>
+                  <div
+                    key={course.id}
+                    className={`${styles.neoCard} ${styles.cardCompleted}`}
+                  >
                     <div className={styles.neoCardHeader}>
-                      <div className={styles.avatarWrap} style={{ backgroundColor: course.color }}>{course.emoji}</div>
-                      <div className={styles.headerInfo}><h4>{course.name}</h4><span>{course.role}</span></div>
-                      <div className={styles.ratingBadge}><FiStar fill="#000" /> {course.rating}.0</div>
+                      <div
+                        className={styles.avatarWrap}
+                        style={{ backgroundColor: course.color }}
+                      >
+                        {course.emoji}
+                      </div>
+                      <div className={styles.headerInfo}>
+                        <h4>{course.name}</h4>
+                        <span>{course.role}</span>
+                      </div>
+                      <div className={styles.ratingBadge}>
+                        <FiStar fill="#000" /> {course.rating}.0
+                      </div>
                     </div>
-                    <div className={styles.cardBody}><h3 className={styles.topicTitle}>{course.topic}</h3><div className={styles.reviewBox}>"{course.review}"</div></div>
+                    <div className={styles.cardBody}>
+                      <h3 className={styles.topicTitle}>{course.topic}</h3>
+                      <div className={styles.reviewBox}>"{course.review}"</div>
+                    </div>
                   </div>
                 ))}
               </motion.div>
