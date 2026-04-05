@@ -2,10 +2,15 @@ const express = require("express");
 const router = express.Router();
 const authController = require("../controllers/auth.controller");
 
-const { authLimiter } = require("../middlewares/rateLimit.middleware");
+// Import middleware dan schema validation
+const validate = require("../middlewares/validate.middleware");
+const {
+  registerSchema,
+  loginSchema,
+} = require("../validations/auth.validation");
 
-// Sisipkan authLimiter sebelum controller dieksekusi
-router.post("/register", authLimiter, authController.register);
-router.post("/login", authLimiter, authController.login);
+// Sisipkan `validate(schema)` sebelum `controller`
+router.post("/register", validate(registerSchema), authController.register);
+router.post("/login", validate(loginSchema), authController.login);
 
 module.exports = router;

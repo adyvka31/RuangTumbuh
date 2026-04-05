@@ -3,13 +3,19 @@ const router = express.Router();
 const userController = require("../controllers/user.controller");
 const upload = require("../middlewares/upload.middleware");
 
-// GET /api/users/:id
-router.get("/:id", userController.getProfile); 
+// Import middleware dan schema validation
+const validate = require("../middlewares/validate.middleware");
+const { updateProfileSchema } = require("../validations/user.validation");
 
-// PUT /api/users/:id
-router.put("/:id", upload.single("avatar"), userController.updateProfile); 
+router.get("/:id", userController.getProfile);
+router.get("/:id/dashboard", userController.getDashboardStats);
 
-// GET /api/users/:id/dashboard-stats
-router.get("/:id/dashboard-stats", userController.getDashboardStats);
+// Terapkan validasi di rute update
+router.put(
+  "/:id",
+  upload.single("profilePicture"),
+  validate(updateProfileSchema),
+  userController.updateProfile,
+);
 
 module.exports = router;

@@ -2,16 +2,24 @@ const express = require("express");
 const router = express.Router();
 const bookingController = require("../controllers/booking.controller");
 
-// POST /api/bookings
-router.post("/", bookingController.createBooking);
+// Import middleware dan schema
+const validate = require("../middlewares/validate.middleware");
+const {
+  createBookingSchema,
+  updateBookingStatusSchema,
+} = require("../validations/booking.validation");
 
-// GET /api/bookings/student (Aslinya /my-bookings)
-router.get("/student", bookingController.getMyBookings);
-
-// GET /api/bookings/tutor (Aslinya /incoming)
-router.get("/tutor", bookingController.getIncomingBookings);
-
-// PATCH /api/bookings/:id/status
-router.patch("/:id/status", bookingController.updateBookingStatus);
+router.post(
+  "/",
+  validate(createBookingSchema),
+  bookingController.createBooking,
+);
+router.get("/my-bookings", bookingController.getMyBookings);
+router.get("/incoming-bookings", bookingController.getIncomingBookings);
+router.patch(
+  "/:id/status",
+  validate(updateBookingStatusSchema),
+  bookingController.updateBookingStatus,
+);
 
 module.exports = router;

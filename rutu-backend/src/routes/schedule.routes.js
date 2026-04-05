@@ -2,16 +2,20 @@ const express = require("express");
 const router = express.Router();
 const scheduleController = require("../controllers/schedule.controller");
 
-// POST /api/schedules
-router.post("/", scheduleController.addSchedule);
+// Import middleware dan schema
+const validate = require("../middlewares/validate.middleware");
+const {
+  addScheduleSchema,
+  editScheduleSchema,
+} = require("../validations/schedule.validation");
 
-// GET /api/schedules/user/:id (Mengambil seluruh jadwal milik 1 user spesifik)
-router.get("/user/:id", scheduleController.getAllSchedules);
-
-// PUT /api/schedules/:id
-router.put("/:id", scheduleController.editSchedule);
-
-// DELETE /api/schedules/:id
+router.post("/", validate(addScheduleSchema), scheduleController.addSchedule);
+router.get("/:id", scheduleController.getAllSchedules);
+router.put(
+  "/:id",
+  validate(editScheduleSchema),
+  scheduleController.editSchedule,
+);
 router.delete("/:id", scheduleController.deleteSchedule);
 
 module.exports = router;
