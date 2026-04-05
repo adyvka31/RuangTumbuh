@@ -3,11 +3,18 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
-    "start:dev": "nodemon server.js"
+  "engines": {
+    "node": ">=22.2.2"
   },
+  "scripts": {
+    "preinstall": "npx mirror-config-china hosts && npx only-allow pnpm || npm install -g pnpm",
+    "build": "npx prisma generate",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "db:push": "npx prisma db push",
+    "db:migrate": "prisma migrate dev"
+  },
+  "postinstall": "prisma generate",
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -25,11 +32,11 @@
     "multer": "^2.1.1",
     "pg": "^8.20.0",
     "winston": "^3.19.0",
-    "winston-daily-rotate-file": "^5.0.0"
+    "winston-daily-rotate-file": "^5.0.0",
+    "prisma": "^7.4.2"
   },
   "devDependencies": {
-    "@types/node": "^25.5.0",
-    "nodemon": "^3.1.14",
-    "prisma": "^7.4.2"
+    "@types/node": "^25.5.2",
+    "nodemon": "^3.1.14"
   }
 }
