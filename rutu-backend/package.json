@@ -9,10 +9,10 @@
   "scripts": {
     "preinstall": "npx mirror-config-china hosts && npx only-allow pnpm || npm install -g pnpm",
     "build": "npx prisma generate",
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "start": "node server.js",
     "db:push": "npx prisma db push",
-    "db:migrate": "prisma migrate dev"
+    "db:migrate": "prisma migrate dev",
+    "dev": "nodemon server.js"
   },
   "postinstall": "prisma generate",
   "keywords": [],
