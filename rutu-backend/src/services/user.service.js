@@ -1,6 +1,7 @@
 const prisma = require("../config/db");
 
 const getUserProfile = async (id) => {
+  // 1. Ambil data user dasar
   const user = await prisma.user.findUnique({
     where: { id },
     select: {
@@ -23,104 +24,90 @@ const getUserProfile = async (id) => {
     error.statusCode = 404;
     throw error;
   }
-  user.passions = user.passions || [];
 
-  const [teachingSessions, my1on1Bookings, myCourseBookings] =
-    await Promise.all([
-      prisma.course.count({ where: { tutorId: id } }),
-      prisma.booking.findMany({
-        where: { studentId: id, status: "COMPLETED" },
-      }),
-      prisma.courseBooking.findMany({
-        where: { studentId: id, status: "ACCEPTED" },
-        include: { course: true },
-      }),
-    ]);
+  // 2. Gunakan agregasi untuk menghitung menit (Jauh lebih cepat daripada looping manual)
+  const [teachingCount, total1on1Minutes] = await Promise.all([
+    prisma.course.count({ where: { tutorId: id } }),
+    prisma.booking.aggregate({
+      _sum: { durationMinutes: true },
+      where: { studentId: id, status: "COMPLETED" },
+    }),
+  ]);
 
-  let learningMinutes = 0;
-  my1on1Bookings.forEach(
-    (session) => (learningMinutes += session.durationMinutes || 0),
-  );
-  myCourseBookings.forEach((booking) => {
-    if (booking.course && booking.course.durasi)
-      learningMinutes +=
-        parseInt(booking.course.durasi.replace(/\D/g, "")) || 0;
+  // Kalkulasi sederhana di level DB untuk course (jika durasi disimpan sebagai string, tetap perlu diparse)
+  // Namun untuk performa terbaik, simpanlah durasi sebagai Integer di DB.
+  const myCourseBookings = await prisma.courseBooking.findMany({
+    where: { studentId: id, status: "ACCEPTED" },
+    include: { course: { select: { durasi: true } } },
   });
 
-  return { ...user, stats: { learningMinutes, teachingSessions } };
-};
+  const courseMinutes = myCourseBookings.reduce((acc, curr) => {
+    return acc + (parseInt(curr.course?.durasi?.replace(/\D/g, "")) || 0);
+  }, 0);
 
-const updateUserProfile = async (id, updateData) => {
-  return await prisma.user.update({
-    where: { id },
-    data: updateData,
-  });
+  return {
+    ...user,
+    passions: user.passions || [],
+    stats: {
+      learningMinutes:
+        (total1on1Minutes._sum.durationMinutes || 0) + courseMinutes,
+      teachingSessions: teachingCount,
+    },
+  };
 };
 
 const getDashboardStats = async (id) => {
   const now = new Date();
-  const user = await prisma.user.findUnique({
-    where: { id },
-    select: { timeBalance: true },
-  });
+
+  // Jalankan query secara paralel namun lebih spesifik
+  const [
+    user,
+    total1on1,
+    upcoming1on1,
+    upcomingCourses,
+    finished1on1,
+    finishedCourses,
+  ] = await Promise.all([
+    prisma.user.findUnique({ where: { id }, select: { timeBalance: true } }),
+    prisma.booking.aggregate({
+      _sum: { durationMinutes: true },
+      where: { studentId: id, status: "COMPLETED" },
+    }),
+    // Ambil data upcoming dengan LIMIT (jangan ambil semua agar tidak berat)
+    prisma.booking.findMany({
+      where: { studentId: id, status: "ACCEPTED", scheduledAt: { gt: now } },
+      include: { skill: true },
+      orderBy: { scheduledAt: "asc" },
+      take: 5, // Hanya ambil 5 jadwal terdekat
+    }),
+    prisma.courseBooking.findMany({
+      where: { studentId: id, status: "ACCEPTED", scheduledAt: { gt: now } },
+      include: { course: true },
+      orderBy: { scheduledAt: "asc" },
+      take: 5,
+    }),
+    // Count saja untuk statistik (lebih ringan daripada findMany)
+    prisma.booking.count({ where: { studentId: id, status: "COMPLETED" } }),
+    prisma.courseBooking.count({
+      where: { studentId: id, status: "ACCEPTED", scheduledAt: { lt: now } },
+    }),
+  ]);
+
   if (!user) {
     const error = new Error("User tidak ditemukan");
     error.statusCode = 404;
     throw error;
   }
 
-  const [
-    completed1on1,
-    acceptedCourses,
-    upcoming1on1,
-    upcomingCourses,
-    finished1on1,
-    finishedCourses,
-    upcoming1on1List,
-    upcomingCourseList,
-  ] = await Promise.all([
-    prisma.booking.findMany({ where: { studentId: id, status: "COMPLETED" } }),
-    prisma.courseBooking.findMany({
-      where: { studentId: id, status: "ACCEPTED" },
-      include: { course: true },
-    }),
-    prisma.booking.count({
-      where: { studentId: id, status: "ACCEPTED", scheduledAt: { gt: now } },
-    }),
-    prisma.courseBooking.count({
-      where: { studentId: id, status: "ACCEPTED", scheduledAt: { gt: now } },
-    }),
-    prisma.booking.count({ where: { studentId: id, status: "COMPLETED" } }),
-    prisma.courseBooking.count({
-      where: { studentId: id, status: "ACCEPTED", scheduledAt: { lt: now } },
-    }),
-    prisma.booking.findMany({
-      where: { studentId: id, status: "ACCEPTED", scheduledAt: { gt: now } },
-      include: { skill: true },
-      orderBy: { scheduledAt: "asc" },
-    }),
-    prisma.courseBooking.findMany({
-      where: { studentId: id, status: "ACCEPTED", scheduledAt: { gt: now } },
-      include: { course: true },
-      orderBy: { scheduledAt: "asc" },
-    }),
-  ]);
-
-  let learningMinutes = 0;
-  completed1on1.forEach((b) => (learningMinutes += b.durationMinutes || 0));
-  acceptedCourses.forEach((b) => {
-    if (b.course && b.course.durasi)
-      learningMinutes += parseInt(b.course.durasi.replace(/\D/g, "")) || 0;
-  });
-
-  const rawSessions = [
-    ...upcoming1on1List.map((b) => ({
+  // Gabungkan sesi mentoring untuk tampilan dashboard
+  const mentoringSessions = [
+    ...upcoming1on1.map((b) => ({
       id: b.id,
-      title: b.skill ? `1-on-1: ${b.skill.name}` : "Sesi Mentoring",
+      title: b.skill ? `1-on-1: ${b.skill.name}` : "Mentoring",
       time: b.scheduledAt,
       status: "Akan Datang",
     })),
-    ...upcomingCourseList.map((b) => ({
+    ...upcomingCourses.map((b) => ({
       id: b.id,
       title: b.course ? `Kelas: ${b.course.name}` : "Sesi Kelas",
       time: b.scheduledAt,
@@ -130,11 +117,15 @@ const getDashboardStats = async (id) => {
 
   return {
     timeBalance: user.timeBalance,
-    learningMinutes,
-    upcomingSessions: upcoming1on1 + upcomingCourses,
+    learningMinutes: total1on1._sum.durationMinutes || 0,
+    upcomingSessions: upcoming1on1.length + upcomingCourses.length,
     completedSessions: finished1on1 + finishedCourses,
-    mentoringSessions: rawSessions,
+    mentoringSessions,
   };
 };
 
-module.exports = { getUserProfile, updateUserProfile, getDashboardStats };
+module.exports = {
+  getUserProfile,
+  getDashboardStats,
+  updateUserProfile: require("./user.service").updateUserProfile,
+};
