@@ -4,6 +4,8 @@ import DashboardLayout from "@/layouts/DashboardLayout/DashboardLayout";
 import styles from "./SchedulePage.module.css";
 import { useNavigate } from "react-router-dom";
 
+const API_URL = "http://localhost:5001/api";
+
 // Icons
 import {
   FiCalendar,
@@ -66,12 +68,10 @@ export default function SchedulePage() {
         const localUser = JSON.parse(localStorage.getItem("user") || "{}");
         if (!localUser.id) return;
 
-        const response = await fetch(
-          `http://localhost:5001/api/schedules/user/${localUser.id}`,
-        );
+        const response = await fetch(`${API_URL}/schedules/${localUser.id}`);
+
         if (response.ok) {
           const data = await response.json();
-          // Filter hanya yang berstatus Akan Datang atau Selesai (hilangkan yang Pending/Menunggu Konfirmasi)
           const validSchedules = data.filter(
             (s) => s.status !== "Menunggu Konfirmasi" && s.status !== "Pending",
           );
@@ -134,18 +134,13 @@ export default function SchedulePage() {
 
   // Fungsi Selesai & Hapus
   const handleDelete = async (itemId) => {
-    if (
-      window.confirm(
-        "Apakah Anda yakin ingin menyelesaikan dan menghapus jadwal ini dari kalender?",
-      )
-    ) {
+    if (window.confirm("Apakah Anda yakin ingin menyelesaikan jadwal ini?")) {
       try {
-        const response = await fetch(
-          `http://localhost:5001/api/schedules/${itemId}`,
-          {
-            method: "DELETE",
-          },
-        );
+        // Endpoint DELETE di backend sudah menangani pemisahan prefix ini
+        const response = await fetch(`${API_URL}/schedules/${itemId}`, {
+          method: "DELETE",
+        });
+
         if (response.ok) {
           setSchedules((prev) => prev.filter((s) => s.id !== itemId));
         } else {

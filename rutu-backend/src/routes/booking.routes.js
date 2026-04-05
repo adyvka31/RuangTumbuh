@@ -14,8 +14,8 @@ router.post(
   validate(createBookingSchema),
   bookingController.createBooking,
 );
-router.get("/my-bookings", bookingController.getMyBookings);
-router.get("/incoming-bookings", bookingController.getIncomingBookings);
+router.get("/student", bookingController.getMyBookings);
+router.get("/tutor", bookingController.getIncomingBookings);
 router.patch(
   "/:id/status",
   validate(updateBookingStatusSchema),

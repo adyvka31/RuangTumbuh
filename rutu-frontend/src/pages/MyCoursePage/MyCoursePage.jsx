@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import DashboardLayout from "@/layouts/DashboardLayout/DashboardLayout";
 import styles from "./MyCoursePage.module.css";
@@ -20,7 +21,6 @@ import {
   FiPlayCircle,
   FiCheckCircle,
   FiSend,
-  FiEye,
   FiAlertCircle,
   FiUser,
 } from "react-icons/fi";
@@ -92,24 +92,20 @@ export default function MyCoursePage() {
   });
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const API_URL = "http://localhost:5001/api";
 
   const fetchMyCreatedCourses = async () => {
     try {
-      if (!user.id) return;
-      const response = await fetch(
-        `http://localhost:5001/api/courses?tutorId=${user.id}`,
-      );
-      const data = await response.json();
-      const formattedData = data.map((item) => ({
-        id: item.id,
-        title: item.name,
-        author: item.tutor,
-        category: item.kategori,
-        duration: item.durasi,
-        description: item.deskripsi,
-        ...getCourseExtras(item.kategori),
-      }));
-      setMyCreatedCourses(formattedData);
+      const response = await axios.get(`${API_URL}/courses?tutorId=${user.id}`);
+
+      const coursesArray = response.data.data;
+
+      if (Array.isArray(coursesArray)) {
+        setMyCreatedCourses(coursesArray);
+      } else {
+        console.error("Data yang diterima bukan array:", coursesArray);
+        setMyCreatedCourses([]);
+      }
     } catch (error) {
       console.error("Error fetching my courses:", error);
     }
@@ -119,23 +115,22 @@ export default function MyCoursePage() {
     try {
       if (!user.id) return;
       const response = await fetch(
-        `http://localhost:5001/api/bookings/student?studentId=${user.id}`,
+        `${API_URL}/bookings/student?studentId=${user.id}`,
       );
       const data = await response.json();
-      setMyBookings(data);
+      setIncomingBookings(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Error fetching my bookings:", error);
     }
   };
-
   const fetchIncomingBookings = async () => {
     try {
       if (!user.id) return;
       const response = await fetch(
-        `http://localhost:5001/api/bookings/tutor?tutorId=${user.id}`,
+        `${API_URL}/bookings/tutor?tutorId=${user.id}`,
       );
       const data = await response.json();
-      setIncomingBookings(data);
+      setIncomingBookings(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Error fetching incoming bookings:", error);
     }
