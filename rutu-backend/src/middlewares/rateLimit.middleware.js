@@ -1,27 +1,43 @@
 const rateLimit = require("express-rate-limit");
 
-// 1. GLOBAL LIMITER (Untuk mencegah spam umum ke server)
-// Aturan: Maksimal 100 request per 15 menit dari 1 IP
+// 1. GLOBAL LIMITER (Untuk Endpoint Biasa: Search, Profile, Course)
+// Aturan: Maksimal 300 request per 5 menit dari 1 IP.
+// 300 / 5 menit = 1 request per detik secara konstan.
+// Ini sangat cukup untuk user asli yang mengetik cepat atau pindah-pindah tab.
 const globalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 menit
-  max: 100, // Batasi setiap IP hingga 100 request per windowMs
+  windowMs: 5 * 60 * 1000, // 5 menit
+  max: 300,
   message: {
     message:
-      "Terlalu banyak interaksi dari perangkat Anda. Mohon tunggu beberapa saat dan coba lagi.",
+      "Terlalu banyak permintaan data. Sistem sedang menstabilkan koneksi, silakan coba lagi dalam beberapa menit.",
   },
-  standardHeaders: true, // Mengembalikan info limit di header `RateLimit-*`
-  legacyHeaders: false, // Nonaktifkan header lama
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
-// 2. AUTH LIMITER (Sangat Ketat: Mencegah Brute Force Login/Register)
-// Aturan: Maksimal 10x percobaan per 15 menit dari 1 IP
+// 2. AUTH LIMITER (Sangat Ketat: Hanya untuk Login & Register)
+// Aturan: Maksimal 15x percobaan per 15 menit dari 1 IP.
+// Mencegah hacker menebak password berulang kali (Brute Force).
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 menit
-  max: 10, // Hanya boleh 10x percobaan login/register
+  max: 15,
   message: {
     message:
-      "Terlalu banyak percobaan masuk. Demi keamanan, silakan coba lagi setelah 15 menit.",
+      "Terlalu banyak percobaan masuk. Demi keamanan akun Anda, silakan coba lagi setelah 15 menit.",
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// 3. API SPECIFIC LIMITER (Opsional untuk endpoint tertentu yang berat)
+// Contoh: Pembuatan kursus baru
+const createCourseLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 jam
+  max: 10, // Maksimal 10 kursus per jam dari 1 IP
+  message: {
+    message:
+      "Anda telah mencapai batas pembuatan kursus harian. Istirahat sejenak!",
   },
 });
 
-module.exports = { globalLimiter, authLimiter };
+module.exports = { globalLimiter, authLimiter, createCourseLimiter };

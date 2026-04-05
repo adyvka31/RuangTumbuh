@@ -1,20 +1,15 @@
 const prisma = require("../config/db");
+const logger = require("../utils/logger");
 
-// --- FUNGSI HELPER VALIDASI ---
 const validateScheduleInput = (title, platform, partner, date, time) => {
-  if (!title || title.length < 3 || title.length > 50) {
-    return "Nama kegiatan harus antara 3 hingga 50 karakter.";
-  }
-  if (!platform || platform.length < 3 || platform.length > 50) {
-    return "Platform / Lokasi harus antara 3 hingga 50 karakter.";
-  }
-  if (!partner || partner.length < 3 || partner.length > 50) {
-    return "Nama partisipan/rekan harus antara 3 hingga 50 karakter.";
-  }
-  if (!date || !time) {
-    return "Tanggal dan Waktu tidak boleh kosong.";
-  }
-  return null; // Lolos validasi
+  if (!title || title.length < 3 || title.length > 50)
+    return "Nama kegiatan harus 3-50 karakter.";
+  if (!platform || platform.length < 3 || platform.length > 50)
+    return "Platform / Lokasi harus 3-50 karakter.";
+  if (!partner || partner.length < 3 || partner.length > 50)
+    return "Nama partisipan harus 3-50 karakter.";
+  if (!date || !time) return "Tanggal dan Waktu tidak boleh kosong.";
+  return null;
 };
 
 const addSchedule = async (req, res) => {
@@ -30,7 +25,6 @@ const addSchedule = async (req, res) => {
       partner,
     } = req.body;
 
-    // 🛡️ PROTEKSI INPUT
     const validationError = validateScheduleInput(
       title,
       platform,
@@ -44,11 +38,10 @@ const addSchedule = async (req, res) => {
     const safeTime = time.replace(".", ":");
     const scheduledAt = new Date(`${date}T${safeTime}:00`);
 
-    if (isNaN(scheduledAt.getTime())) {
+    if (isNaN(scheduledAt.getTime()))
       return res
         .status(400)
         .json({ message: "Format tanggal atau waktu tidak valid." });
-    }
 
     const customData = JSON.stringify({ title, category, platform, partner });
 
@@ -63,10 +56,17 @@ const addSchedule = async (req, res) => {
         notes: customData,
       },
     });
+
+    logger.info(
+      `[Schedule] Jadwal mandiri berhasil dibuat oleh User ID: ${studentId}`,
+    );
     res
       .status(201)
       .json({ message: "Jadwal berhasil ditambahkan!", schedule: newSchedule });
   } catch (error) {
+    logger.error(`[Schedule] Error addSchedule: ${error.message}`, {
+      stack: error.stack,
+    });
     res
       .status(500)
       .json({ message: "Terjadi kesalahan server", error: error.message });
@@ -76,8 +76,6 @@ const addSchedule = async (req, res) => {
 const getAllSchedules = async (req, res) => {
   try {
     const { id } = req.params;
-
-    // PARALEL EKSEKUSI
     const [my1on1Bookings, myCourseBookings] = await Promise.all([
       prisma.booking.findMany({
         where: { studentId: id },
@@ -129,11 +127,12 @@ const getAllSchedules = async (req, res) => {
       }),
       ...myCourseBookings.map((b) => {
         const startDate = new Date(b.scheduledAt);
-        const durationStr =
-          b.course && b.course.durasi
-            ? b.course.durasi.replace(/\D/g, "")
-            : "60";
-        const duration = parseInt(durationStr) || 60;
+        const duration =
+          parseInt(
+            b.course && b.course.durasi
+              ? b.course.durasi.replace(/\D/g, "")
+              : "60",
+          ) || 60;
         const endDate = new Date(startDate.getTime() + duration * 60000);
 
         return {
@@ -162,8 +161,13 @@ const getAllSchedules = async (req, res) => {
         };
       }),
     ];
+
+    logger.info(`[Schedule] Data kalender diambil untuk User ID: ${id}`);
     res.status(200).json(allSchedules);
   } catch (error) {
+    logger.error(`[Schedule] Error getAllSchedules: ${error.message}`, {
+      stack: error.stack,
+    });
     res.status(500).json({ message: "Gagal mengambil data jadwal" });
   }
 };
@@ -176,7 +180,6 @@ const editSchedule = async (req, res) => {
     const { title, date, time, durationMinutes, category, platform, partner } =
       req.body;
 
-    // 🛡️ PROTEKSI INPUT
     const validationError = validateScheduleInput(
       title,
       platform,
@@ -189,12 +192,8 @@ const editSchedule = async (req, res) => {
 
     const safeTime = time.replace(".", ":");
     const scheduledAt = new Date(`${date}T${safeTime}:00`);
-
-    if (isNaN(scheduledAt.getTime())) {
-      return res
-        .status(400)
-        .json({ message: "Format tanggal atau waktu tidak valid." });
-    }
+    if (isNaN(scheduledAt.getTime()))
+      return res.status(400).json({ message: "Format waktu tidak valid." });
 
     const customData = JSON.stringify({ title, category, platform, partner });
 
@@ -214,8 +213,15 @@ const editSchedule = async (req, res) => {
         data: { scheduledAt, note: customData },
       });
     }
+
+    logger.info(
+      `[Schedule] Jadwal (${type}) berhasil di-reschedule. ID Jadwal: ${actualId}`,
+    );
     res.status(200).json({ message: "Jadwal berhasil di-reschedule!" });
   } catch (error) {
+    logger.error(`[Schedule] Error editSchedule: ${error.message}`, {
+      stack: error.stack,
+    });
     res
       .status(500)
       .json({ message: "Terjadi kesalahan server", error: error.message });
@@ -228,13 +234,19 @@ const deleteSchedule = async (req, res) => {
     const type = id.split("-")[0];
     const actualId = id.substring(type.length + 1);
 
-    if (type === "booking") {
+    if (type === "booking")
       await prisma.booking.delete({ where: { id: actualId } });
-    } else if (type === "course") {
+    else if (type === "course")
       await prisma.courseBooking.delete({ where: { id: actualId } });
-    }
+
+    logger.info(
+      `[Schedule] Jadwal (${type}) berhasil dihapus. ID Jadwal: ${actualId}`,
+    );
     res.status(200).json({ message: "Jadwal berhasil dihapus dari kalender!" });
   } catch (error) {
+    logger.error(`[Schedule] Error deleteSchedule: ${error.message}`, {
+      stack: error.stack,
+    });
     res
       .status(500)
       .json({ message: "Terjadi kesalahan server", error: error.message });

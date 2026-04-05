@@ -1,10 +1,9 @@
 const prisma = require("../config/db");
+const logger = require("../utils/logger");
 
 const getProfile = async (req, res) => {
   try {
     const { id } = req.params;
-
-    // 1. Cek User dulu (Jika user tidak ada, langsung batalkan)
     const user = await prisma.user.findUnique({
       where: { id },
       select: {
@@ -21,11 +20,13 @@ const getProfile = async (req, res) => {
         createdAt: true,
       },
     });
-    if (!user)
+
+    if (!user) {
+      logger.warn(`[User] Profil tidak ditemukan untuk ID: ${id}`);
       return res.status(404).json({ message: "User tidak ditemukan!" });
+    }
     user.passions = user.passions || [];
 
-    // 2. PARALEL EKSEKUSI (Jalan Bersamaan)
     const [teachingSessions, my1on1Bookings, myCourseBookings] =
       await Promise.all([
         prisma.course.count({ where: { tutorId: id } }),
@@ -42,20 +43,23 @@ const getProfile = async (req, res) => {
     my1on1Bookings.forEach(
       (session) => (total1on1Minutes += session.durationMinutes || 0),
     );
-
     let totalCourseMinutes = 0;
     myCourseBookings.forEach((booking) => {
-      if (booking.course && booking.course.durasi) {
+      if (booking.course && booking.course.durasi)
         totalCourseMinutes +=
           parseInt(booking.course.durasi.replace(/\D/g, "")) || 0;
-      }
     });
 
     const learningMinutes = total1on1Minutes + totalCourseMinutes;
+
+    logger.info(`[User] Data profil berhasil dimuat untuk ID: ${id}`);
     res
       .status(200)
       .json({ ...user, stats: { learningMinutes, teachingSessions } });
   } catch (error) {
+    logger.error(`[User] Error getProfile: ${error.message}`, {
+      stack: error.stack,
+    });
     res
       .status(500)
       .json({ message: "Terjadi kesalahan server", error: error.message });
@@ -67,7 +71,6 @@ const updateProfile = async (req, res) => {
     const { id } = req.params;
     let { name, location, birthday, school, description, passions } = req.body;
 
-    // 1. Validasi Nama
     if (name) {
       const nameRegex = /^[a-zA-Z\s]*$/;
       const nameWords = name.trim().split(/\s+/);
@@ -84,64 +87,47 @@ const updateProfile = async (req, res) => {
           });
       }
     }
-
-    // 2. Validasi Tanggal Lahir (Tidak boleh di masa depan)
     if (birthday) {
       const selectedDate = new Date(birthday);
       const today = new Date();
-      today.setHours(0, 0, 0, 0); // Reset jam agar adil
-      if (selectedDate > today) {
+      today.setHours(0, 0, 0, 0);
+      if (selectedDate > today)
         return res
           .status(400)
           .json({
             message: "Tanggal lahir tidak valid (tidak boleh di masa depan).",
           });
-      }
     }
-
-    // 3. Validasi Panjang Teks (Mencegah Database Overload / Spam Text)
-    if (description && description.length > 500) {
+    if (description && description.length > 500)
       return res
         .status(400)
         .json({
           message: "Deskripsi diri terlalu panjang (Maksimal 500 karakter).",
         });
-    }
-    if (location && location.length > 100) {
+    if (location && location.length > 100)
       return res
         .status(400)
         .json({ message: "Lokasi terlalu panjang (Maksimal 100 karakter)." });
-    }
-    if (school && school.length > 100) {
+    if (school && school.length > 100)
       return res
         .status(400)
-        .json({
-          message:
-            "Nama institusi/sekolah terlalu panjang (Maksimal 100 karakter).",
-        });
-    }
+        .json({ message: "Nama institusi/sekolah terlalu panjang." });
 
-    // 4. Validasi Array Passions (Mencegah Spam Tag)
     let parsedPassions = [];
     if (typeof passions === "string") {
       try {
         parsedPassions = JSON.parse(passions);
-      } catch (e) {
-        parsedPassions = [];
-      }
+      } catch (e) {}
     } else if (Array.isArray(passions)) {
       parsedPassions = passions;
     }
-
-    if (parsedPassions.length > 10) {
+    if (parsedPassions.length > 10)
       return res
         .status(400)
         .json({
           message: "Maksimal hanya boleh menambahkan 10 keahlian/passion.",
         });
-    }
 
-    // Susun data yang sudah divalidasi
     const updateData = {
       name,
       location,
@@ -150,23 +136,21 @@ const updateProfile = async (req, res) => {
       description,
       passions: parsedPassions,
     };
+    if (req.file) updateData.profilePicture = `/uploads/${req.file.filename}`;
 
-    // Jika ada file foto yang diupload, simpan path-nya
-    if (req.file) {
-      // Catatan: Validasi ukuran file 2MB dan format gambar sudah di-handle oleh Multer di upload.middleware.js
-      updateData.profilePicture = `/uploads/${req.file.filename}`;
-    }
-
-    // Simpan ke database
     const updatedUser = await prisma.user.update({
       where: { id },
       data: updateData,
     });
+
+    logger.info(`[User] Profil berhasil diperbarui untuk ID: ${id}`);
     res
       .status(200)
       .json({ message: "Profil berhasil diperbarui!", user: updatedUser });
   } catch (error) {
-    console.error("❌ Update Profile Error:", error);
+    logger.error(`[User] Error updateProfile: ${error.message}`, {
+      stack: error.stack,
+    });
     res
       .status(500)
       .json({ message: "Terjadi kesalahan server", error: error.message });
@@ -177,14 +161,15 @@ const getDashboardStats = async (req, res) => {
   try {
     const { id } = req.params;
     const now = new Date();
-
     const user = await prisma.user.findUnique({
       where: { id },
       select: { timeBalance: true },
     });
-    if (!user) return res.status(404).json({ message: "User tidak ditemukan" });
+    if (!user) {
+      logger.warn(`[Dashboard] User tidak ditemukan untuk ID: ${id}`);
+      return res.status(404).json({ message: "User tidak ditemukan" });
+    }
 
-    // PARALEL EKSEKUSI SUPER CEPAT (8 Query berjalan sekaligus!)
     const [
       completed1on1,
       acceptedCourses,
@@ -234,31 +219,32 @@ const getDashboardStats = async (req, res) => {
     const rawSessions = [
       ...upcoming1on1List.map((b) => ({
         id: b.id,
-        title: b.skill ? `1-on-1: ${b.skill.name}` : "Sesi Mentoring 1-on-1",
+        title: b.skill ? `1-on-1: ${b.skill.name}` : "Sesi Mentoring",
         time: b.scheduledAt,
-        url: b.meetingLink || "#",
         status: "Akan Datang",
       })),
       ...upcomingCourseList.map((b) => ({
         id: b.id,
         title: b.course ? `Kelas: ${b.course.name}` : "Sesi Kelas",
         time: b.scheduledAt,
-        url: "#",
         status: "Akan Datang",
       })),
     ];
-    const mentoringSessions = rawSessions.sort(
-      (a, b) => new Date(a.time) - new Date(b.time),
-    );
 
+    logger.info(`[Dashboard] Stats berhasil dimuat untuk ID: ${id}`);
     res.json({
       timeBalance: user.timeBalance,
       learningMinutes,
       upcomingSessions: upcoming1on1 + upcomingCourses,
       completedSessions: finished1on1 + finishedCourses,
-      mentoringSessions,
+      mentoringSessions: rawSessions.sort(
+        (a, b) => new Date(a.time) - new Date(b.time),
+      ),
     });
   } catch (error) {
+    logger.error(`[Dashboard] Error getDashboardStats: ${error.message}`, {
+      stack: error.stack,
+    });
     res
       .status(500)
       .json({ message: "Error fetch dashboard stats", error: error.message });

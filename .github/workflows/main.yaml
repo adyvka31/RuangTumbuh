@@ -1,0 +1,44 @@
+name: RuangTumbuh CI/CD Pipeline
+
+# Akan berjalan setiap kali ada push atau Pull Request ke branch 'main'
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest # Server virtual GitHub yang digunakan
+
+    steps:
+      # 1. Unduh kode dari repository ke server GitHub Actions
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # 2. Siapkan lingkungan Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      # 3. Install Package Manager pnpm
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      # 4. Uji Coba Backend
+      - name: Install & Build Backend (Prisma)
+        working-directory: ./rutu-backend
+        run: |
+          pnpm install
+          npx prisma generate
+          # Jika Anda punya file testing (seperti Jest), Anda bisa tambahkan: pnpm test
+
+      # 5. Uji Coba Frontend
+      - name: Install & Build Frontend
+        working-directory: ./rutu-frontend
+        run: |
+          pnpm install
+          pnpm build
