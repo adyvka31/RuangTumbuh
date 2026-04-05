@@ -44,6 +44,12 @@ app.use((req, res) => {
   res.status(404).json({ message: "API Endpoint tidak ditemukan." });
 });
 
+const corsOptions = {
+  origin: ["http://localhost:5173", "http://127.0.0.1:5173"], // Izinkan port frontend Vite
+  credentials: true,
+};
+app.use(cors(corsOptions));
+
 const errorHandler = require("./middlewares/error.middleware");
 app.use(errorHandler);
 
