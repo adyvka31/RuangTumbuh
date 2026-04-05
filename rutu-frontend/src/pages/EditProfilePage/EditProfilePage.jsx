@@ -258,13 +258,6 @@ export default function EditProfilePage() {
     },
   };
 
-  if (loading) {
-    return (
-      <DashboardLayout title="Pengaturan Profil">
-        <p style={{ padding: "20px" }}>Memuat data profil Anda...</p>
-      </DashboardLayout>
-    );
-  }
 
   return (
     <DashboardLayout title="Pengaturan Profil">
