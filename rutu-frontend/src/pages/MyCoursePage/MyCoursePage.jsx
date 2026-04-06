@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import DashboardLayout from "@/layouts/DashboardLayout/DashboardLayout";
@@ -79,6 +80,8 @@ const completedCourses = [
 
 export default function MyCoursePage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+
   const [activeTab, setActiveTab] = useState("Kursus Saya");
   const [myCreatedCourses, setMyCreatedCourses] = useState([]);
   const [myBookings, setMyBookings] = useState([]);
@@ -91,7 +94,6 @@ export default function MyCoursePage() {
     description: "",
   });
 
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
   const API_URL = "http://localhost:5001/api";
 
   const fetchMyCreatedCourses = async () => {

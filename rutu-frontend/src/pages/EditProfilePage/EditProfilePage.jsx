@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "@/layouts/DashboardLayout/DashboardLayout";
 import styles from "./EditProfilePage.module.css";
 import { Input } from "@/components/Input/Input";
-import { Popup } from "@/components/Popup/Popup"; // Pastikan di-import untuk notifikasi sukses
+import { Popup } from "@/components/Popup/Popup";
 import {
   FiSave,
   FiX,
@@ -23,6 +24,7 @@ import {
 
 export default function EditProfilePage() {
   const navigate = useNavigate();
+  const { user, updateUserData } = useAuth();
 
   // State Utama
   const [loading, setLoading] = useState(true);
@@ -57,15 +59,11 @@ export default function EditProfilePage() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const localUser = JSON.parse(localStorage.getItem("user") || "{}");
-        if (!localUser.id) {
-          navigate("/login");
-          return;
-        }
-        setUserId(localUser.id);
+        if (!user?.id) return;
+        setUserId(user.id);
 
         const response = await fetch(
-          `http://localhost:5001/api/users/${localUser.id}`,
+          `http://localhost:5001/api/users/${user.id}`,
         );
         if (response.ok) {
           const data = await response.json();
@@ -146,7 +144,6 @@ export default function EditProfilePage() {
     fileInputRef.current.click();
   };
 
-  // 2. MENGIRIM DATA KE BACKEND SAAT TOMBOL SIMPAN DIKLIK
   const handleSave = async () => {
     if (!userId) return;
     setError(""); // Reset error sebelumnya
@@ -225,9 +222,9 @@ export default function EditProfilePage() {
 
       if (response.ok) {
         // Update data 'name' di localStorage agar Topbar & Sidebar ikut berubah
-        const localUser = JSON.parse(localStorage.getItem("user") || "{}");
-        localUser.name = formData.name;
-        localStorage.setItem("user", JSON.stringify(localUser));
+        updateUserData({
+          name: formData.name,
+          profilePicture: result.profilePicture || formData.avatar,});
 
         setPopup({
           isOpen: true,
@@ -257,7 +254,6 @@ export default function EditProfilePage() {
       transition: { type: "spring", stiffness: 300, damping: 24 },
     },
   };
-
 
   return (
     <DashboardLayout title="Pengaturan Profil">

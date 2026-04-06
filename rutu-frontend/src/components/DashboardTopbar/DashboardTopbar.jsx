@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import styles from "./DashboardTopbar.module.css";
 import { BsCheckAll } from "react-icons/bs";
 import { CiLight } from "react-icons/ci";
@@ -62,9 +63,8 @@ const initialNotifications = [
 ];
 
 export default function DashboardTopbar({ title, onMenuClick }) {
-  const userString = localStorage.getItem("user");
-  const user = userString ? JSON.parse(userString) : null;
-  const userName = user ? user.name : "Pengguna";
+  const { user } = useAuth();
+  const userName = user?.name || "Pengguna";
 
   // --- State Notifikasi ---
   const [notifications, setNotifications] = useState(initialNotifications);

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import { motion } from "framer-motion";
 import DashboardLayout from "@/layouts/DashboardLayout/DashboardLayout";
 import styles from "./DashboardPage.module.css";
@@ -21,9 +22,8 @@ import shape13 from "@/assets/shape13.svg";
 
 export default function DashboardPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
-  const userString = localStorage.getItem("user");
-  const user = userString ? JSON.parse(userString) : null;
   const userName = user ? user.name : "Pengguna";
   const firstName = userName.split(" ")[0];
 
@@ -53,11 +53,10 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const localUser = JSON.parse(localStorage.getItem("user") || "{}");
-        if (!localUser.id) return;
+        if (!user?.id) return;
 
         const response = await fetch(
-          `http://localhost:5001/api/users/${localUser.id}/dashboard`,
+          `http://localhost:5001/api/users/${user?.id}/dashboard`,
         );
         if (response.ok) {
           const data = await response.json();

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import DashboardLayout from "@/layouts/DashboardLayout/DashboardLayout";
 import styles from "./SchedulePage.module.css";
@@ -37,6 +38,7 @@ const monthNames = [
 
 export default function SchedulePage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   // State Utama
   const [schedules, setSchedules] = useState([]);
@@ -65,10 +67,9 @@ export default function SchedulePage() {
   useEffect(() => {
     const fetchSchedules = async () => {
       try {
-        const localUser = JSON.parse(localStorage.getItem("user") || "{}");
-        if (!localUser.id) return;
+        if (!user?.id) return;
 
-        const response = await fetch(`${API_URL}/schedules/${localUser.id}`);
+        const response = await fetch(`${API_URL}/schedules/${user.id}`);
 
         if (response.ok) {
           const data = await response.json();

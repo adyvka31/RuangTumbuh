@@ -1,11 +1,11 @@
 import React, { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import styles from "./DashboardSidebar.module.css";
 import logo from "../../assets/logo.svg";
 import { Popup } from "../Popup/Popup";
 import { FiAlertCircle } from "react-icons/fi";
 
-// 1. IMPORT REACT ICONS (Feather Icons)
 import {
   FiHome,
   FiBookOpen,
@@ -41,7 +41,7 @@ const mainMenu = [
 
 export default function DashboardSidebar({ isOpen, onClose }) {
   const location = useLocation();
-  const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const [showLogoutPopup, setShowLogoutPopup] = useState(false);
 
@@ -50,8 +50,7 @@ export default function DashboardSidebar({ isOpen, onClose }) {
   };
 
   const confirmLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    logout();
     window.location.replace("/");
   };
 
@@ -100,7 +99,6 @@ export default function DashboardSidebar({ isOpen, onClose }) {
               );
             })}
           </div>
-
 
           <div className={styles.section}>
             <h4 className={styles.sectionTitle}>SETTING</h4>

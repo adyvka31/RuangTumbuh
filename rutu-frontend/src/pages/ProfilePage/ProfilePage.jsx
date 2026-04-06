@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "@/layouts/DashboardLayout/DashboardLayout";
@@ -7,34 +8,30 @@ import {
   FiEdit3,
   FiMail,
   FiUser,
-  FiLogOut,
-  FiTrash2,
   FiMapPin,
-  FiSettings,
   FiBookOpen,
   FiInfo,
-  FiGift,
   FiCalendar,
   FiClock,
   FiZap,
 } from "react-icons/fi";
 
 export default function ProfilePage() {
+  const { user: localUser, logout } = useAuth();
   const navigate = useNavigate();
 
-  // 1. PERBAIKAN: Gunakan initial state objek kosong agar .map() dan .name tidak error saat loading
   const [userProfile, setUserProfile] = useState({
     name: "",
     email: "",
     passions: [],
     stats: { learningMinutes: 0, teachingSessions: 0 },
   });
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const localUser = JSON.parse(localStorage.getItem("user") || "{}");
         if (!localUser.id) {
           navigate("/login");
           return;
@@ -57,9 +54,7 @@ export default function ProfilePage() {
   }, [navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-    navigate("/login");
+    logout();
   };
 
   const formatDate = (dateString) => {

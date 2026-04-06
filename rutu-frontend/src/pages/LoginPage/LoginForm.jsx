@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import styles from "./LoginForm.module.css";
@@ -10,6 +11,7 @@ import { Popup } from "@components/Popup/Popup";
 
 export const LoginForm = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -31,11 +33,9 @@ export const LoginForm = () => {
         formData,
       );
 
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
+      login(response.data.user, response.data.token);
 
       setShowPopup(true);
-
       setTimeout(() => {
         setShowPopup(false);
         navigate("/dashboard");
@@ -51,7 +51,14 @@ export const LoginForm = () => {
     <>
       <form className={styles.loginForm} onSubmit={handleSubmit}>
         {error && (
-          <p style={{ color: "red", fontWeight: "bold", marginBottom: "10px", marginTop: "-15px" }}>
+          <p
+            style={{
+              color: "red",
+              fontWeight: "bold",
+              marginBottom: "10px",
+              marginTop: "-15px",
+            }}
+          >
             {error}
           </p>
         )}
