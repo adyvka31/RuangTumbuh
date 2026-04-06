@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import api from "@/utils/api";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useParams } from "react-router-dom";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import DashboardLayout from "@/layouts/DashboardLayout/DashboardLayout";
 import styles from "../AddCoursePage/AddCoursePage.module.css";
 import { Popup } from "@/components/Popup/Popup";
@@ -22,11 +23,11 @@ import {
   FiCheckCircle,
   FiAlertCircle,
 } from "react-icons/fi";
-import api from "@/utils/api";
 
 export default function EditCoursePage() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const queryClient = useQueryClient();
 
   const [formData, setFormData] = useState({
     title: "",
@@ -39,7 +40,6 @@ export default function EditCoursePage() {
     { id: Date.now(), title: "", duration: "" },
   ]);
 
-  const [loading, setLoading] = useState(true);
   const [popup, setPopup] = useState({
     isOpen: false,
     type: "success",
@@ -47,53 +47,88 @@ export default function EditCoursePage() {
     description: "",
   });
 
-  // Fetch existing course data
+  // 1. REACT QUERY: Fetch data kursus lama (Otomatis menggantikan useEffect fetch manual)
+  const {
+    data: courseData,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["courseDetail", id],
+    queryFn: async () => {
+      // Axios langsung mengembalikan data (tidak butuh .json() dan .ok)
+      return await api.get(`/courses/${id}`);
+    },
+    enabled: !!id,
+  });
+
+  // Memasukkan data dari server ke State Form Lokal saat data berhasil di-fetch
   useEffect(() => {
-    const fetchCourse = async () => {
-      try {
-        const response = await api.get(`/courses/${id}`);
-        const data = await response.json();
+    if (courseData) {
+      setFormData({
+        title: courseData.name || "",
+        category: courseData.kategori || "",
+        duration: courseData.durasi || "",
+        description: courseData.deskripsi || "",
+      });
 
-        if (response.ok) {
-          setFormData({
-            title: data.name || "",
-            category: data.kategori || "",
-            duration: data.durasi || "",
-            description: data.deskripsi || "",
-          });
-
-          if (data.modules && data.modules.length > 0) {
-            setModules(
-              data.modules.map((m, idx) => ({
-                id: idx + Date.now(),
-                title: m.title || "",
-                duration: m.duration || "",
-              })),
-            );
-          }
-        } else {
-          setPopup({
-            isOpen: true,
-            type: "danger",
-            title: "Kursus Tidak Ditemukan",
-            description: "Data kursus tidak dapat ditemukan. Silakan kembali.",
-          });
-        }
-      } catch (error) {
-        console.error("Fetch error:", error);
-        setPopup({
-          isOpen: true,
-          type: "danger",
-          title: "Kesalahan Koneksi",
-          description: "Tidak dapat terhubung ke server. Periksa koneksi Anda.",
-        });
-      } finally {
-        setLoading(false);
+      if (courseData.modules && courseData.modules.length > 0) {
+        setModules(
+          courseData.modules.map((m, idx) => ({
+            id: idx + Date.now(),
+            title: m.title || "",
+            duration: m.duration || "",
+          })),
+        );
       }
-    };
+    }
+  }, [courseData]);
 
-    fetchCourse();
-  }, [id]);
+  // Tangani Error Fetching
+  useEffect(() => {
+    if (isError) {
+      setPopup({
+        isOpen: true,
+        type: "danger",
+        title: "Kursus Tidak Ditemukan",
+        description:
+          "Data kursus tidak dapat ditemukan atau terjadi kesalahan koneksi.",
+      });
+    }
+  }, [isError]);
+
+  // 2. REACT QUERY: Mutation untuk Update Kursus
+  const updateCourseMutation = useMutation({
+    mutationFn: async (payload) => {
+      return await api.put(`/courses/${id}`, payload);
+    },
+    onSuccess: () => {
+      // Bersihkan cache agar daftar kursus di halaman MyCoursePage otomatis terupdate
+      queryClient.invalidateQueries(["createdCourses"]);
+      queryClient.invalidateQueries(["courseDetail", id]);
+
+      setPopup({
+        isOpen: true,
+        type: "success",
+        title: "Kursus Berhasil Diperbarui! 🎉",
+        description:
+          "Data kursus telah berhasil disimpan. Mengalihkan ke halaman kursus...",
+      });
+      setTimeout(() => {
+        navigate("/mycourses");
+      }, 2000);
+    },
+    onError: (error) => {
+      console.error("Submit error:", error);
+      setPopup({
+        isOpen: true,
+        type: "danger",
+        title: "Gagal Menyimpan",
+        description:
+          error.response?.data?.message ||
+          "Terjadi kesalahan koneksi ke server saat menyimpan.",
+      });
+    },
+  });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -116,7 +151,7 @@ export default function EditCoursePage() {
     );
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     if (
@@ -144,51 +179,18 @@ export default function EditCoursePage() {
       return;
     }
 
-    try {
-      const courseData = {
-        name: formData.title,
-        kategori: formData.category,
-        durasi: formData.duration,
-        deskripsi: formData.description,
-        modules: modules.map((m) => ({ title: m.title, duration: m.duration })),
-      };
+    const payload = {
+      name: formData.title,
+      kategori: formData.category,
+      durasi: formData.duration,
+      deskripsi: formData.description,
+      modules: modules.map((m) => ({ title: m.title, duration: m.duration })),
+    };
 
-      const response = await api.put(`/courses/${id}`, courseData);
-
-      const result = await response.json();
-
-      if (response.ok) {
-        setPopup({
-          isOpen: true,
-          type: "success",
-          title: "Kursus Berhasil Diperbarui! 🎉",
-          description:
-            "Data kursus telah berhasil disimpan. Mengalihkan ke halaman kursus...",
-        });
-        setTimeout(() => {
-          navigate("/mycourses");
-        }, 2000);
-      } else {
-        setPopup({
-          isOpen: true,
-          type: "danger",
-          title: "Gagal Menyimpan",
-          description:
-            result.message || "Terjadi kesalahan saat menyimpan data.",
-        });
-      }
-    } catch (error) {
-      console.error("Submit error:", error);
-      setPopup({
-        isOpen: true,
-        type: "danger",
-        title: "Kesalahan Koneksi",
-        description: "Tidak dapat terhubung ke server. Periksa koneksi Anda.",
-      });
-    }
+    updateCourseMutation.mutate(payload);
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <DashboardLayout title="Edit Kursus">
         <div
@@ -406,8 +408,15 @@ export default function EditCoursePage() {
               menyimpan.
             </p>
           </div>
-          <button type="submit" className={styles.saveBtn}>
-            <FiSave size={20} /> Simpan Perubahan
+          <button
+            type="submit"
+            className={styles.saveBtn}
+            disabled={updateCourseMutation.isPending}
+          >
+            <FiSave size={20} />{" "}
+            {updateCourseMutation.isPending
+              ? "Menyimpan..."
+              : "Simpan Perubahan"}
           </button>
         </motion.div>
       </form>

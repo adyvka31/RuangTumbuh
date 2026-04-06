@@ -26,30 +26,20 @@ export default function MyCourseCard({ course, onRefresh }) {
 
   const handleDelete = async () => {
     try {
-      const response = await api.delete(`/course/${course.id}`);
+      await api.delete(`/courses/${course.id}`);
 
-      if (response.ok) {
-        setShowDeletePopup(false);
-        if (onRefresh) onRefresh();
-      } else {
-        const result = await response.json();
-        setShowDeletePopup(false);
-        setPopup({
-          isOpen: true,
-          type: "danger",
-          title: "Gagal Menghapus",
-          description:
-            result.message || "Terjadi kesalahan saat menghapus kursus.",
-        });
-      }
+      setShowDeletePopup(false);
+      if (onRefresh) onRefresh();
     } catch (error) {
       console.error("Delete error:", error);
       setShowDeletePopup(false);
+
       setPopup({
         isOpen: true,
         type: "danger",
-        title: "Kesalahan Koneksi",
+        title: "Gagal Menghapus",
         description:
+          error.response?.data?.message ||
           "Terjadi kesalahan saat menghapus kursus. Periksa koneksi Anda.",
       });
     }
