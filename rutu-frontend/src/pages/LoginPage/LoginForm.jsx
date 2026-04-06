@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useMutation } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginPayloadSchema } from "../../../../packages/shared/validations/auth.schema";
 import api from "@/utils/api";
 import { useNavigate, Link } from "react-router-dom";
 import styles from "./LoginForm.module.css";
@@ -14,11 +17,17 @@ export const LoginForm = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const [formData, setFormData] = useState({ email: "", password: "" });
-  const [error, setError] = useState("");
+  const [apiError, setApiError] = useState("");
   const [showPopup, setShowPopup] = useState(false);
 
-  // REACT QUERY: Mutation Login
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(loginPayloadSchema),
+  });
+
   const loginMutation = useMutation({
     mutationFn: async (credentials) => {
       return await api.post("/auth/login", credentials);
@@ -32,24 +41,20 @@ export const LoginForm = () => {
       }, 3000);
     },
     onError: (err) => {
-      setError(err.response?.data?.message || "Email atau password salah!");
+      setApiError(err.response?.data?.message || "Email atau password salah!");
     },
   });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setError("");
-    loginMutation.mutate(formData);
+  // onSubmit hanya akan dipanggil jika validasi Zod SUKSES
+  const onSubmit = (data) => {
+    setApiError("");
+    loginMutation.mutate(data);
   };
 
   return (
     <>
-      <form className={styles.loginForm} onSubmit={handleSubmit}>
-        {error && (
+      <form className={styles.loginForm} onSubmit={handleSubmit(onSubmit)}>
+        {apiError && (
           <p
             style={{
               color: "red",
@@ -58,31 +63,40 @@ export const LoginForm = () => {
               marginTop: "-15px",
             }}
           >
-            {error}
+            {apiError}
           </p>
         )}
 
         <div className={styles.inputFormGroup}>
-          <Input
-            type="email"
-            id="email"
-            name="email"
-            label="Email"
-            icon={FiAtSign}
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-          <Input
-            type="password"
-            id="password"
-            name="password"
-            label="Password"
-            icon={FiLock}
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
+          <div>
+            <Input
+              type="email"
+              id="email"
+              label="Email"
+              icon={FiAtSign}
+              {...register("email")}
+            />
+            {errors.email && (
+              <span style={{ color: "red", fontSize: "0.8rem" }}>
+                {errors.email.message}
+              </span>
+            )}
+          </div>
+
+          <div>
+            <Input
+              type="password"
+              id="password"
+              label="Password"
+              icon={FiLock}
+              {...register("password")}
+            />
+            {errors.password && (
+              <span style={{ color: "red", fontSize: "0.8rem" }}>
+                {errors.password.message}
+              </span>
+            )}
+          </div>
 
           <div className={styles.passwordActionsForm}>
             <div className={styles.rememberMeGroup}>

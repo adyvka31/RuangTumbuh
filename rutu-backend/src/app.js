@@ -15,41 +15,44 @@ const scheduleRoutes = require("./routes/schedule.routes");
 
 const app = express();
 
-// Middlewares Global
-app.use(cors());
+// MIDDLEWARE GLOBAL
+const corsOptions = {
+  origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
+  credentials: true,
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
+// LOGGING
 const morganFormat = ":method :url :status :response-time ms";
 app.use(
   morgan(morganFormat, {
     stream: {
-      write: (message) => logger.info(message.trim()), // Arahkan morgan ke winston
+      write: (message) => logger.info(message.trim()),
     },
   }),
 );
 
+// RATE LIMITER
 app.use("/api", globalLimiter);
 
-// Daftarkan Routes
+// DAFTARKAN ROUTES
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/schedules", scheduleRoutes);
 
-// Penanganan URL tidak ditemukan (404 Fallback)
+// PENANGANAN URL TIDAK DITEMUKAN (404)
 app.use((req, res) => {
-  logger.warn(`Mencoba akses endpoint tidak valid: ${req.originalUrl}`); // Catat jika ada yang nyasar/hacker
-  res.status(404).json({ message: "API Endpoint tidak ditemukan." });
+  logger.warn(`Mencoba akses endpoint tidak valid: ${req.originalUrl}`);
+  res
+    .status(404)
+    .json({ success: false, message: "API Endpoint tidak ditemukan." });
 });
 
-const corsOptions = {
-  origin: ["http://localhost:5173", "http://127.0.0.1:5173"], // Izinkan port frontend Vite
-  credentials: true,
-};
-app.use(cors(corsOptions));
-
+// ERROR HANDLER GLOBAL (Paling Bawah)
 const errorHandler = require("./middlewares/error.middleware");
 app.use(errorHandler);
 

@@ -20,4 +20,7 @@ export default defineConfig({
     environment: "happy-dom", // Simulasi browser di terminal
     setupFiles: "./src/setupTests.js",
   },
+  esbuild: {
+    drop: ["console", "debugger"],
+  },
 });

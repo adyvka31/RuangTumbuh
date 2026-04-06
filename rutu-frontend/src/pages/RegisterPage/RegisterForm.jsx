@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { registerPayloadSchema } from "../../../../packages/shared/validations/auth.schema";
 import api from "@/utils/api";
 import styles from "./RegisterForm.module.css";
 import { FiUser, FiAtSign, FiLock } from "react-icons/fi";
@@ -11,23 +14,26 @@ import { Popup } from "@components/Popup/Popup";
 
 export const RegisterForm = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
-  const [error, setError] = useState("");
+  const [apiError, setApiError] = useState("");
   const [popup, setPopup] = useState({
     isOpen: false,
     title: "",
     description: "",
   });
 
-  // REACT QUERY: Mutation Register
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(registerPayloadSchema),
+  });
+
   const registerMutation = useMutation({
     mutationFn: async (userData) => {
-      return await api.post("/auth/register", userData);
+      // Hapus confirmPassword sebelum dikirim ke backend
+      const { confirmPassword, ...dataToSend } = userData;
+      return await api.post("/auth/register", dataToSend);
     },
     onSuccess: () => {
       setPopup({
@@ -37,58 +43,28 @@ export const RegisterForm = () => {
           "Akun kamu berhasil dibuat. Mengalihkan ke halaman login...",
       });
       setTimeout(() => {
-        setPopup({ ...popup, isOpen: false });
+        setPopup((p) => ({ ...p, isOpen: false }));
         navigate("/login");
       }, 3000);
     },
     onError: (err) => {
-      console.error("Gagal register:", err);
-      setError(
+      setApiError(
         err.response?.data?.message ||
           "Terjadi kesalahan saat registrasi. Coba lagi nanti.",
       );
     },
   });
 
-  const handleChange = (e) => {
-    if (error) setError("");
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setError("");
-
-    const { name, email, password, confirmPassword } = formData;
-
-    if (password !== confirmPassword)
-      return setError("Password dan Konfirmasi Password harus sama persis.");
-
-    const nameRegex = /^[a-zA-Z\s]*$/;
-    const nameWords = name.trim().split(/\s+/);
-    if (!nameRegex.test(name))
-      return setError("Nama hanya boleh berisi huruf.");
-    if (nameWords.length < 2 || nameWords.length > 5)
-      return setError("Nama lengkap harus terdiri dari 2 hingga 5 kata.");
-
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\W]{8,32}$/;
-    if (!passwordRegex.test(password)) {
-      return setError(
-        "Password harus 8-32 karakter dan mengandung kombinasi huruf besar, kecil, serta angka.",
-      );
-    }
-
-    registerMutation.mutate({
-      name: formData.name,
-      email: formData.email,
-      password: formData.password,
-    });
+  // Dipanggil otomatis setelah Zod menyatakan form valid 100%
+  const onSubmit = (data) => {
+    setApiError("");
+    registerMutation.mutate(data);
   };
 
   return (
     <>
-      <form className={styles.registerForm} onSubmit={handleSubmit}>
-        {error && (
+      <form className={styles.registerForm} onSubmit={handleSubmit(onSubmit)}>
+        {apiError && (
           <p
             style={{
               color: "red",
@@ -97,56 +73,83 @@ export const RegisterForm = () => {
               marginTop: "-15px",
             }}
           >
-            {error}
+            {apiError}
           </p>
         )}
 
         <div className={styles.inputFormGroup}>
-          <Input
-            type="text"
-            id="name"
-            name="name"
-            label="Name"
-            icon={FiUser}
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
-          <Input
-            type="email"
-            id="email"
-            name="email"
-            label="Email"
-            icon={FiAtSign}
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
+          <div>
+            <Input
+              type="text"
+              id="name"
+              label="Name"
+              icon={FiUser}
+              {...register("name")}
+            />
+            {errors.name && (
+              <span style={{ color: "red", fontSize: "0.8rem" }}>
+                {errors.name.message}
+              </span>
+            )}
+          </div>
+
+          <div>
+            <Input
+              type="email"
+              id="email"
+              label="Email"
+              icon={FiAtSign}
+              {...register("email")}
+            />
+            {errors.email && (
+              <span style={{ color: "red", fontSize: "0.8rem" }}>
+                {errors.email.message}
+              </span>
+            )}
+          </div>
 
           <div className={styles.formRow}>
             <div className={styles.flexInput}>
               <Input
                 type="password"
                 id="password"
-                name="password"
                 label="Password"
                 icon={FiLock}
-                value={formData.password}
-                onChange={handleChange}
-                required
+                {...register("password")}
               />
+              {errors.password && (
+                <span
+                  style={{
+                    color: "red",
+                    fontSize: "0.8rem",
+                    display: "block",
+                    marginTop: "4px",
+                  }}
+                >
+                  {errors.password.message}
+                </span>
+              )}
             </div>
             <div className={styles.flexInput}>
               <Input
                 type="password"
                 id="confirmPassword"
-                name="confirmPassword"
                 label="Confirm"
                 icon={FiLock}
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
+                {...register("confirmPassword")}
               />
+              {errors.confirmPassword && (
+                <span
+                  style={{
+                    color: "red",
+                    fontSize: "0.8rem",
+                    display: "block",
+                    marginTop: "4px",
+                  }}
+                >
+                  {errors.confirmPassword.message}
+                </span>
+              )}
             </div>
           </div>
         </div>

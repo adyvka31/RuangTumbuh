@@ -1,4 +1,5 @@
 const prisma = require("../config/db");
+const { BOOKING_STATUS } = require("../utils/constants"); 
 
 const addSelfSchedule = async (data) => {
   const safeTime = data.time.replace(".", ":");
@@ -19,7 +20,7 @@ const addSelfSchedule = async (data) => {
     data: {
       studentId: data.studentId,
       tutorId: data.studentId,
-      status: "ACCEPTED",
+      status: BOOKING_STATUS.ACCEPTED, 
       scheduledAt,
       durationMinutes: parseInt(data.durationMinutes) || 60,
       meetingLink: data.platform,
@@ -66,13 +67,17 @@ const fetchAllSchedules = async (studentId) => {
         role: "Sesi",
         platform:
           meta.platform || (b.meetingLink ? "Google Meet" : "Belum Tersedia"),
+        // 3. GANTI MAGIC STRINGS
         status:
-          b.status === "COMPLETED"
+          b.status === BOOKING_STATUS.COMPLETED
             ? "Selesai"
-            : b.status === "ACCEPTED"
+            : b.status === BOOKING_STATUS.ACCEPTED
               ? "Akan Datang"
               : "Menunggu Konfirmasi",
-        color: b.status === "COMPLETED" ? "#e5e7eb" : "var(--primary-yellow)",
+        color:
+          b.status === BOOKING_STATUS.COMPLETED
+            ? "#e5e7eb"
+            : "var(--primary-yellow)",
         category: meta.category || "Mentoring",
       };
     }),
@@ -101,13 +106,17 @@ const fetchAllSchedules = async (studentId) => {
         partner: b.course ? b.course.tutor : "Tutor Ahli",
         role: "Mentor",
         platform: "Zoom Meeting",
+        // 4. GANTI MAGIC STRINGS
         status:
-          b.status === "COMPLETED"
+          b.status === BOOKING_STATUS.COMPLETED
             ? "Selesai"
-            : b.status === "ACCEPTED"
+            : b.status === BOOKING_STATUS.ACCEPTED
               ? "Akan Datang"
               : "Menunggu Konfirmasi",
-        color: b.status === "COMPLETED" ? "#e5e7eb" : "var(--primary-green)",
+        color:
+          b.status === BOOKING_STATUS.COMPLETED
+            ? "#e5e7eb"
+            : "var(--primary-green)",
         category: "Kelas",
       };
     }),
