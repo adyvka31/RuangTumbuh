@@ -1,4 +1,6 @@
+// src/services/booking.service.js
 const prisma = require("../config/db");
+const { BOOKING_STATUS } = require("../utils/constants"); // 1. IMPORT CONSTANTS
 
 const requestCourseBooking = async (data) => {
   const course = await prisma.course.findUnique({
@@ -21,7 +23,8 @@ const requestCourseBooking = async (data) => {
     where: {
       courseId: parseInt(data.courseId),
       studentId: data.studentId,
-      status: { in: ["PENDING", "ACCEPTED"] },
+      // 2. GANTI MAGIC STRINGS DI SINI
+      status: { in: [BOOKING_STATUS.PENDING, BOOKING_STATUS.ACCEPTED] },
     },
   });
   if (existingBooking) {

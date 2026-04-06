@@ -9,14 +9,21 @@ const createBooking = async (req, res) => {
     );
     res
       .status(201)
-      .json({ message: "Booking berhasil diajukan!", booking: newBooking });
+      .json({
+        success: true,
+        message: "Booking berhasil diajukan!",
+        data: newBooking,
+      });
   } catch (error) {
     logger.error(`[Booking] Error createBooking: ${error.message}`, {
       stack: error.stack,
     });
     res
       .status(error.statusCode || 500)
-      .json({ message: error.message || "Terjadi kesalahan server" });
+      .json({
+        success: false,
+        message: error.message || "Terjadi kesalahan server",
+      });
   }
 };
 
@@ -28,12 +35,20 @@ const getMyBookings = async (req, res) => {
     logger.info(
       `[Booking] Fetch history booking oleh Siswa ID: ${req.query.studentId}`,
     );
-    res.status(200).json(bookings);
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "History booking dimuat",
+        data: bookings,
+      });
   } catch (error) {
     logger.error(`[Booking] Error getMyBookings: ${error.message}`, {
       stack: error.stack,
     });
-    res.status(500).json({ message: "Terjadi kesalahan server" });
+    res
+      .status(500)
+      .json({ success: false, message: "Terjadi kesalahan server" });
   }
 };
 
@@ -45,12 +60,16 @@ const getIncomingBookings = async (req, res) => {
     logger.info(
       `[Booking] Fetch daftar pesanan masuk untuk Tutor ID: ${req.query.tutorId}`,
     );
-    res.status(200).json(bookings);
+    res
+      .status(200)
+      .json({ success: true, message: "Pesanan masuk dimuat", data: bookings });
   } catch (error) {
     logger.error(`[Booking] Error getIncomingBookings: ${error.message}`, {
       stack: error.stack,
     });
-    res.status(500).json({ message: "Terjadi kesalahan server" });
+    res
+      .status(500)
+      .json({ success: false, message: "Terjadi kesalahan server" });
   }
 };
 
@@ -64,10 +83,10 @@ const updateBookingStatus = async (req, res) => {
     logger.info(
       `[Booking] Status booking ID ${req.params.id} diubah menjadi ${req.body.status} oleh Tutor ID: ${req.body.tutorId}`,
     );
-
     res.status(200).json({
+      success: true,
       message: `Booking berhasil di${req.body.status === "ACCEPTED" ? "terima" : "tolak"}!`,
-      booking: updated,
+      data: updated,
     });
   } catch (error) {
     logger.error(`[Booking] Error updateBookingStatus: ${error.message}`, {
@@ -75,7 +94,10 @@ const updateBookingStatus = async (req, res) => {
     });
     res
       .status(error.statusCode || 500)
-      .json({ message: error.message || "Terjadi kesalahan server" });
+      .json({
+        success: false,
+        message: error.message || "Terjadi kesalahan server",
+      });
   }
 };
 

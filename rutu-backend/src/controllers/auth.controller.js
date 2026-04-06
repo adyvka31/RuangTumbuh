@@ -9,14 +9,18 @@ const register = async (req, res, next) => {
     );
 
     res.status(201).json({
+      success: true,
       message: "Registrasi berhasil!",
-      user: { id: newUser.id, name: newUser.name, email: newUser.email },
+      data: {
+        user: { id: newUser.id, name: newUser.name, email: newUser.email },
+      },
     });
   } catch (error) {
     logger.error(`[Register] Error Server: ${error.message}`, {
       stack: error.stack,
     });
     res.status(error.statusCode || 500).json({
+      success: false,
       message:
         error.statusCode !== 500 ? error.message : "Terjadi kesalahan server",
       error: error.message,
@@ -30,13 +34,16 @@ const login = async (req, res, next) => {
     logger.info(`[Login] User berhasil login: ${user.id} (${req.body.email})`);
 
     res.status(200).json({
+      success: true,
       message: "Login berhasil!",
-      token,
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        timeBalance: user.timeBalance,
+      data: {
+        token,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          timeBalance: user.timeBalance,
+        },
       },
     });
   } catch (error) {
@@ -44,6 +51,7 @@ const login = async (req, res, next) => {
       stack: error.stack,
     });
     res.status(error.statusCode || 500).json({
+      success: false,
       message:
         error.statusCode !== 500 ? error.message : "Terjadi kesalahan server",
       error: error.message,

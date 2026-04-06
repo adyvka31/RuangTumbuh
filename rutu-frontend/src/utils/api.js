@@ -25,17 +25,15 @@ api.interceptors.request.use(
 // Interceptor untuk menangani response, terutama untuk kasus 401 Unauthorized
 api.interceptors.response.use(
   (response) => {
-    // Jika API sukses, langsung kembalikan datanya saja biar komponen gak ribet
+    if (response.data && response.data.success !== undefined) {
+      // Jika request punya meta (seperti pagination di SearchPage), kembalikan utuh
+      if (response.data.meta) return response.data;
+      // Jika tidak, langsung ambil payload datanya agar komponen Frontend tidak error!
+      return response.data.data;
+    }
     return response.data;
   },
   (error) => {
-    if (error.response && error.response.status === 401) {
-      // Token tidak valid atau kadaluarsa!
-      console.warn("Sesi berakhir, silakan login ulang.");
-      localStorage.removeItem("user");
-      localStorage.removeItem("token");
-      window.location.replace("/login"); // Paksa kembali ke halaman login
-    }
     return Promise.reject(error);
   },
 );

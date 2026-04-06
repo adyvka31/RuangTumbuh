@@ -9,14 +9,21 @@ const addSchedule = async (req, res) => {
     );
     res
       .status(201)
-      .json({ message: "Jadwal berhasil ditambahkan!", schedule: newSchedule });
+      .json({
+        success: true,
+        message: "Jadwal berhasil ditambahkan!",
+        data: newSchedule,
+      });
   } catch (error) {
     logger.error(`[Schedule] Error addSchedule: ${error.message}`, {
       stack: error.stack,
     });
     res
       .status(error.statusCode || 500)
-      .json({ message: error.message || "Terjadi kesalahan server" });
+      .json({
+        success: false,
+        message: error.message || "Terjadi kesalahan server",
+      });
   }
 };
 
@@ -26,12 +33,20 @@ const getAllSchedules = async (req, res) => {
     logger.info(
       `[Schedule] Data kalender diambil untuk User ID: ${req.params.id}`,
     );
-    res.status(200).json(schedules);
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Jadwal berhasil dimuat",
+        data: schedules,
+      });
   } catch (error) {
     logger.error(`[Schedule] Error getAllSchedules: ${error.message}`, {
       stack: error.stack,
     });
-    res.status(500).json({ message: "Gagal mengambil data jadwal" });
+    res
+      .status(500)
+      .json({ success: false, message: "Gagal mengambil data jadwal" });
   }
 };
 
@@ -40,18 +55,22 @@ const editSchedule = async (req, res) => {
     const type = req.params.id.split("-")[0];
     const actualId = req.params.id.substring(type.length + 1);
     await scheduleService.modifySchedule(type, actualId, req.body);
-
     logger.info(
       `[Schedule] Jadwal (${type}) berhasil di-reschedule. ID Jadwal: ${actualId}`,
     );
-    res.status(200).json({ message: "Jadwal berhasil di-reschedule!" });
+    res
+      .status(200)
+      .json({ success: true, message: "Jadwal berhasil di-reschedule!" });
   } catch (error) {
     logger.error(`[Schedule] Error editSchedule: ${error.message}`, {
       stack: error.stack,
     });
     res
       .status(error.statusCode || 500)
-      .json({ message: error.message || "Terjadi kesalahan server" });
+      .json({
+        success: false,
+        message: error.message || "Terjadi kesalahan server",
+      });
   }
 };
 
@@ -60,16 +79,22 @@ const deleteSchedule = async (req, res) => {
     const type = req.params.id.split("-")[0];
     const actualId = req.params.id.substring(type.length + 1);
     await scheduleService.removeScheduleData(type, actualId);
-
     logger.info(
       `[Schedule] Jadwal (${type}) berhasil dihapus. ID Jadwal: ${actualId}`,
     );
-    res.status(200).json({ message: "Jadwal berhasil dihapus dari kalender!" });
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Jadwal berhasil dihapus dari kalender!",
+      });
   } catch (error) {
     logger.error(`[Schedule] Error deleteSchedule: ${error.message}`, {
       stack: error.stack,
     });
-    res.status(500).json({ message: "Terjadi kesalahan server" });
+    res
+      .status(500)
+      .json({ success: false, message: "Terjadi kesalahan server" });
   }
 };
 

@@ -7,14 +7,19 @@ const getProfile = async (req, res, next) => {
     logger.info(
       `[User] Data profil berhasil dimuat untuk ID: ${req.params.id}`,
     );
-    res.status(200).json(profile);
+    res
+      .status(200)
+      .json({ success: true, message: "Profil dimuat", data: profile });
   } catch (error) {
     logger.error(`[User] Error getProfile: ${error.message}`, {
       stack: error.stack,
     });
     res
       .status(error.statusCode || 500)
-      .json({ message: error.message || "Terjadi kesalahan server" });
+      .json({
+        success: false,
+        message: error.message || "Terjadi kesalahan server",
+      });
   }
 };
 
@@ -23,7 +28,6 @@ const updateProfile = async (req, res, next) => {
     const { id } = req.params;
     let updateData = { ...req.body };
 
-    // Parse passions jika dikirim sebagai stringified JSON
     if (typeof updateData.passions === "string") {
       try {
         updateData.passions = JSON.parse(updateData.passions);
@@ -38,14 +42,21 @@ const updateProfile = async (req, res, next) => {
     logger.info(`[User] Profil berhasil diperbarui untuk ID: ${id}`);
     res
       .status(200)
-      .json({ message: "Profil berhasil diperbarui!", user: updatedUser });
+      .json({
+        success: true,
+        message: "Profil berhasil diperbarui!",
+        data: updatedUser,
+      });
   } catch (error) {
     logger.error(`[User] Error updateProfile: ${error.message}`, {
       stack: error.stack,
     });
     res
       .status(error.statusCode || 500)
-      .json({ message: error.message || "Terjadi kesalahan server" });
+      .json({
+        success: false,
+        message: error.message || "Terjadi kesalahan server",
+      });
   }
 };
 
@@ -53,14 +64,19 @@ const getDashboardStats = async (req, res, next) => {
   try {
     const stats = await userService.getDashboardStats(req.params.id);
     logger.info(`[Dashboard] Stats berhasil dimuat untuk ID: ${req.params.id}`);
-    res.status(200).json(stats);
+    res
+      .status(200)
+      .json({ success: true, message: "Statistik dimuat", data: stats });
   } catch (error) {
     logger.error(`[Dashboard] Error getDashboardStats: ${error.message}`, {
       stack: error.stack,
     });
     res
       .status(error.statusCode || 500)
-      .json({ message: error.message || "Error fetch dashboard stats" });
+      .json({
+        success: false,
+        message: error.message || "Error fetch dashboard stats",
+      });
   }
 };
 
