@@ -1,8 +1,5 @@
 const { z } = require("zod");
-const {
-  registerPayloadSchema,
-  loginPayloadSchema,
-} = require("@rutu/shared/validations/auth.schema");
+const { registerPayloadSchema, loginPayloadSchema } = require("@rutu/shared");
 
 const registerSchema = z.object({
   body: registerPayloadSchema,
