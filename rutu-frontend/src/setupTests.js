@@ -1,0 +1,1 @@
+import "@testing-library/jest-dom"; // Memberikan fungsi seperti .toBeInTheDocument()

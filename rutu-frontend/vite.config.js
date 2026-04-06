@@ -15,4 +15,9 @@ export default defineConfig({
       "@layouts": path.resolve(__dirname, "./src/layouts"),
     },
   },
+  test: {
+    globals: true,
+    environment: "happy-dom", // Simulasi browser di terminal
+    setupFiles: "./src/setupTests.js",
+  },
 });
