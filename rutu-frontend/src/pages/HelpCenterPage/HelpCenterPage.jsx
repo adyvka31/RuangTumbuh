@@ -12,8 +12,8 @@ import {
 import shape10 from "@/assets/shape10.svg";
 import shape11 from "@/assets/shape11.svg";
 
-import { helpCategories } from "./constants/helpData";
-import { useHelpCenter } from "./hooks/useHelpCenter";
+import { helpCategories } from "@/constants/helpData";
+import { useHelpCenter } from "@/hooks/useHelpCenter";
 
 export default function HelpCenterPage() {
   const { searchQuery, setSearchQuery, activeFaq, toggleFaq, filteredFaqs } =

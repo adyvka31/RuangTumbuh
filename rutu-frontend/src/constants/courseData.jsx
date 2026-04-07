@@ -74,10 +74,10 @@ export const getCourseExtras = (category) => {
 };
 
 export const MY_COURSE_TABS = [
-  { id: "Kursus Saya", label: "Sesi Mentor Saya", icon: FiUser },
-  { id: "Permintaan", label: "Permintaan Masuk", icon: FiBell },
-  { id: "Pengajuan", label: "Pengajuan Saya", icon: FiSend },
-  { id: "Selesai", label: "Riwayat Selesai", icon: FiCheckCircle },
+  { id: "Kursus Saya", label: "Sesi Mentor Saya", icon: <FiUser /> },
+  { id: "Permintaan", label: "Permintaan Masuk", icon: <FiBell /> },
+  { id: "Pengajuan", label: "Pengajuan Saya", icon: <FiSend /> },
+  { id: "Selesai", label: "Riwayat Selesai", icon: <FiCheckCircle /> },
 ];
 
 export const COMPLETED_COURSES_DUMMY = [

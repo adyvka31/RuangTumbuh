@@ -38,7 +38,7 @@ export default function MyCoursePage() {
     loading,
     statusUpdateMutation,
     refetchCreatedCourses,
-    handleStatusUpdate, 
+    handleStatusUpdate,
   } = useMyCourses();
 
   const containerVariants = {
@@ -87,7 +87,6 @@ export default function MyCoursePage() {
 
         <motion.div variants={itemVariants} className={styles.tabsContainer}>
           {MY_COURSE_TABS.map((tab) => {
-            const IconComponent = tab.icon;
             const counts = {
               "Kursus Saya": myCreatedCourses.length,
               Permintaan: incomingBookings.length,
@@ -100,7 +99,6 @@ export default function MyCoursePage() {
                 className={`${styles.tabBtn} ${activeTab === tab.id ? styles.activeTab : ""}`}
                 onClick={() => setActiveTab(tab.id)}
               >
-                <IconComponent />
                 {tab.icon} <span>{tab.label}</span>
                 {counts[tab.id] > 0 && (
                   <span className={styles.badge}>{counts[tab.id]}</span>
