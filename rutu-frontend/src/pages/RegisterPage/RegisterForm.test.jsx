@@ -116,6 +116,7 @@ describe("Komponen RegisterForm", () => {
         name: "John Doe",
         email: "john@email.com",
         password: "KuatBanget123!",
+        confirmPassword: "KuatBanget123!",
       });
 
       expect(screen.getByText("Akun Dibuat!")).toBeInTheDocument();

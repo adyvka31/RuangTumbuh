@@ -1,0 +1,10 @@
+node_modules
+rutu-frontend/node_modules
+rutu-backend/node_modules
+packages/shared/node_modules
+.git
+.env
+dist
+build
+rutu-frontend/dist
+.husky

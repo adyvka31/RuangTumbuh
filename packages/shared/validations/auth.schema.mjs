@@ -1,13 +1,13 @@
-const { z } = require("zod");
+import { z } from "zod";
 
 // Skema untuk Login
-const loginPayloadSchema = z.object({
+export const loginPayloadSchema = z.object({
   email: z.string().email("Format email tidak valid. Pastikan menggunakan @"),
   password: z.string().min(1, "Password tidak boleh kosong"),
 });
 
 // Skema untuk Register (Termasuk validasi confirm password)
-const registerPayloadSchema = z
+export const registerPayloadSchema = z
   .object({
     name: z
       .string()
@@ -29,8 +29,5 @@ const registerPayloadSchema = z
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Password dan Konfirmasi Password harus sama persis.",
-    path: ["confirmPassword"], // Menentukan di mana pesan error ini muncul
+    path: ["confirmPassword"],
   });
-
-exports.loginPayloadSchema = loginPayloadSchema;
-exports.registerPayloadSchema = registerPayloadSchema;

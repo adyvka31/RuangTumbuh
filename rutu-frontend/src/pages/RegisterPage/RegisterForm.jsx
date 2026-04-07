@@ -11,8 +11,7 @@ import { Button } from "@components/Button/Button";
 import { Input } from "@components/Input/Input";
 import { Popup } from "@components/Popup/Popup";
 
-import authSchemas from "@rutu/shared";
-const { registerPayloadSchema } = authSchemas;
+import { registerPayloadSchema } from "@rutu/shared";
 
 export const RegisterForm = () => {
   const navigate = useNavigate();
@@ -33,9 +32,7 @@ export const RegisterForm = () => {
 
   const registerMutation = useMutation({
     mutationFn: async (userData) => {
-      // Hapus confirmPassword sebelum dikirim ke backend
-      const { confirmPassword, ...dataToSend } = userData;
-      return await api.post("/auth/register", dataToSend);
+      return await api.post("/auth/register", userData);
     },
     onSuccess: () => {
       setPopup({

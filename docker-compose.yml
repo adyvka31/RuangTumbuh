@@ -1,0 +1,45 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: rutu-postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ruangtumbuh
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: . # Build dari root agar bisa membaca folder packages/shared
+      dockerfile: rutu-backend/Dockerfile
+    container_name: rutu-backend
+    restart: always
+    ports:
+      - "5001:5001"
+    environment:
+      # Koneksi database diarahkan ke service 'db' di atas
+      - DATABASE_URL=postgresql://postgres:password@db:5432/ruangtumbuh?schema=public
+      - PORT=5001
+      - JWT_SECRET=supersecretjwtkey_gantidiproduction
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: .
+      dockerfile: rutu-frontend/Dockerfile
+    container_name: rutu-frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
