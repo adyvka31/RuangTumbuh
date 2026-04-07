@@ -32,4 +32,5 @@ const registerPayloadSchema = z
     path: ["confirmPassword"], // Menentukan di mana pesan error ini muncul
   });
 
-module.exports = { loginPayloadSchema, registerPayloadSchema };
+exports.loginPayloadSchema = loginPayloadSchema;
+exports.registerPayloadSchema = registerPayloadSchema;
