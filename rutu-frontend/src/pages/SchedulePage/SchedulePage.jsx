@@ -1,13 +1,9 @@
-import React, { useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
-import api from "@/utils/api";
+import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import DashboardLayout from "@/layouts/DashboardLayout/DashboardLayout";
 import styles from "./SchedulePage.module.css";
-import { useNavigate } from "react-router-dom";
-
-// Icons
+import { SCHEDULE_CATEGORIES, MONTH_NAMES } from "@/constants/scheduleData";
+import { useScheduleData } from "@/hooks/useScheduleData";
 import {
   FiCalendar,
   FiClock,
@@ -20,107 +16,29 @@ import {
   FiChevronRight,
 } from "react-icons/fi";
 
-const categories = ["Semua", "Mentoring", "Kelas", "Diskusi", "Workshop"];
-const monthNames = [
-  "Januari",
-  "Februari",
-  "Maret",
-  "April",
-  "Mei",
-  "Juni",
-  "Juli",
-  "Agustus",
-  "September",
-  "Oktober",
-  "November",
-  "Desember",
-];
-
 export default function SchedulePage() {
-  const navigate = useNavigate();
-  const { user } = useAuth();
-  const queryClient = useQueryClient();
+  const {
+    year,
+    month,
+    activeDate,
+    setActiveDate,
+    activeCategory,
+    setActiveCategory,
+    currentSchedules,
+    datesWithSchedules,
+    daysInMonth,
+    emptyDaysStart,
+    isLoading,
+    isDeleting,
+    deletingId,
+    handlePrevMonth,
+    handleNextMonth,
+    handleReschedule,
+    handleDelete,
+    navigate,
+  } = useScheduleData();
 
-  // State Kalender Dinamis (UI State)
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [activeDate, setActiveDate] = useState(new Date().getDate().toString());
-  const [activeCategory, setActiveCategory] = useState("Semua");
-
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth();
-
-  // Fungsi Pindah Bulan
-  const handlePrevMonth = () => {
-    setCurrentDate(new Date(year, month - 1, 1));
-    setActiveDate("1");
-  };
-
-  const handleNextMonth = () => {
-    setCurrentDate(new Date(year, month + 1, 1));
-    setActiveDate("1");
-  };
-
-  // SERVER STATE: Fetch Data Jadwal dengan React Query
-  const { data: schedules = [], isLoading: loading } = useQuery({
-    queryKey: ["schedules", user?.id],
-    queryFn: async () => {
-      const data = await api.get(`/schedules/${user.id}`);
-      return data.filter(
-        (s) => s.status !== "Menunggu Konfirmasi" && s.status !== "Pending",
-      );
-    },
-    enabled: !!user?.id,
-  });
-
-  // SERVER STATE: Mutation untuk Hapus/Selesai
-  const deleteScheduleMutation = useMutation({
-    mutationFn: async (itemId) => {
-      return await api.delete(`/schedules/${itemId}`);
-    },
-    onSuccess: () => {
-      // Memaksa React Query untuk fetch ulang jadwal setelah dihapus
-      queryClient.invalidateQueries(["schedules", user?.id]);
-    },
-    onError: (error) => {
-      console.error("Error delete schedule:", error);
-      alert("Gagal menyelesaikan jadwal.");
-    },
-  });
-
-  // Filter jadwal bulan ini untuk titik kuning/hijau di kalender
-  const schedulesThisMonth = schedules.filter((s) => {
-    if (!s.date) return false;
-    const d = new Date(s.date);
-    return d.getFullYear() === year && d.getMonth() === month;
-  });
-
-  // Array tanggal yang punya jadwal
-  const datesWithSchedules = schedulesThisMonth.map((s) =>
-    new Date(s.date).getDate().toString(),
-  );
-
-  // Filter jadwal untuk Agenda di kanan
-  const currentSchedules = schedulesThisMonth.filter((s) => {
-    const d = new Date(s.date);
-    const matchDate = d.getDate().toString() === activeDate;
-    const matchCat =
-      activeCategory === "Semua" || s.category === activeCategory;
-    return matchDate && matchCat;
-  });
-
-  // Logika Generator Kalender
-  const daysInMonthCount = new Date(year, month + 1, 0).getDate();
-  const firstDayOfMonth = new Date(year, month, 1).getDay();
-
-  const daysInMonth = Array.from({ length: daysInMonthCount }, (_, i) =>
-    (i + 1).toString(),
-  );
-  const emptyDaysStart = Array.from(
-    { length: firstDayOfMonth },
-    (_, i) => `empty-${i}`,
-  );
-
-  // Animasi
+  // Konfigurasi Animasi
   const containerVariants = {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.1 } },
@@ -128,17 +46,6 @@ export default function SchedulePage() {
   const itemVariants = {
     hidden: { x: 20, opacity: 0 },
     show: { x: 0, opacity: 1, transition: { type: "spring", bounce: 0.4 } },
-  };
-
-  const handleReschedule = (item) => {
-    navigate("/add-schedule", { state: { editData: item } });
-  };
-
-  // Fungsi Selesai (Trigger Mutation)
-  const handleDelete = (itemId) => {
-    if (window.confirm("Apakah Anda yakin ingin menyelesaikan jadwal ini?")) {
-      deleteScheduleMutation.mutate(itemId);
-    }
   };
 
   return (
@@ -165,9 +72,8 @@ export default function SchedulePage() {
           </button>
         </motion.div>
 
-        {/* --- 50:50 LAYOUT GRID --- */}
         <div className={styles.splitLayout}>
-          {/* KOLOM KIRI */}
+          {/* KOLOM KIRI (Kalender) */}
           <div className={styles.leftColumn}>
             <div className={styles.calendarCard}>
               <div className={styles.calendarHeader}>
@@ -175,7 +81,7 @@ export default function SchedulePage() {
                   <FiChevronLeft size={20} />
                 </button>
                 <h3 className={styles.monthTitle}>
-                  {monthNames[month]} {year}
+                  {MONTH_NAMES[month]} {year}
                 </h3>
                 <button className={styles.navBtn} onClick={handleNextMonth}>
                   <FiChevronRight size={20} />
@@ -237,11 +143,13 @@ export default function SchedulePage() {
             <div className={styles.neoBox}>
               <h4 className={styles.boxTitle}>Filter Kategori Sesi</h4>
               <div className={styles.categoryWrap}>
-                {categories.map((cat) => (
+                {SCHEDULE_CATEGORIES.map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setActiveCategory(cat)}
-                    className={`${styles.catPill} ${activeCategory === cat ? styles.catActive : ""}`}
+                    className={`${styles.catPill} ${
+                      activeCategory === cat ? styles.catActive : ""
+                    }`}
                   >
                     {cat}
                   </button>
@@ -250,15 +158,15 @@ export default function SchedulePage() {
             </div>
           </div>
 
-          {/* KOLOM KANAN */}
+          {/* KOLOM KANAN (Agenda) */}
           <div className={styles.rightColumn}>
             <div className={styles.agendaBox}>
               <div className={styles.timelineHeader}>
                 <h3>
-                  Agenda: {activeDate} {monthNames[month]} {year}
+                  Agenda: {activeDate} {MONTH_NAMES[month]} {year}
                 </h3>
                 <span className={styles.eventCount}>
-                  {loading ? "..." : currentSchedules.length} Sesi
+                  {isLoading ? "..." : currentSchedules.length} Sesi
                 </span>
               </div>
 
@@ -272,7 +180,7 @@ export default function SchedulePage() {
                     exit={{ opacity: 0, y: -10 }}
                     className={styles.timelineList}
                   >
-                    {loading ? (
+                    {isLoading ? (
                       <div className={styles.emptyState}>
                         <p>Memuat jadwal...</p>
                       </div>
@@ -348,7 +256,7 @@ export default function SchedulePage() {
                                 <button
                                   onClick={() => handleReschedule(item)}
                                   className={`${styles.actionBtn} ${styles.btnDetail}`}
-                                  disabled={deleteScheduleMutation.isPending}
+                                  disabled={isDeleting}
                                 >
                                   Reschedule
                                 </button>
@@ -356,10 +264,9 @@ export default function SchedulePage() {
                                   <button
                                     onClick={() => handleDelete(item.id)}
                                     className={`${styles.actionBtn} ${styles.btnPrimary}`}
-                                    disabled={deleteScheduleMutation.isPending}
+                                    disabled={isDeleting}
                                   >
-                                    {deleteScheduleMutation.isPending &&
-                                    deleteScheduleMutation.variables === item.id
+                                    {isDeleting && deletingId === item.id
                                       ? "Menyelesaikan..."
                                       : "Sudah Selesai"}
                                   </button>

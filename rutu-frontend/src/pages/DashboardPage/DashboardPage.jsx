@@ -1,13 +1,9 @@
 import React from "react";
-import api from "@/utils/api";
-import { useAuth } from "@/contexts/AuthContext";
-// eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import DashboardLayout from "@/layouts/DashboardLayout/DashboardLayout";
 import styles from "./DashboardPage.module.css";
-import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-
+import { useDashboard } from "@/hooks/useDashboard";
 import {
   FiClock,
   FiVideo,
@@ -25,37 +21,20 @@ import shape13 from "@/assets/shape13.svg";
 
 export default function DashboardPage() {
   const navigate = useNavigate();
-  const { user } = useAuth();
-
-  const userName = user ? user.name : "Pengguna";
-  const firstName = userName.split(" ")[0];
-
-  // SERVER STATE: Menarik data statistik menggunakan TanStack Query
   const {
-    data: dbStats,
+    firstName,
+    dbStats,
     isPending,
     isError,
-  } = useQuery({
-    queryKey: ["dashboard", user?.id],
-    queryFn: async () => {
-      const data = await api.get(`/users/${user.id}/dashboard`);
-      return {
-        // Gunakan optional chaining (?.) untuk keamanan ganda
-        timeBalance: data?.timeBalance || 0,
-        learningMinutes: data?.learningMinutes || 0,
-        upcomingSessions: data?.upcomingSessions || 0,
-        completedSessions: data?.completedSessions || 0,
-        mentoringSessions: data?.mentoringSessions || [],
-      };
-    },
-    enabled: !!user?.id,
-  });
+    formatScheduleTime,
+    colorThemes,
+  } = useDashboard();
 
+  // Konfigurasi Animasi
   const containerVariants = {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.1 } },
   };
-
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     show: {
@@ -65,56 +44,24 @@ export default function DashboardPage() {
     },
   };
 
-  const formatScheduleTime = (dateString) => {
-    if (!dateString) return "-";
-    const date = new Date(dateString);
-    return (
-      date.toLocaleDateString("id-ID", {
-        weekday: "short",
-        day: "2-digit",
-        month: "short",
-        hour: "2-digit",
-        minute: "2-digit",
-      }) + " WIB"
-    );
-  };
-
-  const colorThemes = [
-    { bg: "var(--primary-yellow)", badge: "#fde68a" },
-    { bg: "var(--primary-blue)", badge: "#bfdbfe" },
-    { bg: "var(--primary-green)", badge: "#86efac" },
-  ];
-
-  if (isPending) {
+  if (isPending)
     return (
       <DashboardLayout title="Dashboard">
-        <div style={{ padding: "40px", textAlign: "center" }}>
-          Memuat dashboard...
-        </div>
+        <div className={styles.loading}>Memuat dashboard...</div>
       </DashboardLayout>
     );
-  }
 
-  if (isError || !dbStats) {
+  if (isError || !dbStats)
     return (
       <DashboardLayout title="Dashboard">
-        <div
-          style={{
-            padding: "40px",
-            textAlign: "center",
-            color: "red",
-            marginTop: "50px",
-          }}
-        >
+        <div className={styles.errorWrapper}>
           <h3>Terjadi Kesalahan Server (500)</h3>
           <p>
-            Gagal memuat data statistik dashboard. Silakan cek terminal backend
-            Anda untuk melihat detail error Prisma.
+            Gagal memuat data statistik dashboard. Silakan cek terminal backend.
           </p>
         </div>
       </DashboardLayout>
     );
-  }
 
   const stats = [
     {
@@ -151,13 +98,11 @@ export default function DashboardPage() {
         initial="hidden"
         animate="show"
       >
+        {/* BANNER UTAMA */}
         <motion.section variants={itemVariants} className={styles.banner}>
           <div className={styles.bannerContent}>
             <h2 className={styles.bannerTitle}>
-              Halo, {firstName}{" "}
-              <span className={styles.waveEmoji} role="img" aria-label="wave">
-                👋
-              </span>
+              Halo, {firstName} <span className={styles.waveEmoji}>👋</span>
             </h2>
             <p className={styles.bannerSub}>
               Siap untuk belajar, berkembang, dan menjelajah hari ini?
@@ -167,15 +112,13 @@ export default function DashboardPage() {
                 className={styles.bannerBtn}
                 onClick={() => navigate("/search")}
               >
-                <FiBook /> Mulai Belajar{" "}
-                <div className={styles.bannerBtnArrow}></div>
+                <FiBook /> Mulai Belajar
               </button>
               <button
                 className={`${styles.bannerBtn} ${styles.btnSecondary}`}
                 onClick={() => navigate("/add-course")}
               >
-                <FiVideo /> Buka Sesi Mengajar{" "}
-                <div className={styles.bannerBtnArrow}>˃</div>
+                <FiVideo /> Buka Sesi Mengajar
               </button>
             </div>
           </div>
@@ -184,20 +127,15 @@ export default function DashboardPage() {
               <motion.img
                 key={i}
                 animate={{ y: [0, -(10 + i * 3), 0], rotate: [0, 5, -5, 0] }}
-                transition={{
-                  duration: 4 + i * 0.5,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: i * 0.2,
-                }}
+                transition={{ duration: 4 + i * 0.5, repeat: Infinity }}
                 src={shape}
-                alt="Dekorasi"
                 className={styles.mascot}
               />
             ))}
           </div>
         </motion.section>
 
+        {/* STATS CARDS */}
         <motion.section variants={itemVariants} className={styles.statsGrid}>
           {stats.map((card, idx) => (
             <div
@@ -206,14 +144,15 @@ export default function DashboardPage() {
               style={{ backgroundColor: card.color }}
             >
               <div className={styles.statHeader}>
-                <span className={styles.statLabel}>{card.label}</span>
-                <div className={styles.statIcon}>{card.icon}</div>
+                <span>{card.label}</span>
+                {card.icon}
               </div>
               <div className={styles.statValue}>{card.value}</div>
             </div>
           ))}
         </motion.section>
 
+        {/* MENTORING SESSIONS LIST */}
         <motion.section
           variants={itemVariants}
           className={styles.mentoringSection}
@@ -231,11 +170,8 @@ export default function DashboardPage() {
           <div className={styles.mentoringList}>
             {dbStats.mentoringSessions.length === 0 ? (
               <div className={styles.emptyState}>
-                <h3 className={styles.emptyStateTitle}>Belum Ada Jadwal</h3>
-                <p className={styles.emptyStateDesc}>
-                  Anda belum memiliki jadwal kelas atau sesi mentoring yang akan
-                  datang. Yuk, cari dan daftar kelas sekarang!
-                </p>
+                <h3>Belum Ada Jadwal</h3>
+                <p>Cari dan daftar kelas sekarang!</p>
               </div>
             ) : (
               dbStats.mentoringSessions.map((session, index) => {
@@ -255,7 +191,7 @@ export default function DashboardPage() {
                           {session.title}
                         </span>
                         <div className={styles.itemMeta}>
-                          <span className={styles.itemTime}>
+                          <span>
                             <FiClock /> {formatScheduleTime(session.time)}
                           </span>
                           <a

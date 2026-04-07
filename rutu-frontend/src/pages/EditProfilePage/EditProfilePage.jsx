@@ -1,15 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useAuth } from "@/contexts/AuthContext";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import api from "@/utils/api";
+import React from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "@/layouts/DashboardLayout/DashboardLayout";
 import styles from "./EditProfilePage.module.css";
 import { Input } from "@/components/Input/Input";
 import { Popup } from "@/components/Popup/Popup";
+import { useEditProfile } from "@/hooks/useEditProfile";
+import { getImageUrl } from "@/utils/imageHelper";
 import {
-  FiSave,
   FiX,
   FiUploadCloud,
   FiUser,
@@ -26,464 +24,166 @@ import {
 
 export default function EditProfilePage() {
   const navigate = useNavigate();
-  const { user, updateUserData } = useAuth();
-  const queryClient = useQueryClient();
+  const {
+    formData,
+    newPassion,
+    setNewPassion,
+    error,
+    popup,
+    previewImage,
+    fileInputRef,
+    isLoading,
+    isPending,
+    handleInputChange,
+    addPassion,
+    removePassion,
+    handleFileChange,
+    handleSave,
+  } = useEditProfile();
 
-  const fileInputRef = useRef(null);
-  const [previewImage, setPreviewImage] = useState(null);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [newPassion, setNewPassion] = useState("");
-  const [error, setError] = useState("");
-
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    location: "",
-    birthday: "",
-    school: "",
-    description: "",
-    passions: [],
-    avatar: "",
-  });
-
-  const [popup, setPopup] = useState({
-    isOpen: false,
-    type: "success",
-    title: "",
-    description: "",
-  });
-
-  // REACT QUERY: Fetch data profil (Mengganti useEffect fetch)
-  const { data: profileData, isLoading } = useQuery({
-    queryKey: ["profile", user?.id],
-    queryFn: async () => {
-      return await api.get(`/users/${user.id}`);
-    },
-    enabled: !!user?.id,
-  });
-
-  // Saat data server ter-load, masukkan ke local UI Form State
-  useEffect(() => {
-    if (profileData) {
-      setFormData({
-        name: profileData.name || "",
-        email: profileData.email || "",
-        location: profileData.location || "",
-        birthday: profileData.birthday || "",
-        school: profileData.school || "",
-        description: profileData.description || "",
-        passions: profileData.passions || [],
-        avatar:
-          profileData.profilePicture ||
-          (profileData.name
-            ? profileData.name.substring(0, 2).toUpperCase()
-            : "US"),
-      });
-    }
-  }, [profileData]);
-
-  // REACT QUERY: Mutation untuk menyimpan profil
-  const updateProfileMutation = useMutation({
-    mutationFn: async (formDataToSend) => {
-      return await api.put(`/users/${user.id}`, formDataToSend);
-    },
-    onSuccess: (result) => {
-      // Update global context agar navbar berubah
-      updateUserData({
-        name: formData.name,
-        profilePicture: result.profilePicture || formData.avatar,
-      });
-      // Bersihkan cache profil
-      queryClient.invalidateQueries(["profile", user?.id]);
-
-      setPopup({
-        isOpen: true,
-        type: "success",
-        title: "Profil Diperbarui!",
-        description: "Data diri Anda berhasil disimpan.",
-      });
-    },
-    onError: (error) => {
-      console.error("Error save profile:", error);
-      setError("Terjadi kesalahan koneksi ke server backend.");
-    },
-  });
-
-  const handleInputChange = (e) => {
-    if (error) setError("");
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const addPassion = () => {
-    if (newPassion && !formData.passions.includes(newPassion)) {
-      if (formData.passions.length >= 10)
-        return setError(
-          "Maksimal hanya boleh menambahkan 10 keahlian/passion.",
-        );
-      setFormData((prev) => ({
-        ...prev,
-        passions: [...prev.passions, newPassion],
-      }));
-      setNewPassion("");
-      setError("");
-    }
-  };
-
-  const removePassion = (passionToRemove) => {
-    setFormData((prev) => ({
-      ...prev,
-      passions: prev.passions.filter((p) => p !== passionToRemove),
-    }));
-  };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.size > 2 * 1024 * 1024)
-        return setError("Ukuran foto terlalu besar! Maksimal 2MB.");
-      if (!file.type.startsWith("image/"))
-        return setError(
-          "Format file tidak didukung. Harap unggah gambar (JPG/PNG).",
-        );
-      setError("");
-      setSelectedFile(file);
-      setPreviewImage(URL.createObjectURL(file));
-    }
-  };
-
-  const triggerFileInput = () => {
-    fileInputRef.current.click();
-  };
-
-  const handleSave = () => {
-    setError("");
-    const { name, location, birthday, school, description } = formData;
-
-    if (name) {
-      const nameRegex = /^[a-zA-Z\s]*$/;
-      const nameWords = name.trim().split(/\s+/);
-      if (
-        !nameRegex.test(name) ||
-        nameWords.length < 2 ||
-        nameWords.length > 5
-      ) {
-        return setError(
-          "Nama lengkap harus terdiri dari 2-5 kata dan hanya berisi huruf.",
-        );
-      }
-    }
-    if (birthday) {
-      const selectedDate = new Date(birthday);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      if (selectedDate > today)
-        return setError("Mohon pilih tanggal yang valid.");
-    }
-    if (description && description.length > 500)
-      return setError(
-        `Deskripsi terlalu panjang! Saat ini: ${description.length}/500 karakter.`,
-      );
-    if (location && location.length > 100)
-      return setError("Lokasi terlalu panjang (Maksimal 100 karakter).");
-    if (school && school.length > 100)
-      return setError(
-        "Nama institusi/sekolah terlalu panjang (Maksimal 100 karakter).",
-      );
-
-    const formDataToSend = new FormData();
-    formDataToSend.append("name", formData.name);
-    formDataToSend.append("location", formData.location);
-    formDataToSend.append("birthday", formData.birthday);
-    formDataToSend.append("school", formData.school);
-    formDataToSend.append("description", formData.description);
-    formDataToSend.append("passions", JSON.stringify(formData.passions));
-    if (selectedFile) formDataToSend.append("profilePicture", selectedFile);
-
-    updateProfileMutation.mutate(formDataToSend);
-  };
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    show: { opacity: 1, transition: { staggerChildren: 0.1 } },
-  };
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    show: {
-      opacity: 1,
-      y: 0,
-      transition: { type: "spring", stiffness: 300, damping: 24 },
-    },
+    show: { opacity: 1, y: 0 },
   };
 
-  if (isLoading) {
+  if (isLoading)
     return (
       <DashboardLayout title="Pengaturan Profil">
-        <p style={{ padding: "40px", textAlign: "center" }}>
-          Memuat formulir profil Anda...
-        </p>
+        <p className={styles.loading}>Memuat formulir...</p>
       </DashboardLayout>
     );
-  }
 
   return (
     <DashboardLayout title="Pengaturan Profil">
-      <motion.div
-        className={styles.container}
-        variants={containerVariants}
-        initial="hidden"
-        animate="show"
-      >
+      <motion.div className={styles.container} initial="hidden" animate="show">
         <div className={styles.pageHeader}>
           <h1 className={styles.pageTitle}>Edit Profil Saya</h1>
-          <motion.button
-            whileHover={{ x: -4 }}
+          <button
             className={styles.backBtn}
             onClick={() => navigate("/profile")}
           >
-            <FiArrowLeft /> Kembali ke Profil
-          </motion.button>
+            <FiArrowLeft /> Kembali
+          </button>
         </div>
 
         <div className={styles.contentGrid}>
-          {/* KOLOM KIRI: Main Form */}
           <motion.div variants={itemVariants} className={styles.mainCard}>
             <div className={styles.avatarUploadSection}>
-              <div
-                className={styles.avatarPreview}
-                style={{ overflow: "hidden" }}
-              >
+              <div className={styles.avatarPreview}>
                 {previewImage ? (
-                  <img
-                    src={previewImage}
-                    alt="Preview"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
-                ) : formData.avatar &&
-                  formData.avatar.startsWith("/uploads") ? (
-                  <img
-                    src={`http://localhost:5001${formData.avatar}`}
-                    alt="Profile"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
+                  <img src={getImageUrl(previewImage)} alt="Preview" />
+                ) : formData.avatar && formData.avatar.length > 2 ? (
+                  <img src={getImageUrl(formData.avatar)} alt="Profile" />
                 ) : (
-                  formData.avatar
+                  <div className={styles.initialsAvatar}>{formData.avatar}</div>
                 )}
               </div>
-              <div className={styles.uploadActions}>
-                <p className={styles.uploadStatus}>
-                  Format: JPG, PNG. Maks 2MB.
-                </p>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileChange}
-                  accept="image/png, image/jpeg"
-                  style={{ display: "none" }}
-                />
-                <motion.button
-                  className={styles.uploadBtn}
-                  onClick={triggerFileInput}
-                >
-                  <FiUploadCloud /> Unggah Foto Baru
-                </motion.button>
-              </div>
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                style={{ display: "none" }}
+              />
+              <button
+                className={styles.uploadBtn}
+                onClick={() => fileInputRef.current.click()}
+              >
+                <FiUploadCloud /> Unggah Foto
+              </button>
             </div>
 
-            {error && (
-              <p
-                style={{
-                  color: "red",
-                  fontWeight: "bold",
-                  marginBottom: "20px",
-                  marginTop: "-15px",
-                }}
-              >
-                {error}
-              </p>
-            )}
+            {error && <p className={styles.errorText}>{error}</p>}
 
             <div className={styles.formGrid}>
-              <div className={styles.fullWidth}>
-                <Input
-                  type="text"
-                  name="name"
-                  id="name"
-                  label="Nama Lengkap"
-                  icon={FiType}
-                  value={formData.name}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <Input
-                  type="email"
-                  name="email"
-                  id="email"
-                  label="Alamat Email"
-                  icon={FiMail}
-                  value={formData.email}
-                  readOnly
-                  style={{ backgroundColor: "#f3f4f6", cursor: "not-allowed" }}
-                />
-              </div>
-              <div>
-                <Input
-                  type="text"
-                  name="location"
-                  id="location"
-                  label="Lokasi Saat Ini"
-                  icon={FiMapPin}
-                  value={formData.location}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <Input
-                  type="date"
-                  name="birthday"
-                  id="birthday"
-                  label="Tanggal Lahir"
-                  icon={FiGift}
-                  value={formData.birthday}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className={styles.fullWidth}>
-                <Input
-                  type="text"
-                  name="school"
-                  id="school"
-                  label="Institusi / Sekolah"
-                  icon={FiBookOpen}
-                  value={formData.school}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className={styles.fullWidth}>
-                <Input
-                  isTextarea={true}
-                  name="description"
-                  id="description"
-                  label="Deskripsi Diri (Bio)"
-                  icon={FiUser}
-                  value={formData.description}
-                  onChange={handleInputChange}
-                />
-              </div>
+              <Input
+                name="name"
+                label="Nama Lengkap"
+                icon={FiType}
+                value={formData.name}
+                onChange={handleInputChange}
+              />
+              <Input
+                name="email"
+                label="Email"
+                icon={FiMail}
+                value={formData.email}
+                readOnly
+              />
+              <Input
+                name="location"
+                label="Lokasi"
+                icon={FiMapPin}
+                value={formData.location}
+                onChange={handleInputChange}
+              />
+              <Input
+                name="birthday"
+                label="Tanggal Lahir"
+                type="date"
+                icon={FiGift}
+                value={formData.birthday}
+                onChange={handleInputChange}
+              />
+              <Input
+                name="school"
+                label="Institusi"
+                icon={FiBookOpen}
+                value={formData.school}
+                onChange={handleInputChange}
+              />
+              <Input
+                name="description"
+                label="Bio"
+                isTextarea
+                icon={FiUser}
+                value={formData.description}
+                onChange={handleInputChange}
+              />
             </div>
           </motion.div>
 
-          {/* KOLOM KANAN: Sidebar (Passion) */}
           <motion.div variants={itemVariants} className={styles.sidebarCard}>
             <div className={styles.sectionHeader}>
-              <FiStar
-                className={styles.cardIcon}
-                style={{ color: "#facc15" }}
-              />
-              <h3 className={styles.sectionTitle}>Passion & Keahlian</h3>
+              <FiStar className={styles.cardIcon} />{" "}
+              <h3 className={styles.sectionTitle}>Passion</h3>
             </div>
-            <div style={{ marginTop: "20px" }}>
-              <div className={styles.passionInputWrapper}>
-                <div style={{ flex: 1 }}>
-                  <Input
-                    type="text"
-                    name="newPassion"
-                    id="newPassion"
-                    label="Tambah keahlian..."
-                    value={newPassion}
-                    onChange={(e) => setNewPassion(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && addPassion()}
-                  />
-                </div>
-                <motion.button
-                  whileHover={{ y: -3, boxShadow: "4px 4px 0px #000" }}
-                  whileTap={{ y: 2, boxShadow: "0px 0px 0px #000" }}
-                  className={styles.addPassionBtn}
-                  onClick={addPassion}
-                >
-                  <FiPlus />
-                </motion.button>
-              </div>
-              <div className={styles.passionWrapper}>
-                {formData.passions.map((passion, index) => (
-                  <span key={index} className={styles.passionTag}>
-                    {passion}
-                    <span
-                      className={styles.removeTag}
-                      onClick={() => removePassion(passion)}
-                    >
-                      <FiX />
-                    </span>
-                  </span>
-                ))}
-              </div>
+            <div className={styles.passionInputWrapper}>
+              <Input
+                value={newPassion}
+                onChange={(e) => setNewPassion(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && addPassion()}
+              />
+              <button className={styles.addPassionBtn} onClick={addPassion}>
+                <FiPlus />
+              </button>
+            </div>
+            <div className={styles.passionWrapper}>
+              {formData.passions.map((p, i) => (
+                <span key={i} className={styles.passionTag}>
+                  {p} <FiX onClick={() => removePassion(p)} />
+                </span>
+              ))}
             </div>
           </motion.div>
         </div>
 
-        {/* BOTTOM ACTIONS */}
-        <motion.div
-          className={styles.actionBar}
-          initial={{ y: 50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-        >
-          <div className={styles.actionText}>
-            <h3>Sudah selesai? 🚀</h3>
-            <p>
-              Pastikan semua data sudah terisi dengan benar sebelum menyimpan.
-            </p>
-          </div>
-          <div className={styles.actionButtons}>
-            <motion.button
-              whileHover={{
-                y: -3,
-                boxShadow: "6px 6px 0px #000",
-                backgroundColor: "#f9fafb",
-              }}
-              whileTap={{ y: 2, boxShadow: "0px 0px 0px #000" }}
-              className={styles.cancelBtn}
-              onClick={() => navigate("/profile")}
-              disabled={updateProfileMutation.isPending}
-            >
-              <FiX size={20} /> Batal
-            </motion.button>
-            <motion.button
-              whileHover={{ y: -4, boxShadow: "8px 8px 0px #000" }}
-              whileTap={{ y: 2, boxShadow: "0px 0px 0px #000" }}
-              className={styles.saveBtn}
-              onClick={handleSave}
-              disabled={updateProfileMutation.isPending}
-            >
-              <FiSave size={20} />{" "}
-              {updateProfileMutation.isPending
-                ? "Menyimpan..."
-                : "Simpan Perubahan"}
-            </motion.button>
-          </div>
-        </motion.div>
+        <div className={styles.actionBar}>
+          <button
+            className={styles.saveBtn}
+            onClick={handleSave}
+            disabled={isPending}
+          >
+            {isPending ? "Menyimpan..." : "Simpan Perubahan"}
+          </button>
+        </div>
       </motion.div>
 
       <Popup
         isOpen={popup.isOpen}
-        type={popup.type}
         icon={<FiCheckCircle />}
         title={popup.title}
         description={popup.description}
-        buttonText="Oke"
-        onAction={() => {
-          setPopup({ ...popup, isOpen: false });
-          navigate("/profile");
-        }}
+        onAction={() => navigate("/profile")}
       />
     </DashboardLayout>
   );
