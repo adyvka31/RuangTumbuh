@@ -2,6 +2,13 @@
   "name": "@rutu/shared",
   "version": "1.0.0",
   "main": "validations/auth.schema.js",
+  "module": "validations/auth.schema.mjs",
+  "exports": {
+    ".": {
+      "import": "./validations/auth.schema.mjs",
+      "require": "./validations/auth.schema.js"
+    }
+  },
   "peerDependencies": {
     "zod": "*"
   }
