@@ -1,11 +1,10 @@
 import React from "react";
-import { useAuth } from "@/contexts/AuthContext";
-import api from "@/utils/api";
-import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import DashboardLayout from "@/layouts/DashboardLayout/DashboardLayout";
 import styles from "./ProfilePage.module.css";
-import { useQuery } from "@tanstack/react-query";
+import { useProfile } from "@/hooks/useProfile";
+import { getImageUrl } from "@/utils/imageHelper";
 import {
   FiEdit3,
   FiMail,
@@ -19,36 +18,11 @@ import {
 } from "react-icons/fi";
 
 export default function ProfilePage() {
-  const { user: localUser } = useAuth();
   const navigate = useNavigate();
+  const BASE_URL = import.meta.env.VITE_API_URL;
+  const { userProfile, isLoading, initials, formatDate } = useProfile();
 
-  // SERVER STATE
-  const { data: userProfile, isLoading } = useQuery({
-    queryKey: ["profile", localUser?.id],
-    queryFn: async () => {
-      return await api.get(`/users/${localUser.id}`);
-    },
-    enabled: !!localUser?.id,
-  });
-
-  const formatDate = (dateString) => {
-    if (!dateString) return "Belum diatur";
-    return new Date(dateString).toLocaleDateString("id-ID", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
-  };
-
-  const initials = userProfile?.name
-    ? userProfile.name
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .substring(0, 2)
-        .toUpperCase()
-    : "??";
-
+  // Konfigurasi Animasi
   const containerVariants = {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.1 } },
@@ -66,9 +40,7 @@ export default function ProfilePage() {
   if (isLoading) {
     return (
       <DashboardLayout title="Profil Saya">
-        <div style={{ padding: "40px", textAlign: "center" }}>
-          Memuat profil...
-        </div>
+        <div className={styles.loadingContainer}>Memuat profil...</div>
       </DashboardLayout>
     );
   }
@@ -107,19 +79,12 @@ export default function ProfilePage() {
             </div>
 
             <div className={styles.centerProfile}>
-              <div
-                className={styles.avatarLarge}
-                style={{ overflow: "hidden" }}
-              >
+              <div className={styles.avatarLarge}>
                 {userProfile?.profilePicture ? (
                   <img
-                    src={`http://localhost:5001${userProfile.profilePicture}`}
+                    src={getImageUrl(userProfile?.profilePicture)}
                     alt="Profile"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
+                    className={styles.avatarImg}
                   />
                 ) : (
                   initials
@@ -209,10 +174,7 @@ export default function ProfilePage() {
                         </span>
                       ))
                     ) : (
-                      <span
-                        className={styles.passionTag}
-                        style={{ backgroundColor: "#e5e7eb", color: "#666" }}
-                      >
+                      <span className={styles.emptyPassion}>
                         Belum ada minat.
                       </span>
                     )}

@@ -1,4 +1,3 @@
-// Import seluruh objek dari CJS
 import * as authSchemas from "./auth.schema.js";
 
 // Ambil skema dengan aman, entah Rollup membungkusnya di .default atau langsung

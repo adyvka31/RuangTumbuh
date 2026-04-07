@@ -1,12 +1,9 @@
-import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import DashboardLayout from "@/layouts/DashboardLayout/DashboardLayout";
 import styles from "./HelpCenterPage.module.css";
+
 import {
   FiSearch,
-  FiBook,
-  FiCreditCard,
-  FiSettings,
   FiMessageCircle,
   FiChevronDown,
   FiAlertCircle,
@@ -15,91 +12,22 @@ import {
 import shape10 from "@/assets/shape10.svg";
 import shape11 from "@/assets/shape11.svg";
 
-// --- DUMMY DATA ---
-const helpCategories = [
-  {
-    id: 1,
-    title: "Panduan Belajar",
-    icon: <FiBook />,
-    color: "#38BDF8",
-    desc: "Cara memulai kursus dan menggunakan fitur kelas.",
-  },
-  {
-    id: 2,
-    title: "Pembayaran & Saldo",
-    icon: <FiCreditCard />,
-    color: "#FACC15",
-    desc: "Masalah transaksi, invoice, dan penarikan saldo.",
-  },
-  {
-    id: 3,
-    title: "Akun & Keamanan",
-    icon: <FiSettings />,
-    color: "#A78BFA",
-    desc: "Lupa password, verifikasi, dan pengaturan profil.",
-  },
-  {
-    id: 4,
-    title: "Kendala Teknis",
-    icon: <FiAlertCircle />,
-    color: "#F472B6",
-    desc: "Bug aplikasi, error akses, dan masalah teknis lainnya.",
-  },
-];
-
-const faqs = [
-  {
-    id: 1,
-    question: "Bagaimana cara mencairkan saldo pendapatan mentor?",
-    answer:
-      "Anda dapat mencairkan saldo melalui menu 'Dompet'. Minimal penarikan adalah Rp 100.000 dan proses memakan waktu 1-3 hari kerja ke rekening bank terdaftar.",
-  },
-  {
-    id: 2,
-    question:
-      "Apakah saya bisa menjadwal ulang sesi mentoring yang sudah dibooking?",
-    answer:
-      "Ya, Anda bisa menjadwal ulang maksimal 1x24 jam sebelum sesi dimulai. Masuk ke menu 'Jadwal', pilih sesi terkait, dan klik tombol 'Jadwalkan Ulang'.",
-  },
-  {
-    id: 3,
-    question: "Apa yang terjadi jika saya lupa password akun saya?",
-    answer:
-      "Di halaman login, klik 'Lupa Password'. Kami akan mengirimkan tautan reset ke email yang terdaftar. Jika email tidak masuk, periksa folder spam Anda.",
-  },
-  {
-    id: 4,
-    question: "Sertifikat kelulusan kursus belum muncul, apa solusinya?",
-    answer:
-      "Pastikan Anda telah menonton seluruh video materi hingga selesai (progress 100%) dan telah lulus kuis akhir. Sertifikat biasanya ter-generate otomatis dalam 10 menit.",
-  },
-];
+import { helpCategories } from "./constants/helpData";
+import { useHelpCenter } from "./hooks/useHelpCenter";
 
 export default function HelpCenterPage() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeFaq, setActiveFaq] = useState(null); // Menyimpan ID FAQ yang sedang dibuka
-
-  const toggleFaq = (id) => {
-    setActiveFaq(activeFaq === id ? null : id);
-  };
-
-  // Filter FAQ berdasarkan pencarian
-  const filteredFaqs = faqs.filter(
-    (faq) =>
-      faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      faq.answer.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  const { searchQuery, setSearchQuery, activeFaq, toggleFaq, filteredFaqs } =
+    useHelpCenter();
 
   return (
     <DashboardLayout title="Pusat Bantuan">
       <div className={styles.container}>
-        {/* --- HERO & SEARCH --- */}
+        {/* HERO */}
         <motion.div
           className={styles.heroBanner}
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
         >
-          {/* DEKORASI BENTUK BERGERAK (SHAPES ASLI) */}
           <div className={styles.bannerDecor}>
             <motion.img
               src={shape10}
@@ -142,7 +70,7 @@ export default function HelpCenterPage() {
           </div>
         </motion.div>
 
-        {/* --- KATEGORI BANTUAN --- */}
+        {/* CATEGORY */}
         {!searchQuery && (
           <div className={styles.categorySection}>
             <div className={styles.categoryGrid}>
@@ -160,6 +88,7 @@ export default function HelpCenterPage() {
                   >
                     {cat.icon}
                   </div>
+
                   <div className={styles.catText}>
                     <h4>{cat.title}</h4>
                     <p>{cat.desc}</p>
@@ -170,7 +99,7 @@ export default function HelpCenterPage() {
           </div>
         )}
 
-        {/* --- FAQ ACCORDION --- */}
+        {/* FAQ */}
         <div className={styles.faqSection}>
           <div className={styles.sectionHeader}>
             <h3>
@@ -179,6 +108,7 @@ export default function HelpCenterPage() {
                 : "Pertanyaan Populer (FAQ)"}
             </h3>
           </div>
+
           <div className={styles.accordionContainer}>
             {filteredFaqs.length === 0 ? (
               <div className={styles.emptyState}>
@@ -192,13 +122,16 @@ export default function HelpCenterPage() {
               filteredFaqs.map((faq) => (
                 <div
                   key={faq.id}
-                  className={`${styles.accordionItem} ${activeFaq === faq.id ? styles.accordionActive : ""}`}
+                  className={`${styles.accordionItem} ${
+                    activeFaq === faq.id ? styles.accordionActive : ""
+                  }`}
                 >
                   <button
                     className={styles.accordionBtn}
                     onClick={() => toggleFaq(faq.id)}
                   >
                     <span className={styles.questionText}>{faq.question}</span>
+
                     <motion.div
                       className={styles.chevronIcon}
                       animate={{ rotate: activeFaq === faq.id ? 180 : 0 }}
@@ -228,7 +161,7 @@ export default function HelpCenterPage() {
           </div>
         </div>
 
-        {/* --- CONTACT SUPPORT --- */}
+        {/* CONTACT */}
         <motion.div
           className={styles.contactSection}
           initial={{ opacity: 0 }}
@@ -242,6 +175,7 @@ export default function HelpCenterPage() {
               kami siap membantu 24/7.
             </p>
           </div>
+
           <button className={styles.contactBtn}>
             <FiMessageCircle /> Hubungi Support
           </button>

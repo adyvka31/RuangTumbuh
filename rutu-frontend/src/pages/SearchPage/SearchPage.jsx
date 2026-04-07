@@ -1,161 +1,30 @@
-import React, { useState, useEffect } from "react";
-import api from "@/utils/api";
+import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useInfiniteQuery } from "@tanstack/react-query";
 import DashboardLayout from "@/layouts/DashboardLayout/DashboardLayout";
 import styles from "./SearchPage.module.css";
 import CourseCard from "@/components/CourseCard/CourseCard";
 import { FiSearch, FiSliders, FiLoader } from "react-icons/fi";
-
-const categories = [
-  "Semua",
-  "Frontend",
-  "Backend",
-  "UI/UX Design",
-  "Mobile Dev",
-  "Data Science",
-  "Matematika",
-  "Bahasa Indonesia",
-  "Bahasa Inggris",
-  "Fisika",
-];
-
-// Helper warna & gambar (tetap sama)
-const getCourseExtras = (category) => {
-  const mapping = {
-    Frontend: {
-      color: "#38BDF8",
-      emoji: "👩‍💻",
-      image:
-        "https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&q=80&w=600",
-    },
-    Backend: {
-      color: "#F472B6",
-      emoji: "⚙️",
-      image:
-        "https://images.unsplash.com/photo-1558494949-ef010cbdcc51?auto=format&fit=crop&q=80&w=600",
-    },
-    "UI/UX Design": {
-      color: "#FACC15",
-      emoji: "🎨",
-      image:
-        "https://images.unsplash.com/photo-1586717791821-3f44a563cc4c?auto=format&fit=crop&q=80&w=600",
-    },
-    "Mobile Dev": {
-      color: "#10B981",
-      emoji: "📱",
-      image:
-        "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&q=80&w=600",
-    },
-    "Data Science": {
-      color: "#A78BFA",
-      emoji: "📊",
-      image:
-        "https://images.unsplash.com/photo-1551288049-bbbda536339a?auto=format&fit=crop&q=80&w=600",
-    },
-    Matematika: {
-      color: "#FB923C",
-      emoji: "📐",
-      image:
-        "https://images.unsplash.com/photo-1509228468518-180dd482270b?auto=format&fit=crop&q=80&w=600",
-    },
-    "Bahasa Inggris": {
-      color: "#6366F1",
-      emoji: "🇬🇧",
-      image:
-        "https://images.unsplash.com/photo-1543165796-5426273eaab3?auto=format&fit=crop&q=80&w=600",
-    },
-    "Bahasa Indonesia": {
-      color: "#EF4444",
-      emoji: "🇮🇩",
-      image:
-        "https://images.unsplash.com/photo-1518173946687-a4c8a9b746f4?auto=format&fit=crop&q=80&w=600",
-    },
-    Fisika: {
-      color: "#14B8A6",
-      emoji: "⚛️",
-      image:
-        "https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?auto=format&fit=crop&q=80&w=600",
-    },
-  };
-  return (
-    mapping[category] || {
-      color: "#94A3B8",
-      emoji: "📚",
-      image:
-        "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&q=80&w=600",
-    }
-  );
-};
+import { COURSE_CATEGORIES } from "@/constants/courseData";
+import { useSearchCourses } from "@/hooks/useSearchCourses";
 
 export default function SearchPage() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [activeCategory, setActiveCategory] = useState("Semua");
-
-  // 1. Fitur Debouncing (Menunda pencarian 250ms agar server tidak spam saat ngetik)
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedSearch(searchQuery);
-    }, 250);
-    return () => clearTimeout(handler);
-  }, [searchQuery]);
-
-  // 2. React Query: Infinite Fetching
   const {
-    data,
-    isLoading: loading,
+    searchQuery,
+    setSearchQuery,
+    activeCategory,
+    setActiveCategory,
+    allCourses,
+    isLoading,
     fetchNextPage,
     hasNextPage,
-    isFetchingNextPage: loadingMore,
-  } = useInfiniteQuery({
-    queryKey: ["courses", debouncedSearch, activeCategory],
-    queryFn: async ({ pageParam = 1 }) => {
-      const queryParams = new URLSearchParams({
-        page: pageParam,
-        limit: 6,
-        search: debouncedSearch,
-        category: activeCategory,
-      });
-      const result = await api.get(`/courses?${queryParams}`);
-
-      // Kembalikan objek yang berisi data array dan nomor halaman berikutnya (jika ada)
-      return {
-        items: result.data,
-        nextPage:
-          pageParam < result.meta.totalPages ? pageParam + 1 : undefined,
-      };
-    },
-    getNextPageParam: (lastPage) => lastPage.nextPage,
-  });
-
-  // Ekstrak dan format semua kursus dari pages yang sudah diload
-  const allCourses =
-    data?.pages.flatMap((page) =>
-      page.items.map((item) => {
-        const extras = getCourseExtras(item.kategori);
-        return {
-          id: item.id,
-          title: item.name,
-          author: item.tutor,
-          category: item.kategori,
-          duration: item.durasi,
-          description: item.deskripsi,
-          date: new Date(item.createdAt).toLocaleDateString("id-ID", {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-          }),
-          rating: 5,
-          ...extras,
-        };
-      }),
-    ) || [];
+    isFetchingNextPage,
+  } = useSearchCourses();
 
   const containerVariants = {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.1 } },
   };
+
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
     show: { y: 0, opacity: 1, transition: { type: "spring", bounce: 0.4 } },
@@ -165,6 +34,7 @@ export default function SearchPage() {
   return (
     <DashboardLayout title="Materi & Kursus">
       <div className={styles.container}>
+        {/* HERO BANNER */}
         <motion.div
           className={styles.searchBanner}
           initial={{ y: -20, opacity: 0 }}
@@ -184,6 +54,7 @@ export default function SearchPage() {
           </div>
         </motion.div>
 
+        {/* SEARCH & FILTER CONTROLS */}
         <div className={styles.searchControlArea}>
           <div className={styles.searchBarRow}>
             <div className={styles.searchContainer}>
@@ -202,10 +73,12 @@ export default function SearchPage() {
           </div>
 
           <div className={styles.categoriesWrapper}>
-            {categories.map((cat) => (
+            {COURSE_CATEGORIES.map((cat) => (
               <button
                 key={cat}
-                className={`${styles.categoryPill} ${activeCategory === cat ? styles.pillActive : ""}`}
+                className={`${styles.categoryPill} ${
+                  activeCategory === cat ? styles.pillActive : ""
+                }`}
                 onClick={() => setActiveCategory(cat)}
               >
                 {cat}
@@ -214,8 +87,8 @@ export default function SearchPage() {
           </div>
         </div>
 
-        {/* LIST KURSUS */}
-        {loading ? (
+        {/* COURSE LIST AREA */}
+        {isLoading ? (
           <div
             className={styles.loadingWrapper}
             style={{ textAlign: "center", padding: "40px" }}
@@ -251,7 +124,7 @@ export default function SearchPage() {
               </AnimatePresence>
             </motion.div>
 
-            {/* TOMBOL LOAD MORE */}
+            {/* LOAD MORE BUTTON */}
             {hasNextPage && (
               <div
                 style={{
@@ -265,7 +138,7 @@ export default function SearchPage() {
                   whileHover={{ y: -3, boxShadow: "5px 5px 0px #000" }}
                   whileTap={{ y: 2, boxShadow: "0px 0px 0px #000" }}
                   onClick={() => fetchNextPage()}
-                  disabled={loadingMore}
+                  disabled={isFetchingNextPage}
                   style={{
                     backgroundColor: "white",
                     padding: "12px 30px",
@@ -279,7 +152,7 @@ export default function SearchPage() {
                     gap: "10px",
                   }}
                 >
-                  {loadingMore ? (
+                  {isFetchingNextPage ? (
                     <FiLoader className="spin" />
                   ) : (
                     "Tampilkan Lebih Banyak ↓"

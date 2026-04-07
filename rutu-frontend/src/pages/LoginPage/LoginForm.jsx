@@ -1,56 +1,26 @@
-import React, { useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
-import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import api from "@/utils/api";
-import { useNavigate, Link } from "react-router-dom";
-import styles from "./LoginForm.module.css";
+import { Link } from "react-router-dom";
 import { FiAtSign, FiLock } from "react-icons/fi";
 import { MdCheckCircle } from "react-icons/md";
+import styles from "./LoginForm.module.css";
 import { Button } from "@components/Button/Button";
 import { Input } from "@components/Input/Input";
 import { Popup } from "@components/Popup/Popup";
-
-import { loginPayloadSchema } from "@rutu/shared";
+import { useLoginForm } from "@/hooks/useLoginForm";
+import { LOGIN_MESSAGES } from "@/constants/loginMessages";
 
 export const LoginForm = () => {
-  const navigate = useNavigate();
-  const { login } = useAuth();
-
-  const [apiError, setApiError] = useState("");
-  const [showPopup, setShowPopup] = useState(false);
-
   const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: zodResolver(loginPayloadSchema),
-  });
-
-  const loginMutation = useMutation({
-    mutationFn: async (credentials) => {
-      return await api.post("/auth/login", credentials);
+    form: {
+      register,
+      handleSubmit,
+      formState: { errors },
     },
-    onSuccess: (result) => {
-      login(result.user, result.token);
-      setShowPopup(true);
-      setTimeout(() => {
-        setShowPopup(false);
-        navigate("/dashboard");
-      }, 3000);
-    },
-    onError: (err) => {
-      setApiError(err.response?.data?.message || "Email atau password salah!");
-    },
-  });
-
-  // onSubmit hanya akan dipanggil jika validasi Zod SUKSES
-  const onSubmit = (data) => {
-    setApiError("");
-    loginMutation.mutate(data);
-  };
+    apiError,
+    showPopup,
+    loginMutation,
+    onSubmit,
+    navigate,
+  } = useLoginForm();
 
   return (
     <>
@@ -104,6 +74,7 @@ export const LoginForm = () => {
               <input type="checkbox" name="Rememberme" id="rememberme" />
               <label htmlFor="rememberme">Ingatkan Saya</label>
             </div>
+
             <Link to="/forgot-password" className={styles.forgotPassword}>
               Lupa Password
             </Link>
@@ -111,7 +82,9 @@ export const LoginForm = () => {
         </div>
 
         <Button type="submit" disabled={loginMutation.isPending}>
-          {loginMutation.isPending ? "Loading..." : "Login"}
+          {loginMutation.isPending
+            ? LOGIN_MESSAGES.BUTTON_LOADING
+            : LOGIN_MESSAGES.BUTTON_LOGIN}
         </Button>
       </form>
 
@@ -119,8 +92,8 @@ export const LoginForm = () => {
         <Popup
           isOpen={true}
           icon={<MdCheckCircle />}
-          title="Login Berhasil!"
-          description="Selamat datang kembali! Sedang mengalihkan ke Dashboard..."
+          title={LOGIN_MESSAGES.SUCCESS_TITLE}
+          description={LOGIN_MESSAGES.SUCCESS_DESCRIPTION}
           buttonText="Pergi Ke Dashboard"
           onAction={() => navigate("/dashboard")}
         />

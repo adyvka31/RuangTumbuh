@@ -1,14 +1,16 @@
-import React, { useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
-import api from "@/utils/api";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import DashboardLayout from "@/layouts/DashboardLayout/DashboardLayout";
 import styles from "./MyCoursePage.module.css";
-import { useNavigate } from "react-router-dom";
 import { Popup } from "@/components/Popup/Popup";
-
-// Icons
+import MyCourseCard from "@/components/MyCourseCard/MyCourseCard";
+import { useMyCourses } from "@/hooks/useMyCourses";
+import {
+  getCourseExtras,
+  MY_COURSE_TABS,
+  COMPLETED_COURSES_DUMMY, // Pastikan menggunakan nama ini
+} from "@/constants/courseData";
 import {
   FiCheck,
   FiX,
@@ -17,182 +19,32 @@ import {
   FiStar,
   FiCalendar,
   FiMessageCircle,
-  FiBell,
   FiPlayCircle,
   FiCheckCircle,
-  FiSend,
   FiAlertCircle,
   FiUser,
 } from "react-icons/fi";
 
-import MyCourseCard from "@/components/MyCourseCard/MyCourseCard";
-
-// Helper to match SearchPage aesthetics
-const getCourseExtras = (category) => {
-  const mapping = {
-    programming: { color: "#38BDF8", emoji: "👩‍💻" },
-    design: { color: "#FACC15", emoji: "🎨" },
-    business: { color: "#F472B6", emoji: "⚙️" },
-    Frontend: { color: "#38BDF8", emoji: "👩‍💻" },
-    Backend: { color: "#F472B6", emoji: "⚙️" },
-    "UI/UX Design": { color: "#FACC15", emoji: "🎨" },
-    "Mobile Dev": { color: "#10B981", emoji: "📱" },
-    "Data Science": { color: "#A78BFA", emoji: "📊" },
-    Matematika: { color: "#FB923C", emoji: "📐" },
-    "Bahasa Inggris": { color: "#6366F1", emoji: "🇬🇧" },
-    "Bahasa Indonesia": { color: "#EF4444", emoji: "🇮🇩" },
-    Fisika: { color: "#14B8A6", emoji: "⚛️" },
-  };
-  return mapping[category] || { color: "#94A3B8", emoji: "📚" };
-};
-
-// Dummy data for tabs not yet fully dynamic
-const activeCourses = [
-  {
-    id: 101,
-    name: "Michael Chen",
-    role: "Mentor",
-    topic: "Backend Node.js & Express",
-    date: "Hari Ini",
-    time: "19:00 WIB",
-    emoji: "👲",
-    color: "#F472B6",
-    progress: 60,
-    nextMeet: "Sesi 3 dari 5",
-  },
-];
-
-const completedCourses = [
-  {
-    id: 201,
-    name: "Amanda Smith",
-    role: "Mentor",
-    topic: "Figma Prototyping Lanjutan",
-    date: "20 Okt 2026",
-    time: "Selesai",
-    emoji: "👱‍♀️",
-    color: "#10B981",
-    rating: 5,
-    review: "Sangat membantu!",
-  },
-];
-
 export default function MyCoursePage() {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const queryClient = useQueryClient();
-
-  const [activeTab, setActiveTab] = useState("Kursus Saya");
-  const [popup, setPopup] = useState({
-    isOpen: false,
-    type: "success",
-    title: "",
-    description: "",
-  });
-
-  // React Query: Fetch My Created Courses
   const {
-    data: myCreatedCourses = [],
-    isLoading: loadingCourses,
-    refetch: refetchCreatedCourses,
-  } = useQuery({
-    queryKey: ["createdCourses", user?.id],
-    queryFn: async () => {
-      const result = await api.get(`/courses?tutorId=${user.id}`);
-      return Array.isArray(result.data) ? result.data : [];
-    },
-    enabled: !!user?.id,
-  });
+    activeTab,
+    setActiveTab,
+    popup,
+    setPopup,
+    myCreatedCourses,
+    myBookings,
+    incomingBookings,
+    loading,
+    statusUpdateMutation,
+    refetchCreatedCourses,
+    handleStatusUpdate, 
+  } = useMyCourses();
 
-  // React Query: Fetch My Bookings (Student)
-  const { data: myBookings = [], isLoading: loadingBookings } = useQuery({
-    queryKey: ["myBookings", user?.id],
-    queryFn: async () => {
-      const data = await api.get(`/bookings/student?studentId=${user.id}`);
-      return Array.isArray(data) ? data : [];
-    },
-    enabled: !!user?.id,
-  });
-
-  // React Query: Fetch Incoming Bookings (Tutor)
-  const { data: incomingBookings = [], isLoading: loadingIncoming } = useQuery({
-    queryKey: ["incomingBookings", user?.id],
-    queryFn: async () => {
-      const data = await api.get(`/bookings/tutor?tutorId=${user.id}`);
-      return Array.isArray(data) ? data : [];
-    },
-    enabled: !!user?.id,
-  });
-
-  const loading = loadingCourses || loadingBookings || loadingIncoming;
-
-  // React Query: Mutation for updating booking status
-  const statusUpdateMutation = useMutation({
-    mutationFn: async ({ bookingId, newStatus }) => {
-      return await api.patch(`/bookings/${bookingId}/status`, {
-        status: newStatus,
-        tutorId: user.id,
-      });
-    },
-    onSuccess: (result) => {
-      if (result.success !== false) {
-        setPopup({
-          isOpen: true,
-          type: "success",
-          title: "Berhasil",
-          description: result.message || "Status berhasil diperbarui.",
-        });
-        queryClient.invalidateQueries(["incomingBookings", user?.id]);
-      } else {
-        setPopup({
-          isOpen: true,
-          type: "danger",
-          title: "Gagal",
-          description: result.message || "Gagal memperbarui status.",
-        });
-      }
-    },
-    onError: (error) => {
-      console.error("Error updating status:", error);
-      setPopup({
-        isOpen: true,
-        type: "danger",
-        title: "Error",
-        description: "Terjadi kesalahan koneksi.",
-      });
-    },
-  });
-
-  const handleStatusUpdate = (bookingId, newStatus) => {
-    statusUpdateMutation.mutate({ bookingId, newStatus });
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.15 } },
   };
-
-  const tabs = [
-    {
-      id: "Kursus Saya",
-      label: "Sesi Mentor Saya",
-      icon: <FiUser />,
-      count: myCreatedCourses.length,
-    },
-    {
-      id: "Permintaan",
-      label: "Permintaan Masuk",
-      icon: <FiBell />,
-      count: incomingBookings.length,
-    },
-    {
-      id: "Pengajuan",
-      label: "Pengajuan Saya",
-      icon: <FiSend />,
-      count: myBookings.length,
-    },
-    {
-      id: "Selesai",
-      label: "Riwayat Selesai",
-      icon: <FiCheckCircle />,
-      count: completedCourses.length,
-    },
-  ];
 
   const tabVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -204,10 +56,6 @@ export default function MyCoursePage() {
     exit: { opacity: 0, y: -20, transition: { duration: 0.2 } },
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    show: { opacity: 1, transition: { staggerChildren: 0.15 } },
-  };
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
     show: { y: 0, opacity: 1, transition: { type: "spring", bounce: 0.4 } },
@@ -225,8 +73,8 @@ export default function MyCoursePage() {
           <div className={styles.bannerText}>
             <h2>Manajemen Kursus 👨🏻‍💻</h2>
             <p>
-              Kelola semua pengajuan belajarmu, permintaan mengajar, jadwal
-              aktif, dan riwayat di satu tempat.
+              Kelola semua pengajuan belajarmu, permintaan mengajar, dan riwayat
+              di satu tempat.
             </p>
           </div>
           <button
@@ -238,19 +86,28 @@ export default function MyCoursePage() {
         </motion.div>
 
         <motion.div variants={itemVariants} className={styles.tabsContainer}>
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              className={`${styles.tabBtn} ${activeTab === tab.id ? styles.activeTab : ""}`}
-              onClick={() => setActiveTab(tab.id)}
-            >
-              {tab.icon}
-              <span>{tab.label}</span>
-              {tab.count > 0 && (
-                <span className={styles.badge}>{tab.count}</span>
-              )}
-            </button>
-          ))}
+          {MY_COURSE_TABS.map((tab) => {
+            const IconComponent = tab.icon;
+            const counts = {
+              "Kursus Saya": myCreatedCourses.length,
+              Permintaan: incomingBookings.length,
+              Pengajuan: myBookings.length,
+              Selesai: COMPLETED_COURSES_DUMMY.length,
+            };
+            return (
+              <button
+                key={tab.id}
+                className={`${styles.tabBtn} ${activeTab === tab.id ? styles.activeTab : ""}`}
+                onClick={() => setActiveTab(tab.id)}
+              >
+                <IconComponent />
+                {tab.icon} <span>{tab.label}</span>
+                {counts[tab.id] > 0 && (
+                  <span className={styles.badge}>{counts[tab.id]}</span>
+                )}
+              </button>
+            );
+          })}
         </motion.div>
 
         <div className={styles.tabContentArea}>
@@ -267,9 +124,7 @@ export default function MyCoursePage() {
                 {loading ? (
                   <div className={styles.emptyState}>Memuat kursus...</div>
                 ) : myCreatedCourses.length === 0 ? (
-                  <div className={styles.emptyState}>
-                    Anda belum membuat kursus apapun.
-                  </div>
+                  <div className={styles.emptyState}>Belum membuat kursus.</div>
                 ) : (
                   myCreatedCourses.map((course) => (
                     <MyCourseCard
@@ -292,13 +147,10 @@ export default function MyCoursePage() {
                 className={styles.gridContainer}
               >
                 {myBookings.length === 0 ? (
-                  <div className={styles.emptyState}>
-                    Kamu belum mengajukan kursus apapun.
-                  </div>
+                  <div className={styles.emptyState}>Belum ada pengajuan.</div>
                 ) : (
                   myBookings.map((booking) => {
                     const extras = getCourseExtras(booking.course.kategori);
-                    const dateObj = new Date(booking.scheduledAt);
                     return (
                       <div key={booking.id} className={styles.neoCard}>
                         <div className={styles.neoCardHeader}>
@@ -315,10 +167,6 @@ export default function MyCoursePage() {
                           <div
                             className={styles.statusBadge}
                             style={{
-                              fontSize: "0.8rem",
-                              fontWeight: "bold",
-                              padding: "4px 10px",
-                              borderRadius: "10px",
                               backgroundColor:
                                 booking.status === "ACCEPTED"
                                   ? "#dcfce7"
@@ -342,28 +190,12 @@ export default function MyCoursePage() {
                           </h3>
                           <div className={styles.timeInfo}>
                             <div className={styles.timeBadge}>
-                              <FiCalendar /> {dateObj.toLocaleDateString()}
-                            </div>
-                            <div className={styles.timeBadge}>
-                              <FiClock />{" "}
-                              {dateObj.toLocaleTimeString([], {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
+                              <FiCalendar />{" "}
+                              {new Date(
+                                booking.scheduledAt,
+                              ).toLocaleDateString()}
                             </div>
                           </div>
-                          {booking.note && (
-                            <div className={styles.requestNote}>
-                              <strong>Catatan:</strong> <p>"{booking.note}"</p>
-                            </div>
-                          )}
-                        </div>
-                        <div className={styles.neoCardFooter}>
-                          <button
-                            className={`${styles.actionBtn} ${styles.btnChat}`}
-                          >
-                            <FiMessageCircle /> Chat Mentor
-                          </button>
                         </div>
                       </div>
                     );
@@ -496,7 +328,7 @@ export default function MyCoursePage() {
                 exit="exit"
                 className={styles.gridContainer}
               >
-                {completedCourses.map((course) => (
+                {COMPLETED_COURSES_DUMMY.map((course) => (
                   <div
                     key={course.id}
                     className={`${styles.neoCard} ${styles.cardCompleted}`}
