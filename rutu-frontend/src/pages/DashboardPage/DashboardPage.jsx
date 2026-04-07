@@ -1,6 +1,7 @@
 import React from "react";
 import api from "@/utils/api";
 import { useAuth } from "@/contexts/AuthContext";
+// eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import DashboardLayout from "@/layouts/DashboardLayout/DashboardLayout";
 import styles from "./DashboardPage.module.css";
@@ -30,19 +31,24 @@ export default function DashboardPage() {
   const firstName = userName.split(" ")[0];
 
   // SERVER STATE: Menarik data statistik menggunakan TanStack Query
-  const { data: dbStats, isLoading } = useQuery({
+  const {
+    data: dbStats,
+    isPending,
+    isError,
+  } = useQuery({
     queryKey: ["dashboard", user?.id],
     queryFn: async () => {
       const data = await api.get(`/users/${user.id}/dashboard`);
       return {
-        timeBalance: data.timeBalance || 0,
-        learningMinutes: data.learningMinutes || 0,
-        upcomingSessions: data.upcomingSessions || 0,
-        completedSessions: data.completedSessions || 0,
-        mentoringSessions: data.mentoringSessions || [],
+        // Gunakan optional chaining (?.) untuk keamanan ganda
+        timeBalance: data?.timeBalance || 0,
+        learningMinutes: data?.learningMinutes || 0,
+        upcomingSessions: data?.upcomingSessions || 0,
+        completedSessions: data?.completedSessions || 0,
+        mentoringSessions: data?.mentoringSessions || [],
       };
     },
-    enabled: !!user?.id, // Hanya jalan jika user ID ada
+    enabled: !!user?.id,
   });
 
   const containerVariants = {
@@ -79,11 +85,32 @@ export default function DashboardPage() {
     { bg: "var(--primary-green)", badge: "#86efac" },
   ];
 
-  if (isLoading) {
+  if (isPending) {
     return (
       <DashboardLayout title="Dashboard">
         <div style={{ padding: "40px", textAlign: "center" }}>
           Memuat dashboard...
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  if (isError || !dbStats) {
+    return (
+      <DashboardLayout title="Dashboard">
+        <div
+          style={{
+            padding: "40px",
+            textAlign: "center",
+            color: "red",
+            marginTop: "50px",
+          }}
+        >
+          <h3>Terjadi Kesalahan Server (500)</h3>
+          <p>
+            Gagal memuat data statistik dashboard. Silakan cek terminal backend
+            Anda untuk melihat detail error Prisma.
+          </p>
         </div>
       </DashboardLayout>
     );

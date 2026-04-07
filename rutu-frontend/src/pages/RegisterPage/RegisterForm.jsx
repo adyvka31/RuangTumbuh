@@ -33,9 +33,7 @@ export const RegisterForm = () => {
 
   const registerMutation = useMutation({
     mutationFn: async (userData) => {
-      // Hapus confirmPassword sebelum dikirim ke backend
-      const { confirmPassword, ...dataToSend } = userData;
-      return await api.post("/auth/register", dataToSend);
+      return await api.post("/auth/register", userData);
     },
     onSuccess: () => {
       setPopup({
