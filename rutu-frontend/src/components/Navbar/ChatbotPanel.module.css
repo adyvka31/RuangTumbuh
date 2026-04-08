@@ -128,7 +128,6 @@
   transform: translate(0px, 0px);
   box-shadow: 0px 0px 0px #000;
 }
-
 .chatBody {
   padding: 25px;
   display: flex;
@@ -136,6 +135,23 @@
   gap: 18px;
   flex: 1;
   overflow-y: auto;
+  scroll-behavior: smooth;
+  
+  scrollbar-width: thin;
+  scrollbar-color: #000 #fdfaf5;
+}
+.chatBody::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chatBody::-webkit-scrollbar-track {
+  background: #fdfaf5;
+  border-left: 2px solid #000;
+}
+
+.chatBody::-webkit-scrollbar-thumb {
+  background-color: #000;
+  border: 1px solid #000;
 }
 
 .bubble {

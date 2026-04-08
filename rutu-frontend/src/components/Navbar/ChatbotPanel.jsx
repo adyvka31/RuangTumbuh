@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react"; 
 import { motion, AnimatePresence } from "framer-motion";
 import styles from "./ChatbotPanel.module.css";
-import { useChatbot } from "@/hooks/useChatbot"; // Import Hook Anda!
+import { useChatbot } from "@/hooks/useChatbot";
 
 const layerVariants = {
   open: (custom) => ({
@@ -84,8 +84,6 @@ export default function ChatbotPanel({ isOpen, onClose }) {
   );
 }
 
-// === SUB-KOMPONEN UI ===
-
 function ChatHeader({ onClose }) {
   return (
     <div className={styles.chatHeader}>
@@ -106,12 +104,29 @@ function ChatHeader({ onClose }) {
 }
 
 function ChatBody({ messages, isTyping, chatBodyRef }) {
+  useEffect(() => {
+    const container = chatBodyRef.current;
+    if (container) {
+      const threshold = 100;
+      const isNearBottom = 
+        container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
+      if (isNearBottom) {
+        container.scrollTo({
+          top: container.scrollHeight,
+          behavior: "smooth",
+        });
+      }
+    }
+  }, [messages, isTyping]);
+
   return (
     <div className={styles.chatBody} ref={chatBodyRef}>
       {messages.map((msg) => (
         <ChatBubble key={msg.id} msg={msg} />
       ))}
-      <AnimatePresence>{isTyping && <TypingIndicator />}</AnimatePresence>
+      <AnimatePresence>
+        {isTyping && <TypingIndicator key="typing" />}
+      </AnimatePresence>
     </div>
   );
 }
