@@ -3,7 +3,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useParams, useNavigate } from "react-router-dom";
 import DashboardLayout from "@/layouts/DashboardLayout/DashboardLayout";
 import styles from "./MessageDetailPage.module.css";
-import { FiSend, FiArrowLeft, FiMoreVertical, FiPaperclip, FiSmile } from "react-icons/fi";
+import {
+  FiSend,
+  FiArrowLeft,
+  FiMoreVertical,
+  FiPaperclip,
+  FiSmile,
+  FiPhone,
+  FiVideo,
+} from "react-icons/fi";
 
 export default function MessageDetailPage() {
   const { id } = useParams();
@@ -11,7 +19,7 @@ export default function MessageDetailPage() {
   const [inputText, setInputText] = useState("");
   const scrollRef = useRef(null);
 
-  // Dummy data based on MessagesPage
+  // Data Mockup
   const contacts = {
     1: { name: "Grace Ashcroft", color: "#38BDF8", status: "Online" },
     2: { name: "Carloz", color: "#FB923C", status: "Last seen 2h ago" },
@@ -22,18 +30,41 @@ export default function MessageDetailPage() {
     7: { name: "Leon Scott", color: "#F472B6", status: "Last seen 5m ago" },
   };
 
-  const contact = contacts[id] || { name: "Unknown", color: "#E5E7EB", status: "Offline" };
+  const contact = contacts[id] || {
+    name: "Unknown",
+    color: "#E5E7EB",
+    status: "Offline",
+  };
 
   const [messages, setMessages] = useState([
-    { id: 1, text: "Halo!", sender: "other", time: "12:00" },
-    { id: 2, text: "Apa kabar?", sender: "other", time: "12:01" },
-    { id: 3, text: "Baik, kamu?", sender: "me", time: "12:05" },
-    { id: 4, text: contact.text || "Ayo masuk ke zoom meetingnya", sender: "other", time: "12:30" },
+    { id: 1, text: "Halo Kak! 👋", sender: "other", time: "12:00" },
+    {
+      id: 2,
+      text: "Saya ingin bertanya terkait materi di kelas UI/UX.",
+      sender: "other",
+      time: "12:01",
+    },
+    {
+      id: 3,
+      text: "Tentu, silakan tanyakan saja. Bagian mana yang membingungkan?",
+      sender: "me",
+      time: "12:05",
+    },
+    {
+      id: 4,
+      text: contact.text || "Apakah kita bisa bahas via Zoom sebentar?",
+      sender: "other",
+      time: "12:30",
+    },
   ]);
 
+  // Auto scroll ke bawah saat ada pesan baru
   useEffect(() => {
     if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      scrollRef.current.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior: "smooth",
+      });
     }
   }, [messages]);
 
@@ -45,7 +76,10 @@ export default function MessageDetailPage() {
       id: Date.now(),
       text: inputText,
       sender: "me",
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
     };
 
     setMessages([...messages, newMessage]);
@@ -53,91 +87,136 @@ export default function MessageDetailPage() {
   };
 
   return (
-    <DashboardLayout title="Message Detail">
+    <DashboardLayout title="Detail Pesan">
       <div className={styles.container}>
-        {/* Header */}
+        {/* --- HEADER --- */}
         <header className={styles.header}>
-          <button 
-            className={styles.backButton} 
-            onClick={() => navigate("/messages")}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <FiArrowLeft size={24} />
-          </button>
-          
-          <div className={styles.userInfo}>
-            <div 
-              className={styles.avatar} 
-              style={{ backgroundColor: contact.color }}
-            ></div>
-            <div className={styles.userDetails}>
-              <h2 className={styles.userName}>{contact.name}</h2>
-              <span className={styles.status}>{contact.status}</span>
+          <div className={styles.headerLeft}>
+            <motion.button
+              className={styles.backButton}
+              onClick={() => navigate("/messages")}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <FiArrowLeft size={22} />
+            </motion.button>
+
+            <div className={styles.userInfo}>
+              <div className={styles.avatarWrap}>
+                <div
+                  className={styles.avatar}
+                  style={{ backgroundColor: contact.color }}
+                >
+                  {contact.name.charAt(0)}
+                </div>
+                {contact.status === "Online" && (
+                  <div className={styles.onlineDot}></div>
+                )}
+              </div>
+              <div className={styles.userDetails}>
+                <h2 className={styles.userName}>{contact.name}</h2>
+                <span className={styles.status}>{contact.status}</span>
+              </div>
             </div>
           </div>
 
-          <button className={styles.menuButton}>
-            <FiMoreVertical size={24} />
-          </button>
+          <div className={styles.headerRight}>
+            <button className={styles.actionBtn}>
+              <FiPhone size={20} />
+            </button>
+            <button className={styles.actionBtn}>
+              <FiVideo size={20} />
+            </button>
+            <div className={styles.divider}></div>
+            <button className={styles.actionBtn}>
+              <FiMoreVertical size={22} />
+            </button>
+          </div>
         </header>
 
-        {/* Messages Area */}
+        {/* --- CHAT AREA --- */}
         <div className={styles.chatArea} ref={scrollRef}>
           <div className={styles.dateSeparator}>
-            <span>Today</span>
+            <span>Hari ini</span>
           </div>
-          
+
           <AnimatePresence initial={false}>
-            {messages.map((msg) => (
-              <motion.div
-                key={msg.id}
-                initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                layout
-                className={`${styles.messageWrapper} ${msg.sender === "me" ? styles.me : styles.other}`}
-              >
-                <div 
-                  className={styles.messageBubble}
-                  style={msg.sender === "other" ? { backgroundColor: contact.color } : {}}
+            {messages.map((msg, index) => {
+              const isMe = msg.sender === "me";
+              const showAvatar =
+                !isMe && (index === 0 || messages[index - 1].sender === "me");
+
+              return (
+                <motion.div
+                  key={msg.id}
+                  layout="position"
+                  initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                  className={`${styles.messageWrapper} ${isMe ? styles.me : styles.other}`}
                 >
-                  <p>{msg.text}</p>
-                  <span className={styles.time}>{msg.time}</span>
-                </div>
-              </motion.div>
-            ))}
+                  {/* Avatar untuk pesan lawan bicara */}
+                  {!isMe && (
+                    <div className={styles.chatAvatarBox}>
+                      {showAvatar ? (
+                        <div
+                          className={styles.chatAvatar}
+                          style={{ backgroundColor: contact.color }}
+                        >
+                          {contact.name.charAt(0)}
+                        </div>
+                      ) : (
+                        <div className={styles.chatAvatarPlaceholder} />
+                      )}
+                    </div>
+                  )}
+
+                  <div className={styles.messageBubble}>
+                    <p className={styles.messageText}>{msg.text}</p>
+                    <span className={styles.time}>{msg.time}</span>
+                  </div>
+                </motion.div>
+              );
+            })}
           </AnimatePresence>
         </div>
 
-        {/* Input Area */}
-        <form className={styles.inputArea} onSubmit={handleSendMessage}>
-          <button type="button" className={styles.iconButton}>
-            <FiPaperclip size={20} />
-          </button>
-          
-          <div className={styles.inputWrapper}>
-            <input
-              type="text"
-              placeholder="Type a message..."
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              className={styles.input}
-            />
-            <button type="button" className={styles.iconButton}>
-              <FiSmile size={20} />
+        {/* --- INPUT AREA --- */}
+        <div className={styles.inputContainer}>
+          <form className={styles.inputForm} onSubmit={handleSendMessage}>
+            <button type="button" className={styles.attachBtn}>
+              <FiPaperclip size={22} />
             </button>
-          </div>
 
-          <motion.button
-            type="submit"
-            className={styles.sendButton}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            disabled={!inputText.trim()}
-          >
-            <FiSend size={20} />
-          </motion.button>
-        </form>
+            <div className={styles.inputWrapper}>
+              <input
+                type="text"
+                placeholder="Ketik pesan..."
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                className={styles.input}
+              />
+              <button type="button" className={styles.emojiBtn}>
+                <FiSmile size={22} />
+              </button>
+            </div>
+
+            <motion.button
+              type="submit"
+              className={styles.sendButton}
+              style={{
+                backgroundColor: inputText.trim()
+                  ? "var(--primary-green, #4ade80)"
+                  : "#e5e7eb",
+              }}
+              whileHover={inputText.trim() ? { scale: 1.05, rotate: -10 } : {}}
+              whileTap={inputText.trim() ? { scale: 0.95 } : {}}
+              disabled={!inputText.trim()}
+            >
+              <FiSend size={20} color={inputText.trim() ? "#000" : "#9ca3af"} />
+            </motion.button>
+          </form>
+        </div>
       </div>
     </DashboardLayout>
   );
