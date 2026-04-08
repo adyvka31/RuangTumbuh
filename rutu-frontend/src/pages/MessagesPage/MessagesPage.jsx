@@ -82,21 +82,25 @@ const allMessages = [
 
 export default function MessagesPage() {
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
 
-  // Membagi pesan ke dalam dua kategori dengan filter pencarian aktif
+  // PISAHKAN STATE PENCARIAN MENJADI DUA
+  const [personalSearchQuery, setPersonalSearchQuery] = useState("");
+  const [groupSearchQuery, setGroupSearchQuery] = useState("");
+
+  // Filter khusus untuk Chat Personal
   const personalMessages = allMessages.filter(
     (msg) =>
       msg.type === "personal" &&
-      (msg.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        msg.text.toLowerCase().includes(searchQuery.toLowerCase())),
+      (msg.name.toLowerCase().includes(personalSearchQuery.toLowerCase()) ||
+        msg.text.toLowerCase().includes(personalSearchQuery.toLowerCase())),
   );
 
+  // Filter khusus untuk Grup Komunitas
   const groupMessages = allMessages.filter(
     (msg) =>
       msg.type === "group" &&
-      (msg.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        msg.text.toLowerCase().includes(searchQuery.toLowerCase())),
+      (msg.name.toLowerCase().includes(groupSearchQuery.toLowerCase()) ||
+        msg.text.toLowerCase().includes(groupSearchQuery.toLowerCase())),
   );
 
   // Animasi untuk setiap kartu pesan
@@ -108,7 +112,6 @@ export default function MessagesPage() {
   // Komponen reusable untuk Kartu Pesan
   const MessageCard = ({ msg }) => (
     <motion.div
-      // layout <-- HAPUS PROP INI. Prop 'layout' seringkali mengunci transform CSS biasa.
       variants={itemVariants}
       initial="hidden"
       animate="show"
@@ -168,24 +171,7 @@ export default function MessagesPage() {
             <div className={styles.floatingShape2}>●</div>
           </div>
         </motion.div>
-        {/* --- SEARCH BAR --- */}
-        <div className={styles.searchBarRow}>
-          <div className={styles.searchContainer}>
-            <FiSearch className={styles.searchIcon} />
-            <input
-              type="text"
-              placeholder="Cari room chat atau group chat Anda..."
-              className={styles.searchInput}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          <button className={styles.filterBtn}>
-            <FiSliders size={24} />
-          </button>
-        </div>
 
-        {/* --- 50:50 SPLIT LAYOUT --- */}
         <div className={styles.splitLayout}>
           {/* KOLOM KIRI: Chat Personal */}
           <div className={styles.columnBox}>
@@ -200,6 +186,23 @@ export default function MessagesPage() {
               <span className={styles.countBadge}>
                 {personalMessages.length}
               </span>
+            </div>
+
+            {/* SEARCH BAR KHUSUS PERSONAL */}
+            <div
+              className={styles.searchBarRow}
+              style={{ marginBottom: "25px" }}
+            >
+              <div className={styles.searchContainer}>
+                <FiSearch className={styles.searchIcon} />
+                <input
+                  type="text"
+                  placeholder="Cari siswa atau tutor..."
+                  className={styles.searchInput}
+                  value={personalSearchQuery}
+                  onChange={(e) => setPersonalSearchQuery(e.target.value)}
+                />
+              </div>
             </div>
 
             <div className={styles.messageList}>
@@ -228,6 +231,23 @@ export default function MessagesPage() {
               </div>
               <h3>Grup Komunitas</h3>
               <span className={styles.countBadge}>{groupMessages.length}</span>
+            </div>
+
+            {/* SEARCH BAR KHUSUS KOMUNITAS */}
+            <div
+              className={styles.searchBarRow}
+              style={{ marginBottom: "25px" }}
+            >
+              <div className={styles.searchContainer}>
+                <FiSearch className={styles.searchIcon} />
+                <input
+                  type="text"
+                  placeholder="Cari grup komunitas..."
+                  className={styles.searchInput}
+                  value={groupSearchQuery}
+                  onChange={(e) => setGroupSearchQuery(e.target.value)}
+                />
+              </div>
             </div>
 
             <div className={styles.messageList}>

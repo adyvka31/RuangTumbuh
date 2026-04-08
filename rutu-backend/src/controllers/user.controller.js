@@ -1,6 +1,6 @@
 const logger = require("../utils/logger");
 const userService = require("../services/user.service");
-const catchAsync = require("../utils/catchAsync"); 
+const catchAsync = require("../utils/catchAsync");
 
 const getProfile = catchAsync(async (req, res) => {
   const profile = await userService.getUserProfile(req.params.id);
@@ -28,13 +28,11 @@ const updateProfile = catchAsync(async (req, res) => {
   const updatedUser = await userService.updateUserProfile(id, updateData);
   logger.info(`[User] Profil berhasil diperbarui untuk ID: ${id}`);
 
-  res
-    .status(200)
-    .json({
-      success: true,
-      message: "Profil berhasil diperbarui!",
-      data: updatedUser,
-    });
+  res.status(200).json({
+    success: true,
+    message: "Profil berhasil diperbarui!",
+    data: updatedUser,
+  });
 });
 
 const getDashboardStats = catchAsync(async (req, res) => {
@@ -46,4 +44,26 @@ const getDashboardStats = catchAsync(async (req, res) => {
     .json({ success: true, message: "Statistik dimuat", data: stats });
 });
 
-module.exports = { getProfile, updateProfile, getDashboardStats };
+const searchUsers = catchAsync(async (req, res) => {
+  const { q } = req.query;
+  const currentUserId = req.user.id; // Didapat dari authMiddleware
+
+  if (!q) return res.status(200).json({ success: true, data: [] });
+
+  const users = await prisma.user.findMany({
+    where: {
+      id: { not: currentUserId }, // Jangan tampilkan diri sendiri
+      OR: [
+        { name: { contains: q, mode: "insensitive" } },
+        { description: { contains: q, mode: "insensitive" } }, // Bisa digunakan untuk role
+        { school: { contains: q, mode: "insensitive" } },
+      ],
+    },
+    select: { id: true, name: true, profilePicture: true, description: true },
+    take: 10, // Batasi hanya 10 hasil agar respon cepat
+  });
+
+  res.status(200).json({ success: true, data: users });
+});
+
+module.exports = { getProfile, updateProfile, getDashboardStats, searchUsers };

@@ -12,6 +12,7 @@ const userRoutes = require("./routes/user.routes");
 const courseRoutes = require("./routes/course.routes");
 const bookingRoutes = require("./routes/booking.routes");
 const scheduleRoutes = require("./routes/schedule.routes");
+const chatRoutes = require("./routes/chat.routes");
 
 const app = express();
 
@@ -47,6 +48,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/schedules", scheduleRoutes);
+app.use("/api/chats", chatRoutes);
 
 // PENANGANAN URL TIDAK DITEMUKAN (404)
 app.use((req, res) => {
