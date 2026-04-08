@@ -1,42 +1,31 @@
-import "dotenv/config";
-import http from "http";
-import { Server } from "socket.io";
-import jwt from "jsonwebtoken";
-import express from "express";
-import cors from "cors";
-
-// Import custom modules
-import prisma from "./src/config/db.js";
-import { getChatbotReply } from "./src/services/chatbot.service.js";
-
-const app = express();
-const server = http.createServer(app);
+require("dotenv").config();
+const http = require("http");
+const { Server } = require("socket.io");
+const jwt = require("jsonwebtoken");
+const app = require("./src/app");
+const prisma = require("./src/config/db");
 const PORT = process.env.PORT || 5001;
-
-// 1. MIDDLEWARE & CONFIG
-app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "https://ruang-tumbuh.vercel.app",
-  ],
-  credentials: true
-}));
-app.use(express.json());
+const server = http.createServer(app);
 
 console.log("=== Konfigurasi RuangTumbuh ===");
-console.log("Cek API Key:", process.env.GEMINI_API_KEY ? "✅ Terdeteksi" : "❌ Tidak Terdeteksi");
+console.log(
+  "Cek API Key:",
+  process.env.GEMINI_API_KEY ? "✅ Terdeteksi" : "❌ Tidak Terdeteksi",
+);
 
-// 2. SOCKET.IO SETUP
+// KONEKSI SOCKET.IO (Dengan pengamanan JWT)
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173", "https://ruang-tumbuh.vercel.app"],
+    origin: [
+      "http://localhost:5173",
+      "http://127.0.0.1:5173",
+      "https://ruang-tumbuh.vercel.app",
+    ],
     methods: ["GET", "POST"],
     credentials: true,
   },
 });
 
-// Auth Middleware untuk Socket
 io.use((socket, next) => {
   const token = socket.handshake.auth.token;
   if (!token) return next(new Error("Akses ditolak. Token tidak ada."));
@@ -81,26 +70,7 @@ io.on("connection", (socket) => {
   });
 });
 
-// 3. ENDPOINT CHATBOT AI
-app.post("/api/chatbot", async (req, res) => {
-  try {
-    const { message } = req.body;
-    if (!message?.trim()) {
-      return res.status(400).json({ success: false, error: "Pesan kosong" });
-    }
-
-    const reply = await getChatbotReply(message);
-    res.json({ success: true, reply });
-  } catch (error) {
-    console.error("Error pada endpoint /api/chatbot:", error.message);
-    res.status(500).json({ 
-      success: false, 
-      reply: "Maaf, server RuangTumbuh sedang sibuk. Coba lagi nanti ya!" 
-    });
-  }
-});
-
-// 4. JALANKAN SERVER
+// JALANKAN SERVER
 server.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server & WebSockets RuangTumbuh jalan di port: ${PORT}`);
 });

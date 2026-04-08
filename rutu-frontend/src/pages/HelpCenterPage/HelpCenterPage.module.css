@@ -20,7 +20,7 @@
   text-align: center;
   box-shadow: 8px 8px 0px #000;
   position: relative;
-  overflow: hidden; 
+  overflow: hidden;
   background-image:
     linear-gradient(rgba(0, 0, 0, 0.05) 2px, transparent 2px),
     linear-gradient(90deg, rgba(0, 0, 0, 0.05) 2px, transparent 2px);
@@ -30,25 +30,25 @@
 /* --- DEKORASI ASSET SHAPES --- */
 .bannerDecor {
   position: absolute;
-  bottom: -30px; 
+  bottom: -30px;
   left: -15px;
   right: -20px;
   display: flex;
   justify-content: space-between;
   pointer-events: none;
-  z-index: 1; 
+  z-index: 1;
 }
 
 .shapeLeft,
 .shapeRight {
-  width: 110px; 
+  width: 110px;
   height: auto;
   opacity: 0.85;
 }
 
 .heroContent {
   position: relative;
-  z-index: 2; 
+  z-index: 2;
   width: 100%;
   max-width: 800px;
 }
@@ -379,13 +379,36 @@
    RESPONSIVE
 ========================================= */
 @media (max-width: 1024px) {
-  .heroBanner {
-    padding: 40px 20px;
+  .container {
+    gap: 30px;
   }
+
+  .heroBanner {
+    padding: 40px 25px;
+  }
+
+  .heroContent h2 {
+    font-size: 2.2rem;
+  }
+
+  .heroContent p {
+    font-size: 1.05rem;
+  }
+
+  .faqSection {
+    padding: 30px 25px;
+  }
+
   .contactSection {
     flex-direction: column;
     text-align: center;
+    padding: 30px 25px;
   }
+
+  .contactText p {
+    max-width: 100%;
+  }
+
   .contactBtn {
     width: 100%;
     justify-content: center;
@@ -393,17 +416,131 @@
 }
 
 @media (max-width: 768px) {
-  .heroContent h2 {
-    font-size: 2.2rem;
+  .container {
+    gap: 25px;
   }
+
+  .heroBanner {
+    padding: 30px 20px;
+    border-radius: 22px;
+  }
+
+  .heroContent h2 {
+    font-size: 1.8rem;
+    line-height: 1.2;
+  }
+
+  .heroContent p {
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+  }
+
+  .searchContainer {
+    border-radius: 16px;
+  }
+
+  .searchIcon {
+    left: 18px;
+    font-size: 1.4rem;
+  }
+
   .searchInput {
-    padding: 18px 20px 18px 55px;
+    padding: 16px 18px 16px 50px;
+    font-size: 0.95rem;
+  }
+
+  .shapeLeft,
+  .shapeRight {
+    width: 80px;
+    opacity: 0.7;
+  }
+
+  .categoryCard {
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .catIconWrap {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+  }
+
+  .faqSection {
+    padding: 25px 20px;
+    border-radius: 22px;
+  }
+
+  .sectionHeader h3 {
+    font-size: 1.4rem;
+  }
+
+  .accordionBtn {
+    padding: 16px 18px;
+  }
+
+  .questionText {
     font-size: 1rem;
   }
-  .categoryGrid {
-    grid-template-columns: 1fr;
+
+  .accordionContent {
+    padding: 0 18px 20px 18px;
   }
+
+  .contactSection {
+    padding: 25px 20px;
+    border-radius: 22px;
+  }
+
+  .contactText h3 {
+    font-size: 1.4rem;
+  }
+
+  .contactText p {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .heroContent h2 {
+    font-size: 1.5rem;
+  }
+
+  .heroContent p {
+    font-size: 0.9rem;
+  }
+
+  .searchInput {
+    font-size: 0.9rem;
+  }
+
+  .categoryCard {
+    gap: 15px;
+  }
+
+  .catText h4 {
+    font-size: 1.1rem;
+  }
+
+  .catText p {
+    font-size: 0.85rem;
+  }
+
   .questionText {
-    font-size: 1.05rem;
+    font-size: 0.95rem;
+  }
+
+  .accordionContent p {
+    font-size: 0.95rem;
+  }
+
+  .contactBtn {
+    font-size: 0.9rem;
+    padding: 10px 18px;
+  }
+
+  .shapeLeft,
+  .shapeRight {
+    display: none; 
   }
 }

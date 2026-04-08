@@ -1,7 +1,6 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import dotenv from "dotenv";
-dotenv.config();
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+require("dotenv").config();
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-export default genAI;
+module.exports = genAI;

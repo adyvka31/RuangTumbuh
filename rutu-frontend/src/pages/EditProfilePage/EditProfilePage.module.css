@@ -363,33 +363,155 @@
    RESPONSIVE
 ========================================= */
 @media (max-width: 1024px) {
+  .container {
+    gap: 30px;
+  }
+
+  .pageHeader {
+    padding: 25px 25px;
+  }
+
+  .pageTitle {
+    font-size: 1.9rem;
+  }
+
+  .contentGrid {
+    grid-template-columns: 1.4fr 1fr;
+    gap: 25px;
+  }
+
+  .mainCard {
+    padding: 30px;
+  }
+
+  .sidebarCard {
+    padding: 28px;
+    top: 90px;
+  }
+
+  .avatarPreview {
+    width: 95px;
+    height: 95px;
+    font-size: 2.4rem;
+  }
+
   .actionBar {
-    flex-direction: column;
-    text-align: center;
-    gap: 20px;
-  }
-  .actionButtons {
-    width: 100%;
-    flex-direction: column;
-  }
-  .saveBtn,
-  .cancelBtn {
-    width: 100%;
-    justify-content: center;
+    padding: 30px 25px;
   }
 }
 
 @media (max-width: 900px) {
   .contentGrid {
     grid-template-columns: 1fr;
+    gap: 25px;
   }
+
+  .sidebarCard {
+    position: static;
+    order: 2;
+  }
+
+  .mainCard {
+    order: 1;
+  }
+
   .formGrid {
     grid-template-columns: 1fr;
   }
+
   .fullWidth {
     grid-column: span 1;
   }
+}
+
+@media (max-width: 768px) {
+  .pageHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 22px 20px;
+  }
+
+  .pageTitle {
+    font-size: 1.6rem;
+  }
+
+  .backBtn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .mainCard {
+    padding: 25px 20px;
+    border-radius: 24px;
+  }
+
   .sidebarCard {
-    position: static;
+    padding: 25px 20px;
+    border-radius: 24px;
+  }
+
+  .avatarUploadSection {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 15px;
+  }
+
+  .uploadBtn {
+    width: 100%;
+  }
+
+  .actionBar {
+    padding: 25px 20px;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .saveBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    gap: 20px;
+  }
+
+  .pageTitle {
+    font-size: 1.4rem;
+  }
+
+  .avatarPreview {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+  }
+
+  .formGrid {
+    gap: 15px;
+  }
+
+  .sidebarCard {
+    gap: 20px;
+  }
+
+  .sectionTitle {
+    font-size: 1.1rem;
+  }
+
+  .passionTag {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+  }
+
+  .saveBtn {
+    font-size: 0.95rem;
+    padding: 12px 20px;
+  }
+
+  .addPassionBtn {
+    height: 50px;
   }
 }

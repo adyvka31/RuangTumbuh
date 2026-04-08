@@ -3,6 +3,7 @@ const cors = require("cors");
 const path = require("path");
 const morgan = require("morgan");
 const logger = require("./utils/logger");
+const { getChatbotReply } = require("./services/chatbot.service");
 
 const { globalLimiter } = require("./middlewares/rateLimit.middleware");
 
@@ -13,6 +14,7 @@ const courseRoutes = require("./routes/course.routes");
 const bookingRoutes = require("./routes/booking.routes");
 const scheduleRoutes = require("./routes/schedule.routes");
 const chatRoutes = require("./routes/chat.routes");
+const chatbotRoutes = require("./routes/chatbot.routes");
 
 const app = express();
 
@@ -36,7 +38,7 @@ app.use(
     stream: {
       write: (message) => logger.info(message.trim()),
     },
-  })
+  }),
 );
 
 // limiter
@@ -49,6 +51,24 @@ app.use("/api/courses", courseRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/schedules", scheduleRoutes);
 app.use("/api/chats", chatRoutes);
+app.use("/api/chatbot", chatbotRoutes);
+
+app.post("/api/chatbot", async (req, res) => {
+  try {
+    const { message } = req.body;
+    if (!message?.trim()) {
+      return res.status(400).json({ success: false, error: "Pesan kosong" });
+    }
+    const reply = await getChatbotReply(message);
+    res.json({ success: true, reply });
+  } catch (error) {
+    console.error("Error pada endpoint /api/chatbot:", error.message);
+    res.status(500).json({
+      success: false,
+      reply: "Maaf, server RuangTumbuh sedang sibuk. Coba lagi nanti ya!",
+    });
+  }
+});
 
 // 404
 app.use((req, res) => {

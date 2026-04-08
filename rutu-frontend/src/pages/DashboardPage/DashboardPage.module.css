@@ -201,13 +201,13 @@
 .statIcon {
   width: 40px;
   height: 40px;
-  border: 2px solid #000; 
-  border-radius: 50%; 
+  border: 2px solid #000;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem; 
-  color: #000; 
+  font-size: 1.25rem;
+  color: #000;
   flex-shrink: 0;
 }
 
@@ -380,43 +380,190 @@
   font-size: 0.85rem;
 }
 
+@media (max-width: 1200px) {
+  .bannerTitle {
+    font-size: 3rem;
+  }
+
+  .banner {
+    padding: 35px;
+  }
+
+  .statValue {
+    font-size: 2rem;
+  }
+
+  .mentoringSection {
+    padding: 30px;
+  }
+}
+
 @media (max-width: 1024px) {
+  .contentFlex {
+    gap: 30px;
+  }
+
   .banner {
     flex-direction: column;
     align-items: flex-start;
+    gap: 25px;
   }
+
   .bannerContent {
     max-width: 100%;
   }
+
   .bannerDecor {
     position: relative;
     right: 0;
     bottom: 0;
-    margin-top: 30px;
+    width: 100%;
     justify-content: center;
+    margin-top: 10px;
+  }
+
+  .mascot {
+    width: 85px;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .bannerTitle {
+    font-size: 2.4rem;
+  }
+
+  .bannerSub {
+    font-size: 1rem;
+  }
+
+  .bannerButtons {
     width: 100%;
   }
-  .mascot {
-    width: 80px;
+
+  .bannerBtn {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .mentoringSection {
+    padding: 25px;
   }
 }
 
 @media (max-width: 768px) {
-  .bannerTitle {
-    font-size: 2.5rem;
+  .contentFlex {
+    gap: 25px;
   }
+
+  .banner {
+    padding: 25px;
+    border-radius: 24px;
+  }
+
+  .bannerTitle {
+    font-size: 2rem;
+  }
+
+  .bannerButtons {
+    flex-direction: column;
+  }
+
+  .bannerBtn {
+    width: 100%;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .statCard {
+    padding: 20px;
+  }
+
   .mentoringItem {
     flex-direction: column;
     align-items: flex-start;
-    gap: 20px;
+    gap: 15px;
   }
+
   .statusBadge {
-    align-self: stretch;
+    width: 100%;
     text-align: center;
   }
+
+  .itemContent {
+    width: 100%;
+  }
+
   .itemMeta {
     flex-direction: column;
     align-items: flex-start;
-    gap: 5px;
+    gap: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bannerTitle {
+    font-size: 1.7rem;
+    gap: 8px;
+  }
+
+  .waveEmoji {
+    font-size: 1.4rem;
+  }
+
+  .banner {
+    padding: 20px;
+  }
+
+  .mascot {
+    width: 65px;
+  }
+
+  .statValue {
+    font-size: 1.8rem;
+  }
+
+  .statLabel {
+    font-size: 1rem;
+  }
+
+  .sectionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .seeAll {
+    width: 100%;
+    text-align: center;
+  }
+
+  .mentoringSection {
+    padding: 20px;
+  }
+
+  .mentoringList {
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+
+  .itemIcon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .itemTitle {
+    font-size: 1.05rem;
   }
 }

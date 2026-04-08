@@ -524,6 +524,26 @@
 /* =========================================
    RESPONSIVE
 ========================================= */
+
+@media (max-width: 1200px) {
+  .heroHeader {
+    padding: 45px;
+    gap: 30px;
+  }
+
+  .courseTitle {
+    font-size: 2.2rem;
+  }
+
+  .ctaPrice {
+    font-size: 2.5rem;
+  }
+
+  .splitLayout {
+    gap: 30px;
+  }
+}
+
 @media (max-width: 1024px) {
   .splitLayout {
     grid-template-columns: 1fr;
@@ -533,46 +553,198 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
+  .container {
+    gap: 30px;
+  }
+
   .heroHeader {
     grid-template-columns: 1fr;
-    padding: 30px 20px;
+    padding: 40px 30px;
+  }
+
+  .heroImageWrap {
+    min-height: 260px;
+  }
+
+  .heroTextContent {
     gap: 20px;
   }
-  .heroImageWrap {
-    min-height: 200px;
+
+  .splitLayout {
+    grid-template-columns: 1fr;
+    gap: 30px;
   }
+
+  .sidebarWrap {
+    order: 2;
+  }
+
+  .mainContentCard {
+    order: 1;
+  }
+
+  .detailsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .heroHeader {
+    padding: 30px 25px;
+    border-radius: 24px;
+  }
+
   .courseTitle {
     font-size: 2rem;
   }
-  .tabNav {
-    flex-direction: column;
+
+  .courseDesc {
+    font-size: 1rem;
   }
+
+  .badgeGroup {
+    flex-wrap: wrap;
+  }
+
   .mainContentCard,
   .mentorCard {
-    padding: 25px 20px;
-    border-radius: 25px;
+    padding: 28px 24px;
   }
+
+  .ctaBox {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 20px;
+  }
+
+  .ctaPriceContainer {
+    text-align: center;
+  }
+
   .ctaPrice {
-    font-size: 2.2rem;
+    font-size: 2.3rem;
   }
+}
+
+@media (max-width: 768px) {
+  .heroHeader {
+    grid-template-columns: 1fr;
+    padding: 25px 20px;
+    gap: 20px;
+  }
+
+  .heroImageWrap {
+    min-height: 200px;
+  }
+
+  .courseTitle {
+    font-size: 1.8rem;
+  }
+
+  .heroTextContent {
+    gap: 15px;
+  }
+
+  .tabNav {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .tabBtn {
+    font-size: 1rem;
+  }
+
   .detailsGrid {
     grid-template-columns: 1fr;
   }
+
+  .syllabusItem {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .freeBadge {
+    margin-left: auto;
+  }
+
+  .mentorProfileRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .mentorAvatar {
+    width: 70px;
+    height: 70px;
+    font-size: 2rem;
+  }
+
+  .ctaPrice {
+    font-size: 2rem;
+  }
 }
-.loadingWrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 100px 20px;
-  background-color: #fff;
-  border: 4px dashed #000;
-  border-radius: 25px;
-  font-family: "plus-jakarta", sans-serif;
-  font-weight: 800;
-  font-size: 1.5rem;
-  color: #555;
-  text-align: center;
-  gap: 20px;
+
+@media (max-width: 480px) {
+  .container {
+    gap: 25px;
+  }
+
+  .heroHeader {
+    padding: 20px;
+  }
+
+  .courseTitle {
+    font-size: 1.5rem;
+  }
+
+  .courseDesc {
+    font-size: 0.95rem;
+  }
+
+  .categoryBadge,
+  .ratingBadge {
+    font-size: 0.75rem;
+    padding: 5px 10px;
+  }
+
+  .mainContentCard,
+  .mentorCard {
+    padding: 22px 18px;
+    border-radius: 22px;
+  }
+
+  .ctaBox {
+    padding: 20px;
+  }
+
+  .ctaPrice {
+    font-size: 1.8rem;
+  }
+
+  .enrollBtn {
+    padding: 16px;
+    font-size: 1.05rem;
+  }
+
+  .syllabusItem {
+    padding: 12px 15px;
+  }
+
+  .syllNumber {
+    width: 34px;
+    height: 34px;
+    font-size: 0.9rem;
+  }
+
+  .mentorAvatar {
+    width: 60px;
+    height: 60px;
+    font-size: 1.6rem;
+  }
+
+  .secondaryBtn {
+    padding: 15px;
+    font-size: 1rem;
+  }
 }
