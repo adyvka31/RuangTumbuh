@@ -3,15 +3,10 @@ import styles from "./CustomCursor.module.css";
 
 export default function CustomCursor() {
   const cursorRef = useRef(null);
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
 
-  useEffect(() => {
-    const checkTouch =
-      "ontouchstart" in window ||
-      navigator.maxTouchPoints > 0 ||
-      window.matchMedia("(hover: none) and (pointer: coarse)").matches;
-    setIsTouchDevice(checkTouch);
-  }, []);
+  const [isTouchDevice] = useState(() =>
+    window.matchMedia("(hover: none) and (pointer: coarse)").matches
+  );
 
   useEffect(() => {
     if (isTouchDevice) return;
@@ -25,7 +20,7 @@ export default function CustomCursor() {
     const handleMouseOver = (e) => {
       if (
         e.target.closest(
-          "a, button, input, textarea, select, [role='button'], .interactable",
+          "a, button, input, textarea, select, [role='button'], .interactable"
         )
       ) {
         cursor.classList.add(styles.cursorHide);
@@ -35,7 +30,7 @@ export default function CustomCursor() {
     const handleMouseOut = (e) => {
       if (
         e.target.closest(
-          "a, button, input, textarea, select, [role='button'], .interactable",
+          "a, button, input, textarea, select, [role='button'], .interactable"
         )
       ) {
         cursor.classList.remove(styles.cursorHide);
@@ -56,7 +51,6 @@ export default function CustomCursor() {
   if (isTouchDevice) return null;
 
   return (
-    // HAPUS style={{ opacity: ... }} agar selalu muncul
     <div className={styles.cursor} ref={cursorRef}>
       ✦
     </div>

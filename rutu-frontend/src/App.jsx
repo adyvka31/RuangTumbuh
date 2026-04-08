@@ -102,7 +102,7 @@ export default function App() {
                   <Route path="/add-course" element={<AddCoursePage />} />
                   <Route path="/profile" element={<ProfilePage />} />
                   <Route path="/presence" element={<PresencePage />} />
-                  <Route path="/message/:id" element={<MessageDetailPage />} />
+                  <Route path="/messages/:id" element={<MessageDetailPage />} />
                   <Route path="/help" element={<HelpCenterPage />} />
                   <Route path="/edit-profile" element={<EditProfilePage />} />
                   <Route path="/edit-course/:id" element={<EditCoursePage />} />

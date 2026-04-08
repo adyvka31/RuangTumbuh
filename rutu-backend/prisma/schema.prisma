@@ -18,24 +18,24 @@ model User {
   name           String
   email          String   @unique
   password       String
-  timeBalance    Int      @default(30) // Saldo awal
+  timeBalance    Int      @default(30)
   profilePicture String?
   location       String?  @default("Indonesia")
   birthday       String?
   school         String?
   description    String?
-  passions       Json?    // Disimpan sebagai array JSON
+  passions       Json?    
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  // Relasi
+  // --- RELASI USER ---
   skillsOffered   UserSkill[]
-  bookingsAsTutor Booking[]   @relation("TutorSessions")
-  bookingsAsSiswa Booking[]   @relation("StudentSessions")
-  sentMessages    Message[]   @relation("SentMessages")
-  recvMessages    Message[]   @relation("ReceivedMessages")
+  bookingsAsTutor Booking[]      @relation("TutorSessions")
+  bookingsAsSiswa Booking[]      @relation("StudentSessions")
   forumPosts      ForumPost[]
   forumComments   ForumComment[]
+  messages        Message[]      // Menggantikan sentMessages & recvMessages
+  chatRooms       Participant[]
 }
 
 // TABEL SKILL (KETERAMPILAN YANG BISA DITUKAR)
@@ -109,23 +109,6 @@ enum Status {
   DISPUTED
 }
 
-// TABEL CHAT & KOMUNITAS
-model Message {
-  id         String   @id @default(uuid())
-  senderId   String
-  receiverId String
-  content    String
-  isRead     Boolean  @default(false)
-  createdAt  DateTime @default(now())
-
-  sender   User @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
-  receiver User @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
-
-  // Mempercepat load riwayat chat antara dua orang
-  @@index([senderId])
-  @@index([receiverId])
-}
-
 model ForumPost {
   id        String   @id @default(uuid())
   authorId  String
@@ -193,4 +176,43 @@ enum CourseBookingStatus {
   ACCEPTED
   REJECTED
   COMPLETED
+}
+
+// MODEL UNTUK FITUR CHAT & KOMUNITAS
+model ChatRoom {
+  id          String         @id @default(uuid())
+  name        String?        // Kosong jika chat pribadi, diisi nama jika ini grup/komunitas
+  isGroup     Boolean        @default(false)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  
+  messages    Message[]
+  participants Participant[]
+}
+
+model Message {
+  id          String   @id @default(uuid())
+  text        String   @db.Text
+  createdAt   DateTime @default(now())
+  
+  senderId    String
+  roomId      String
+  
+  sender      User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  room        ChatRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@index([senderId])
+  @@index([roomId])
+}
+
+// Tabel relasi Many-to-Many antara User dan ChatRoom
+model Participant {
+  userId      String
+  roomId      String
+  joinedAt    DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  room        ChatRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roomId]) // Composite primary key
 }

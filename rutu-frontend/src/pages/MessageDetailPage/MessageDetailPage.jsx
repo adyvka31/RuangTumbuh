@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useParams, useNavigate } from "react-router-dom";
 import DashboardLayout from "@/layouts/DashboardLayout/DashboardLayout";
 import styles from "./MessageDetailPage.module.css";
+import { io } from "socket.io-client";
 import {
   FiSend,
   FiArrowLeft,
@@ -13,52 +14,73 @@ import {
   FiVideo,
 } from "react-icons/fi";
 
+// URL Backend
+const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:5001";
+
 export default function MessageDetailPage() {
-  const { id } = useParams();
+  const { id: roomId } = useParams();
   const navigate = useNavigate();
   const [inputText, setInputText] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [roomInfo, setRoomInfo] = useState({ name: "Memuat..." });
+  const socketRef = useRef(null);
   const scrollRef = useRef(null);
 
-  // Data Mockup
-  const contacts = {
-    1: { name: "Grace Ashcroft", color: "#38BDF8", status: "Online" },
-    2: { name: "Carloz", color: "#FB923C", status: "Last seen 2h ago" },
-    3: { name: "Ashly", color: "#F472B6", status: "Online" },
-    4: { name: "Donatur", color: "#FACC15", status: "Offline" },
-    5: { name: "Leonor", color: "#38BDF8", status: "Online" },
-    6: { name: "Chris Redfield", color: "#FB923C", status: "Online" },
-    7: { name: "Leon Scott", color: "#F472B6", status: "Last seen 5m ago" },
-  };
+  const [chatPartner, setChatPartner] = useState(null);
 
-  const contact = contacts[id] || {
-    name: "Unknown",
-    color: "#E5E7EB",
-    status: "Offline",
-  };
+  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const token = localStorage.getItem("token");
 
-  const [messages, setMessages] = useState([
-    { id: 1, text: "Halo Kak! 👋", sender: "other", time: "12:00" },
-    {
-      id: 2,
-      text: "Saya ingin bertanya terkait materi di kelas UI/UX.",
-      sender: "other",
-      time: "12:01",
-    },
-    {
-      id: 3,
-      text: "Tentu, silakan tanyakan saja. Bagian mana yang membingungkan?",
-      sender: "me",
-      time: "12:05",
-    },
-    {
-      id: 4,
-      text: contact.text || "Apakah kita bisa bahas via Zoom sebentar?",
-      sender: "other",
-      time: "12:30",
-    },
-  ]);
+  // --- KONEKSI SOCKET.IO ---
+  useEffect(() => {
+    if (!token) return;
 
-  // Auto scroll ke bawah saat ada pesan baru
+    const newSocket = io(BASE_URL, {
+      auth: { token },
+    });
+
+    socketRef.current = newSocket;
+
+    newSocket.emit("join_room", roomId);
+
+    newSocket.on("receive_message", (newMessage) => {
+      setMessages((prev) => [...prev, newMessage]);
+    });
+
+    return () => {
+      newSocket.disconnect();
+    };
+  }, [roomId, token]);
+
+  // --- AMBIL RIWAYAT CHAT LAMA (REST API) ---
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        const response = await fetch(
+          `${BASE_URL}/api/chats/${roomId}/messages`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
+        const result = await response.json(); 
+
+        // Cek sukses di tempat yang benar
+        if (result.success) {
+          setRoomInfo(result.data.room);
+          setMessages(result.data.messages);
+          setChatPartner(result.data.chatPartner); // Simpan data lawan bicara
+        }
+      } catch (error) {
+        console.error("Gagal mengambil riwayat pesan:", error);
+      }
+    };
+
+    if (token && roomId) {
+      fetchHistory();
+    }
+  }, [roomId, token]);
+
+  // --- 3. AUTO SCROLL KE BAWAH ---
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTo({
@@ -68,22 +90,24 @@ export default function MessageDetailPage() {
     }
   }, [messages]);
 
+  // --- 4. KIRIM PESAN BARU ---
   const handleSendMessage = (e) => {
     e.preventDefault();
-    if (!inputText.trim()) return;
+    if (!inputText.trim() || !socketRef.current) return;
 
-    const newMessage = {
-      id: Date.now(),
+    // Pancarkan ke backend menggunakan socketRef.current
+    socketRef.current.emit("send_message", {
+      roomId: roomId,
       text: inputText,
-      sender: "me",
-      time: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    };
+    });
 
-    setMessages([...messages, newMessage]);
-    setInputText("");
+    setInputText(""); // Kosongkan input
+  };
+
+  // Helper untuk format jam (contoh: 14:30)
+  const formatTime = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
   return (
@@ -105,21 +129,38 @@ export default function MessageDetailPage() {
               <div className={styles.avatarWrap}>
                 <div
                   className={styles.avatar}
-                  style={{ backgroundColor: contact.color }}
+                  style={{
+                    backgroundColor: roomInfo.isGroup ? "#38BDF8" : "#FB923C",
+                  }}
                 >
-                  {contact.name.charAt(0)}
+                  {roomInfo.isGroup
+                    ? roomInfo.name
+                      ? roomInfo.name.charAt(0)
+                      : "G"
+                    : chatPartner
+                      ? chatPartner.name.charAt(0).toUpperCase()
+                      : "?"}
                 </div>
-                {contact.status === "Online" && (
-                  <div className={styles.onlineDot}></div>
-                )}
+                <div className={styles.onlineDot}></div>
               </div>
               <div className={styles.userDetails}>
-                <h2 className={styles.userName}>{contact.name}</h2>
-                <span className={styles.status}>{contact.status}</span>
+                <h2 className={styles.userName}>
+                  {roomInfo.isGroup
+                    ? roomInfo.name
+                    : chatPartner
+                      ? chatPartner.name
+                      : "Memuat..."}
+                </h2>
+                <span className={styles.status}>
+                  {roomInfo.isGroup
+                    ? "Komunitas"
+                    : chatPartner
+                      ? chatPartner.description || "Siswa"
+                      : "Online"}
+                </span>
               </div>
             </div>
           </div>
-
           <div className={styles.headerRight}>
             <button className={styles.actionBtn}>
               <FiPhone size={20} />
@@ -136,15 +177,15 @@ export default function MessageDetailPage() {
 
         {/* --- CHAT AREA --- */}
         <div className={styles.chatArea} ref={scrollRef}>
-          <div className={styles.dateSeparator}>
-            <span>Hari ini</span>
-          </div>
-
           <AnimatePresence initial={false}>
             {messages.map((msg, index) => {
-              const isMe = msg.sender === "me";
+              // Cek apakah pesan ini milik kita atau orang lain
+              const isMe = msg.senderId === currentUser.id;
+
+              // Tentukan apakah perlu menampilkan avatar (hanya untuk orang lain)
               const showAvatar =
-                !isMe && (index === 0 || messages[index - 1].sender === "me");
+                !isMe &&
+                (index === 0 || messages[index - 1].senderId !== msg.senderId);
 
               return (
                 <motion.div
@@ -155,15 +196,17 @@ export default function MessageDetailPage() {
                   transition={{ type: "spring", stiffness: 400, damping: 25 }}
                   className={`${styles.messageWrapper} ${isMe ? styles.me : styles.other}`}
                 >
-                  {/* Avatar untuk pesan lawan bicara */}
+                  {/* Tampilkan Avatar Pengirim (Jika bukan pesan kita) */}
                   {!isMe && (
                     <div className={styles.chatAvatarBox}>
                       {showAvatar ? (
                         <div
                           className={styles.chatAvatar}
-                          style={{ backgroundColor: contact.color }}
+                          style={{ backgroundColor: "#FACC15" }}
                         >
-                          {contact.name.charAt(0)}
+                          {msg.sender?.name
+                            ? msg.sender.name.charAt(0).toUpperCase()
+                            : "?"}
                         </div>
                       ) : (
                         <div className={styles.chatAvatarPlaceholder} />
@@ -172,8 +215,22 @@ export default function MessageDetailPage() {
                   )}
 
                   <div className={styles.messageBubble}>
+                    {!isMe && showAvatar && (
+                      <span
+                        style={{
+                          fontSize: "0.75rem",
+                          fontWeight: "800",
+                          opacity: 0.7,
+                          marginBottom: "4px",
+                        }}
+                      >
+                        {msg.sender?.name}
+                      </span>
+                    )}
                     <p className={styles.messageText}>{msg.text}</p>
-                    <span className={styles.time}>{msg.time}</span>
+                    <span className={styles.time}>
+                      {formatTime(msg.createdAt)}
+                    </span>
                   </div>
                 </motion.div>
               );
@@ -191,7 +248,7 @@ export default function MessageDetailPage() {
             <div className={styles.inputWrapper}>
               <input
                 type="text"
-                placeholder="Ketik pesan..."
+                placeholder="Ketik pesan komunitas..."
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 className={styles.input}
