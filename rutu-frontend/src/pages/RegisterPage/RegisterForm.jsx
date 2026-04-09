@@ -54,6 +54,7 @@ export const RegisterForm = () => {
                 id="password"
                 label="Password"
                 icon={FiLock}
+                autoComplete="new-password"
                 errorMessage={errors.password?.message}
                 {...register("password")}
               />
@@ -64,6 +65,7 @@ export const RegisterForm = () => {
                 id="confirmPassword"
                 label="Confirm"
                 icon={FiLock}
+                autoComplete="new-password"
                 errorMessage={errors.confirmPassword?.message}
                 {...register("confirmPassword")}
               />

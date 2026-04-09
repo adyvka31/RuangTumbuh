@@ -5,43 +5,63 @@ import api from "@/utils/api";
 export const useDashboard = () => {
   const { user } = useAuth();
 
-  // Nama sapaan (firstName)
-  const userName = user ? user.name : "Pengguna";
+  // Nama sapaan (firstName) dengan fallback yang lebih aman
+  const userName = user?.name || "Pengguna";
   const firstName = userName.split(" ")[0];
 
   // SERVER STATE: Fetch data statistik dashboard
   const {
-    data: dbStats,
+    // Berikan nilai default kosong agar komponen tidak crash saat data masih loading
+    data: dbStats = {
+      timeBalance: 0,
+      learningMinutes: 0,
+      upcomingSessions: 0,
+      completedSessions: 0,
+      mentoringSessions: [],
+    },
     isPending,
     isError,
   } = useQuery({
     queryKey: ["dashboard", user?.id],
     queryFn: async () => {
-      const data = await api.get(`/users/${user.id}/dashboard`);
+      // Axios secara default membungkus response di dalam properti "data"
+      const response = await api.get(`/users/${user.id}/dashboard`);
+
+      // Ambil data, mendukung baik jika ada interceptor maupun Axios murni
+      const responseData = response.data || response;
+
       return {
-        timeBalance: data?.timeBalance || 0,
-        learningMinutes: data?.learningMinutes || 0,
-        upcomingSessions: data?.upcomingSessions || 0,
-        completedSessions: data?.completedSessions || 0,
-        mentoringSessions: data?.mentoringSessions || [],
+        timeBalance: responseData?.timeBalance || 0,
+        learningMinutes: responseData?.learningMinutes || 0,
+        upcomingSessions: responseData?.upcomingSessions || 0,
+        completedSessions: responseData?.completedSessions || 0,
+        mentoringSessions: responseData?.mentoringSessions || [],
       };
     },
+    // Pastikan query hanya berjalan jika user.id benar-benar ada
     enabled: !!user?.id,
   });
 
-  // HELPER: Format waktu jadwal ke WIB
+  // HELPER: Format waktu jadwal ke WIB menggunakan native JavaScript (Tanpa date-fns)
   const formatScheduleTime = (dateString) => {
     if (!dateString) return "-";
-    const date = new Date(dateString);
-    return (
-      date.toLocaleDateString("id-ID", {
+
+    try {
+      const date = new Date(dateString);
+      const formattedDate = date.toLocaleDateString("id-ID", {
         weekday: "short",
         day: "2-digit",
         month: "short",
         hour: "2-digit",
         minute: "2-digit",
-      }) + " WIB"
-    );
+      });
+
+      // Standarisasi format jam menggunakan titik dua (misal: 10:00 bukan 10.00)
+      return `${formattedDate.replace(/\./g, ":")} WIB`;
+    } catch (error) {
+      console.error("Format date error:", error);
+      return "-";
+    }
   };
 
   // KONSTANTA: Tema warna untuk list mentoring

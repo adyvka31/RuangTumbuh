@@ -60,6 +60,7 @@ export const LoginForm = () => {
               id="password"
               label="Password"
               icon={FiLock}
+              autoComplete="current-password"
               {...register("password")}
             />
             {errors.password && (
