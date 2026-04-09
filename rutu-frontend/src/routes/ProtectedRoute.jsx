@@ -1,15 +1,15 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
-export default function ProtectedRoute() {
-  // Mengecek apakah ada 'token' yang tersimpan di browser
-  const token = localStorage.getItem("token");
+export default function ProtectedRoute({ children }) {
+  const { isAuthenticated } = useAuth();
 
-  // Jika TIDAK ADA token (berarti guest/belum login), usir ke halaman login
-  if (!token) {
+  // Jika belum login, lempar kembali ke halaman login
+  if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
-  // Jika ADA token, silakan lewat dan tampilkan halamannya (Outlet)
-  return <Outlet />;
+  // Jika sudah login, izinkan akses ke halaman
+  return children ? children : <Outlet />;
 }

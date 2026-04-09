@@ -41,6 +41,11 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(initialState.token);
 
   const login = (userData, userToken) => {
+    if (!userData || !userToken) {
+      console.error("Gagal set sesi: userData atau token kosong");
+      return;
+    }
+    
     setUser(userData);
     setToken(userToken);
     localStorage.setItem("user", JSON.stringify(userData));
