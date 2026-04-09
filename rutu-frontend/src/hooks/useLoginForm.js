@@ -23,10 +23,14 @@ export const useLoginForm = () => {
       // Axios interceptor kita (di api.js) sudah otomatis me-return 'response.data.data'
       return await api.post("/auth/login", credentials);
     },
-    onSuccess: (data) => {
-      // Gunakan 'data.user' dan 'data.token' (karena ini sudah hasil ekstrak interceptor)
-      if (data && data.user && data.token) {
-        login(data.user, data.token);
+    onSuccess: (result) => {
+      const data = result?.data || result;
+
+      const user = data?.user;
+      const token = data?.token;
+
+      if (user && token) {
+        login(user, token); // Simpan ke AuthContext & LocalStorage
         setShowPopup(true);
 
         setTimeout(() => {
@@ -34,7 +38,7 @@ export const useLoginForm = () => {
           navigate("/dashboard");
         }, 3000);
       } else {
-        setApiError("Format data dari server tidak sesuai.");
+        setApiError("Gagal memproses data sesi dari server.");
       }
     },
     onError: (err) => {

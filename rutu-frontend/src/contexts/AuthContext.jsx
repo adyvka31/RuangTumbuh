@@ -1,28 +1,45 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext(null);
 
-// Buat Provider (Pembungkus Aplikasi)
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
-  const [loading, setLoading] = useState(true); // Untuk menahan render sebelum localStorage terbaca
-  const navigate = useNavigate();
-
-  // Membaca data dari localStorage saat aplikasi pertama kali dimuat (Refresh)
-  useEffect(() => {
+// 1. Fungsi untuk membaca localStorage di awal (Menghindari set-state-in-effect)
+const getInitialState = () => {
+  try {
     const storedUser = localStorage.getItem("user");
     const storedToken = localStorage.getItem("token");
 
-    if (storedUser && storedToken) {
-      setUser(JSON.parse(storedUser));
-      setToken(storedToken);
+    // Cek apakah datanya valid (bukan kata "undefined" atau kosong)
+    if (
+      storedUser &&
+      storedUser !== "undefined" &&
+      storedToken &&
+      storedToken !== "undefined"
+    ) {
+      return {
+        user: JSON.parse(storedUser),
+        token: storedToken,
+      };
     }
-    setLoading(false);
-  }, []);
+  } catch (err) {
+    // 2. Menggunakan variabel err (Menghindari no-unused-vars)
+    console.error("Gagal membaca data sesi, mereset login...", err);
+  }
 
-  // Fungsi khusus untuk Login
+  // Bersihkan jika data rusak/kosong
+  localStorage.removeItem("user");
+  localStorage.removeItem("token");
+  return { user: null, token: null };
+};
+
+export const AuthProvider = ({ children }) => {
+  const navigate = useNavigate();
+  const initialState = getInitialState();
+
+  // Inisialisasi state secara langsung menggunakan data yang sudah difilter
+  const [user, setUser] = useState(initialState.user);
+  const [token, setToken] = useState(initialState.token);
+
   const login = (userData, userToken) => {
     setUser(userData);
     setToken(userToken);
@@ -30,7 +47,6 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("token", userToken);
   };
 
-  // Fungsi khusus untuk Logout
   const logout = () => {
     setUser(null);
     setToken(null);
@@ -39,7 +55,6 @@ export const AuthProvider = ({ children }) => {
     navigate("/login");
   };
 
-  // Fungsi untuk update data (Misal: setelah Edit Profil)
   const updateUserData = (newData) => {
     const updatedUser = { ...user, ...newData };
     setUser(updatedUser);
@@ -57,13 +72,12 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated: !!user,
       }}
     >
-      {/* Jangan render aplikasi sampai proses baca localStorage selesai */}
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 };
 
-// Buat Custom Hook agar mudah dipanggil di komponen lain
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
   return useContext(AuthContext);
 };
