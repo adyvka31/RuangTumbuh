@@ -7,15 +7,15 @@ import path from "path";
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 5173,       
+    port: 5173,
     proxy: {
-      '/api': {
-        target: 'http://localhost:5001',   
+      "/api": {
+        target: "http://localhost:5001",
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path.replace(/^\/api/, '/api')
-      }
-    }
+        rewrite: (path) => path.replace(/^\/api/, "/api"),
+      },
+    },
   },
   resolve: {
     alias: {
@@ -40,10 +40,9 @@ export default defineConfig({
     include: ["@rutu/shared"],
   },
 
-  // Memastikan package lokal ikut diproses saat build untuk production
   build: {
     commonjsOptions: {
-      include: [/@rutu\/shared/, /node_modules/],
+      include: [/@rutu\/shared/],
     },
   },
 });
