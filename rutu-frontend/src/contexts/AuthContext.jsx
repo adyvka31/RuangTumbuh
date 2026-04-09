@@ -4,32 +4,30 @@ import { useNavigate } from "react-router-dom";
 const AuthContext = createContext(null);
 
 // 1. Fungsi untuk membaca localStorage di awal (Menghindari set-state-in-effect)
-const getInitialState = () => {
+const safeParse = (value) => {
   try {
-    const storedUser = localStorage.getItem("user");
-    const storedToken = localStorage.getItem("token");
+    return JSON.parse(value);
+  } catch {
+    return null;
+  }
+};
 
-    // Cek apakah datanya valid (bukan kata "undefined" atau kosong)
-    if (
-      storedUser &&
-      storedUser !== "undefined" &&
-      storedToken &&
-      storedToken !== "undefined"
-    ) {
-      return {
-        user: JSON.parse(storedUser),
-        token: storedToken,
-      };
-    }
-  } catch (err) {
-    // 2. Menggunakan variabel err (Menghindari no-unused-vars)
-    console.error("Gagal membaca data sesi, mereset login...", err);
+const getInitialState = () => {
+  const storedUser = localStorage.getItem("user");
+  const storedToken = localStorage.getItem("token");
+
+  const parsedUser = safeParse(storedUser);
+
+  if (!parsedUser || !storedToken) {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    return { user: null, token: null };
   }
 
-  // Bersihkan jika data rusak/kosong
-  localStorage.removeItem("user");
-  localStorage.removeItem("token");
-  return { user: null, token: null };
+  return {
+    user: parsedUser,
+    token: storedToken,
+  };
 };
 
 export const AuthProvider = ({ children }) => {
@@ -45,7 +43,7 @@ export const AuthProvider = ({ children }) => {
       console.error("Gagal set sesi: userData atau token kosong");
       return;
     }
-    
+
     setUser(userData);
     setToken(userToken);
     localStorage.setItem("user", JSON.stringify(userData));

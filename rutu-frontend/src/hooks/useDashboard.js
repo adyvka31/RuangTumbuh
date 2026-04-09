@@ -11,7 +11,6 @@ export const useDashboard = () => {
 
   // SERVER STATE: Fetch data statistik dashboard
   const {
-    // Berikan nilai default kosong agar komponen tidak crash saat data masih loading
     data: dbStats = {
       timeBalance: 0,
       learningMinutes: 0,
@@ -23,23 +22,20 @@ export const useDashboard = () => {
     isError,
   } = useQuery({
     queryKey: ["dashboard", user?.id],
+    enabled: Boolean(user?.id),
     queryFn: async () => {
-      // Axios secara default membungkus response di dalam properti "data"
-      const response = await api.get(`/users/${user.id}/dashboard`);
+      if (!user?.id) return null;
 
-      // Ambil data, mendukung baik jika ada interceptor maupun Axios murni
-      const responseData = response.data || response;
+      const data = (await api.get(`/users/${user.id}/dashboard`)) ?? {};
 
       return {
-        timeBalance: responseData?.timeBalance || 0,
-        learningMinutes: responseData?.learningMinutes || 0,
-        upcomingSessions: responseData?.upcomingSessions || 0,
-        completedSessions: responseData?.completedSessions || 0,
-        mentoringSessions: responseData?.mentoringSessions || [],
+        timeBalance: data?.timeBalance || 0,
+        learningMinutes: data?.learningMinutes || 0,
+        upcomingSessions: data?.upcomingSessions || 0,
+        completedSessions: data?.completedSessions || 0,
+        mentoringSessions: data?.mentoringSessions || [],
       };
     },
-    // Pastikan query hanya berjalan jika user.id benar-benar ada
-    enabled: !!user?.id,
   });
 
   // HELPER: Format waktu jadwal ke WIB menggunakan native JavaScript (Tanpa date-fns)
