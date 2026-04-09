@@ -26,11 +26,12 @@ api.interceptors.response.use(
   (response) => {
     // Ekstrak payload 'data' dari standardisasi JSON backend
     if (response.data && response.data.success !== undefined) {
-      // Jika ada meta (untuk pagination di SearchPage), kembalikan utuh
       if (response.data.meta) return response.data;
 
-      // Kembalikan langsung isinya agar komponen frontend tidak error
-      return response.data.data;
+      // Jika response.data.data ada, kembalikan. Jika tidak, kembalikan response.data utuh.
+      return response.data.data !== undefined
+        ? response.data.data
+        : response.data;
     }
     return response.data;
   },
