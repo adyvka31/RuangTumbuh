@@ -1,11 +1,11 @@
-const { z } = require("zod");
+import { z } from "zod";
 
-const loginPayloadSchema = z.object({
+export const loginPayloadSchema = z.object({
   email: z.string().email("Format email tidak valid. Pastikan menggunakan @"),
   password: z.string().min(1, "Password tidak boleh kosong"),
 });
 
-const registerPayloadSchema = z
+export const registerPayloadSchema = z
   .object({
     name: z
       .string()
@@ -29,10 +29,3 @@ const registerPayloadSchema = z
     message: "Password dan Konfirmasi Password harus sama persis.",
     path: ["confirmPassword"],
   });
-
-// Export CommonJS biasa untuk melayani Backend
-module.exports = {
-  loginPayloadSchema,
-  registerPayloadSchema,
-  default: { loginPayloadSchema, registerPayloadSchema },
-};
