@@ -16,11 +16,21 @@ console.log(
 // KONEKSI SOCKET.IO (Dengan pengamanan JWT)
 const io = new Server(server, {
   cors: {
-    origin: [
-      "http://localhost:5173",
-      "http://127.0.0.1:5173",
-      "https://ruang-tumbuh.vercel.app",
-    ],
+    origin: function (origin, callback) {
+      const allowedOrigins = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "https://ruang-tumbuh.vercel.app",
+        "https://ruangtumbuh-production.up.railway.app"
+      ];
+      
+      // Izinkan jika origin ada di daftar atau jika domain mengandung "vercel.app"
+      if (!origin || allowedOrigins.indexOf(origin) !== -1 || origin.endsWith(".vercel.app")) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST"],
     credentials: true,
   },
