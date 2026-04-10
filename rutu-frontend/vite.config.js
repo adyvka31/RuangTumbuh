@@ -2,10 +2,12 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
+// 1. Import plugin-nya di sini
+import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  // 2. Tambahkan viteCommonjs() ke dalam plugins
+  plugins: [react(), viteCommonjs()], 
   server: {
     port: 5173,
     proxy: {
@@ -24,29 +26,19 @@ export default defineConfig({
       "@components": path.resolve(__dirname, "./src/components"),
       "@assets": path.resolve(__dirname, "./src/assets"),
       "@layouts": path.resolve(__dirname, "./src/layouts"),
-      // PAKSA VITE PAKAI ENTRY POINT YANG BENAR UNTUK COOKIE
-      cookie: "cookie",
+      // Hapus alias 'cookie' jika tidak perlu, biarkan Vite mencarinya secara natural
     },
   },
-  test: {
-    globals: true,
-    environment: "happy-dom",
-    setupFiles: "./src/setupTests.js",
-  },
-  esbuild: {
-    drop: ["console", "debugger"],
-  },
-
   optimizeDeps: {
-    // TAMBAHKAN 'cookie' DI SINI
+    // Pastikan library yang bermasalah masuk ke sini
     include: ["@rutu/shared", "cookie"],
   },
-
   build: {
     commonjsOptions: {
-      // TAMBAHKAN /node_modules/ AGAR SEMUA LIBRARY COMMONJS TERDETEKSI
+      // Ini sudah benar, tapi pastikan transformMixedEsModules aktif
       include: [/@rutu\/shared/, /node_modules/],
       transformMixedEsModules: true,
     },
   },
+  // ... sisa config lainnya
 });
