@@ -8,13 +8,11 @@ const createBooking = catchAsync(async (req, res) => {
     `[Booking] Siswa ${req.body.studentId} berhasil booking kursus ID: ${req.body.courseId}`,
   );
 
-  res
-    .status(201)
-    .json({
-      success: true,
-      message: "Booking berhasil diajukan!",
-      data: newBooking,
-    });
+  res.status(201).json({
+    success: true,
+    message: "Booking berhasil diajukan!",
+    data: newBooking,
+  });
 });
 
 const getMyBookings = catchAsync(async (req, res) => {
@@ -58,9 +56,51 @@ const updateBookingStatus = catchAsync(async (req, res) => {
   });
 });
 
+const completeBooking = catchAsync(async (req, res) => {
+  const { tutorId, token } = req.body;
+
+  const updated = await bookingService.completeCourseByToken(
+    req.params.id,
+    tutorId,
+    token,
+  );
+
+  logger.info(
+    `[Booking] Sesi ID ${req.params.id} berhasil diselesaikan dengan token oleh Tutor ID: ${tutorId}`,
+  );
+
+  res.status(200).json({
+    success: true,
+    message: "Kelas berhasil diselesaikan!",
+    data: updated,
+  });
+});
+
+const submitFeedback = catchAsync(async (req, res) => {
+  const { rating, review } = req.body;
+  const bookingId = req.params.id;
+
+  // Panggil lewat bookingService, bukan langsung prisma
+  const updatedBooking = await bookingService.addFeedback(
+    bookingId,
+    rating,
+    review,
+  );
+
+  logger.info(`[Booking] Feedback ditambahkan untuk sesi ID: ${bookingId}`);
+
+  res.status(200).json({
+    success: true,
+    message: "Feedback berhasil disimpan!",
+    data: updatedBooking,
+  });
+});
+
 module.exports = {
   createBooking,
   getMyBookings,
   getIncomingBookings,
   updateBookingStatus,
+  completeBooking,
+  submitFeedback,
 };

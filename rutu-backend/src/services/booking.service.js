@@ -99,7 +99,69 @@ const changeBookingStatus = async (id, status, tutorId) => {
     error.statusCode = 403;
     throw error;
   }
-  return await prisma.courseBooking.update({ where: { id }, data: { status } });
+
+  // Siapkan data yang akan diupdate
+  let updateData = { status };
+
+  // LOGIKA TOKEN: Jika mentor menerima (ACCEPTED), generate token rahasia
+  if (status === "ACCEPTED") {
+    // Generate 6 karakter acak (huruf besar dan angka)
+    const generatedToken = Math.random()
+      .toString(36)
+      .substring(2, 8)
+      .toUpperCase();
+    updateData.token = generatedToken;
+  }
+
+  return await prisma.courseBooking.update({
+    where: { id },
+    data: updateData,
+  });
+};
+
+const completeCourseByToken = async (id, tutorId, inputToken) => {
+  const booking = await prisma.courseBooking.findUnique({
+    where: { id },
+    include: { course: { select: { tutorId: true } } },
+  });
+
+  if (!booking) {
+    const error = new Error("Booking tidak ditemukan!");
+    error.statusCode = 404;
+    throw error;
+  }
+  if (booking.course.tutorId !== tutorId) {
+    const error = new Error("Kamu tidak berhak menyelesaikan kelas ini!");
+    error.statusCode = 403;
+    throw error;
+  }
+  if (booking.status !== "ACCEPTED") {
+    const error = new Error("Kelas belum disetujui atau sudah selesai!");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  // LOGIKA VALIDASI TOKEN
+  if (!booking.token || booking.token !== inputToken) {
+    const error = new Error("Token penyelesaian tidak valid!");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  return await prisma.courseBooking.update({
+    where: { id },
+    data: { status: "COMPLETED" },
+  });
+};
+
+const addFeedback = async (bookingId, rating, review) => {
+  return await prisma.courseBooking.update({
+    where: { id: bookingId },
+    data: {
+      rating: parseInt(rating),
+      review: review,
+    },
+  });
 };
 
 module.exports = {
@@ -107,4 +169,6 @@ module.exports = {
   getStudentBookings,
   getTutorIncomingBookings,
   changeBookingStatus,
+  completeCourseByToken,
+  addFeedback,
 };
