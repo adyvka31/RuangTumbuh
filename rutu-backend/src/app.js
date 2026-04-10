@@ -21,10 +21,9 @@ const app = express();
 const corsOptions = {
   origin: [
     "http://localhost:5173",
-    "http://127.0.0.1:5173",
     "https://ruang-tumbuh.vercel.app",
-    // Tambahkan domain yang muncul di error tadi:
-    "https://ruangtumbuh-ncm4s5dqj-sri-mulyani-tarihorans-projects.vercel.app"
+    "https://ruangtumbuh-production.up.railway.app", // Alamat dari screenshot kamu
+    "https://ruangtumbuh-ncm4s5dqj-sri-mulyani-tarihorans-projects.vercel.app" // Alamat Vercel yang sedang error
   ],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
