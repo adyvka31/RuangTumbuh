@@ -23,8 +23,12 @@ const corsOptions = {
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "https://ruang-tumbuh.vercel.app",
+    // Tambahkan domain yang muncul di error tadi:
+    "https://ruangtumbuh-ncm4s5dqj-sri-mulyani-tarihorans-projects.vercel.app"
   ],
   credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 };
 app.use(cors(corsOptions));
 
