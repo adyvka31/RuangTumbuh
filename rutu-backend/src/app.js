@@ -19,12 +19,21 @@ const chatbotRoutes = require("./routes/chatbot.routes");
 const app = express();
 
 const corsOptions = {
-  origin: [
-    "http://localhost:5173",
-    "https://ruang-tumbuh.vercel.app",
-    "https://ruangtumbuh-production.up.railway.app", // Alamat dari screenshot kamu
-    "https://ruangtumbuh-ncm4s5dqj-sri-mulyani-tarihorans-projects.vercel.app" // Alamat Vercel yang sedang error
-  ],
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      "http://localhost:5173",
+      "http://127.0.0.1:5173",
+      "https://ruang-tumbuh.vercel.app",
+      "https://ruangtumbuh-production.up.railway.app"
+    ];
+    
+    // Izinkan jika origin ada di daftar atau jika domain mengandung "vercel.app" (untuk preview)
+    if (!origin || allowedOrigins.indexOf(origin) !== -1 || origin.endsWith(".vercel.app")) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
