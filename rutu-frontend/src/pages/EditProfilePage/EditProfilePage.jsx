@@ -20,6 +20,7 @@ import {
   FiType,
   FiPlus,
   FiCheckCircle,
+  FiSave,
 } from "react-icons/fi";
 
 export default function EditProfilePage() {
@@ -57,8 +58,9 @@ export default function EditProfilePage() {
     <DashboardLayout title="Pengaturan Profil">
       <motion.div className={styles.container} initial="hidden" animate="show">
         <div className={styles.pageHeader}>
-          <h1 className={styles.pageTitle}>Edit Profil Saya</h1>
+          <h1 className={styles.pageTitle}>Edit Profile Saya</h1>
           <button
+            type="button"
             className={styles.backBtn}
             onClick={() => navigate("/profile")}
           >
@@ -84,12 +86,18 @@ export default function EditProfilePage() {
                 onChange={handleFileChange}
                 style={{ display: "none" }}
               />
-              <button
-                className={styles.uploadBtn}
-                onClick={() => fileInputRef.current.click()}
-              >
-                <FiUploadCloud /> Unggah Foto
-              </button>
+              <div className={styles.uploadActions}>
+                <div className={styles.uploadInfo}>
+                  Format: JPG, PNG • Maks 2MB
+                </div>
+
+                <button
+                  className={styles.uploadBtn}
+                  onClick={() => fileInputRef.current.click()}
+                >
+                  <FiUploadCloud /> Unggah Foto
+                </button>
+              </div>
             </div>
 
             {error && <p className={styles.errorText}>{error}</p>}
@@ -124,21 +132,25 @@ export default function EditProfilePage() {
                 value={formData.birthday}
                 onChange={handleInputChange}
               />
-              <Input
-                name="school"
-                label="Institusi"
-                icon={FiBookOpen}
-                value={formData.school}
-                onChange={handleInputChange}
-              />
-              <Input
-                name="description"
-                label="Bio"
-                isTextarea
-                icon={FiUser}
-                value={formData.description}
-                onChange={handleInputChange}
-              />
+              <div className={styles.fullWidth}>
+                <Input
+                  name="school"
+                  label="Institusi"
+                  icon={FiBookOpen}
+                  value={formData.school}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className={styles.fullWidth}>
+                <Input
+                  name="description"
+                  label="Bio"
+                  isTextarea
+                  icon={FiUser}
+                  value={formData.description}
+                  onChange={handleInputChange}
+                />
+              </div>
             </div>
           </motion.div>
 
@@ -168,13 +180,20 @@ export default function EditProfilePage() {
         </div>
 
         <div className={styles.actionBar}>
-          <button
-            className={styles.saveBtn}
-            onClick={handleSave}
-            disabled={isPending}
-          >
-            {isPending ? "Menyimpan..." : "Simpan Perubahan"}
-          </button>
+          <div className={styles.actionText}>
+            <h3>Sudah yakin? 🚀</h3>
+            <p>Pastikan semua data profile sudah benar.</p>
+          </div>
+          <div className={styles.actionButtons}>
+            <button
+              className={styles.saveBtn}
+              disabled={isPending}
+              onClick={handleSave}
+            >
+              <FiSave />{" "}
+              {isPending ? "Menyimpan..." : "Simpan Profile Sekarang"}
+            </button>
+          </div>
         </div>
       </motion.div>
 

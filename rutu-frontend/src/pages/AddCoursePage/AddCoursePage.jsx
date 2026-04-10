@@ -8,6 +8,7 @@ import {
   FiTrash2,
   FiSave,
   FiCheckCircle,
+  FiAlertCircle,
   FiBookOpen,
   FiLayers,
   FiUploadCloud,
@@ -16,13 +17,26 @@ import {
 import styles from "./AddCoursePage.module.css";
 import { useAddCourse } from "@/hooks/useAddCourse";
 
+// Konfigurasi Pilihan Kategori
+const CATEGORY_OPTIONS = [
+  { value: "Front-End", label: "💻 Front-End Web" },
+  { value: "Back-End", label: "⚙️ Back-End Web" },
+  { value: "UI/UX Designer", label: "🎨 UI/UX Designer" },
+  { value: "Matematika", label: "📐 Matematika" },
+  { value: "Fisika", label: "⚛️ Fisika" },
+  { value: "Bahasa Inggris", label: "🇬🇧 Bahasa Inggris" },
+  { value: "Bisnis & Manajemen", label: "📊 Bisnis & Manajemen" },
+];
+
 export default function AddCoursePage() {
   const {
     formData,
     modules,
-    error,
+    errors,
     popup,
     mutation,
+    isEditMode,
+    isFetching, // Ambil isEditMode dan isFetching
     setPopup,
     handleInputChange,
     addModule,
@@ -38,12 +52,32 @@ export default function AddCoursePage() {
     exit: { opacity: 0, scale: 0.9, height: 0, padding: 0, overflow: "hidden" },
   };
 
+  if (isFetching) {
+    return (
+      <DashboardLayout title="Memuat Kursus...">
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            padding: "100px",
+            fontSize: "1.5rem",
+            fontWeight: "800",
+          }}
+        >
+          Mengambil data kursus... ⏳
+        </div>
+      </DashboardLayout>
+    );
+  }
+
   return (
-    <DashboardLayout title="Tambah Kursus Baru">
+    <DashboardLayout title={isEditMode ? "Edit Kursus" : "Tambah Kursus Baru"}>
       <div className={styles.container}>
-        {/* --- HEADER CONTAINER --- */}
         <div className={styles.pageHeader}>
-          <h1 className={styles.pageTitle}>Buat Kursus Baru</h1>
+          {/* Ubah title header */}
+          <h1 className={styles.pageTitle}>
+            {isEditMode ? "Edit Kursus" : "Buat Kursus Baru"}
+          </h1>
           <button
             type="button"
             className={styles.backBtn}
@@ -54,20 +88,8 @@ export default function AddCoursePage() {
         </div>
 
         <form onSubmit={handleSubmit}>
-          {/* NOTIFIKASI ERROR */}
-          {error && (
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className={styles.errorMessage}
-            >
-              {error}
-            </motion.div>
-          )}
-
-          {/* --- SPLIT LAYOUT (KIRI & KANAN) --- */}
           <div className={styles.splitLayout}>
-            {/* KOLOM KIRI: Informasi Dasar & Upload */}
+            {/* KOLOM KIRI */}
             <div className={styles.mainCard}>
               <div className={styles.cardHeader}>
                 <div
@@ -85,16 +107,20 @@ export default function AddCoursePage() {
                   name="title"
                   value={formData.title}
                   onChange={handleInputChange}
+                  errorMessage={errors.title} // Memicu border merah jika kosong
                 />
               </div>
 
               <div className={styles.rowGroup}>
                 <div className={styles.inputGroup}>
                   <Input
+                    isSelect // Mengubah input menjadi Dropdown
                     label="Kategori"
                     name="category"
                     value={formData.category}
                     onChange={handleInputChange}
+                    options={CATEGORY_OPTIONS}
+                    errorMessage={errors.category} // Memicu border merah jika kosong
                   />
                 </div>
                 <div className={styles.inputGroup}>
@@ -104,11 +130,11 @@ export default function AddCoursePage() {
                     type="number"
                     value={formData.duration}
                     onChange={handleInputChange}
+                    errorMessage={errors.duration} // Memicu border merah jika kosong
                   />
                 </div>
               </div>
 
-              {/* PERUBAHAN: Menggunakan Input dengan properti isTextarea */}
               <div className={styles.inputGroup}>
                 <Input
                   isTextarea
@@ -117,6 +143,7 @@ export default function AddCoursePage() {
                   value={formData.description}
                   onChange={handleInputChange}
                   rows={4}
+                  errorMessage={errors.description} // Memicu border merah jika kosong
                 />
               </div>
 
@@ -133,7 +160,7 @@ export default function AddCoursePage() {
               </div>
             </div>
 
-            {/* KOLOM KANAN: Daftar Modul */}
+            {/* KOLOM KANAN */}
             <div className={styles.modulesCard}>
               <div className={styles.cardHeader}>
                 <div
@@ -147,8 +174,20 @@ export default function AddCoursePage() {
 
               <p className={styles.moduleDesc}>
                 Tambahkan materi-materi yang akan diajarkan secara berurutan.
-                (Minimal 1 modul)
               </p>
+
+              {/* Pesan error khusus jika modul kosong/tidak valid */}
+              {errors.modules && (
+                <div
+                  style={{
+                    color: "#ef4444",
+                    fontSize: "0.85rem",
+                    fontWeight: "800",
+                  }}
+                >
+                  {errors.modules}
+                </div>
+              )}
 
               <div className={styles.moduleList}>
                 <AnimatePresence>
@@ -160,6 +199,9 @@ export default function AddCoursePage() {
                       animate="show"
                       exit="exit"
                       className={styles.moduleItem}
+                      style={{
+                        borderColor: errors.modules ? "#ef4444" : "#000",
+                      }} // Efek merah jika error
                     >
                       <div className={styles.moduleNumber}>{index + 1}</div>
 
@@ -185,7 +227,6 @@ export default function AddCoursePage() {
                         type="button"
                         className={styles.trashBtn}
                         onClick={() => removeModule(m.id)}
-                        title="Hapus Modul"
                         disabled={modules.length === 1}
                       >
                         <FiTrash2 />
@@ -205,10 +246,12 @@ export default function AddCoursePage() {
             </div>
           </div>
 
-          {/* --- ACTION BAR (BAGIAN BAWAH) --- */}
           <div className={styles.actionBar}>
             <div className={styles.actionText}>
-              <h3>Siap untuk dipublikasi?</h3>
+              {/* Ubah teks konfirmasi */}
+              <h3>
+                {isEditMode ? "Simpan Perubahan?" : "Siap untuk dipublikasi?"}
+              </h3>
               <p>Pastikan semua data dan modul sudah terisi dengan benar.</p>
             </div>
             <button
@@ -216,7 +259,12 @@ export default function AddCoursePage() {
               className={styles.saveBtn}
               disabled={mutation.isPending}
             >
-              {mutation.isPending ? "Menyimpan..." : "Simpan Kursus Sekarang"}
+              {/* Ubah teks tombol utama */}
+              {mutation.isPending
+                ? "Menyimpan..."
+                : isEditMode
+                  ? "Perbarui Kursus Sekarang"
+                  : "Simpan Kursus Sekarang"}
               {!mutation.isPending && <FiSave size={20} />}
             </button>
           </div>
@@ -225,7 +273,7 @@ export default function AddCoursePage() {
         <Popup
           isOpen={popup.isOpen}
           type={popup.type}
-          icon={<FiCheckCircle />}
+          icon={popup.type === "error" ? <FiAlertCircle /> : <FiCheckCircle />}
           title={popup.title}
           description={popup.description}
           onAction={() => setPopup((p) => ({ ...p, isOpen: false }))}

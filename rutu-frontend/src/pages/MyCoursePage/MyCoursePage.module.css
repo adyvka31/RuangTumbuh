@@ -66,8 +66,8 @@
 .tabsContainer {
   display: flex;
   width: 100%;
-  background-color: #fff; 
-  border: 4px solid #000; 
+  background-color: #fff;
+  border: 4px solid #000;
   border-radius: 50px;
   overflow: hidden;
   box-shadow: 6px 6px 0px #000;
@@ -79,7 +79,7 @@
 }
 
 .tabBtn {
-  flex: 1; 
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -96,17 +96,12 @@
   box-shadow: none;
   transform: none;
   white-space: nowrap;
-  position: relative; 
+  position: relative;
 }
 
 .tabBtn:hover:not(.activeTab) {
   background-color: #e5e7eb;
   color: #000;
-}
-
-.activeTab {
-  background-color: var(--primary-yellow); 
-  color: #000; 
 }
 
 .badge {
@@ -122,21 +117,58 @@
   border: 1px solid #fff;
 }
 
-.activeTab .badge {
+.tabBtn:nth-child(1).activeTab {
   background-color: var(--primary-yellow);
   color: #000;
-  border: 1px solid #000;
+}
+.tabBtn:nth-child(1).activeTab .badge {
+  background-color: var(--primary-yellow);
+  color: #000;
+  border: 1.5px solid #000;
+}
+
+/* Tab 2: Permintaan (Biru) */
+.tabBtn:nth-child(2).activeTab {
+  background-color: #38bdf8;
+  color: #000;
+}
+.tabBtn:nth-child(2).activeTab .badge {
+  background-color: #38bdf8;
+  color: #000;
+  border: 1.5px solid #000;
+}
+
+/* Tab 3: Pengajuan (Merah) */
+.tabBtn:nth-child(3).activeTab {
+  background-color: #ef4444;
+  color: #fff; /* Text putih agar kontras dengan merah */
+}
+.tabBtn:nth-child(3).activeTab .badge {
+  background-color: #ef4444;
+  color: #fff;
+  border: 1.5px solid #fff;
+}
+
+/* Tab 4: Selesai (Hijau) */
+.tabBtn:nth-child(4).activeTab {
+  background-color: var(--primary-green);
+  color: #000;
+}
+.tabBtn:nth-child(4).activeTab .badge {
+  background-color: var(--primary-green);
+  color: #000;
+  border: 1.5px solid #000;
 }
 
 .tabBtn:nth-child(2):not(.activeTab) {
   color: #38bdf8;
-} 
+}
 .tabBtn:nth-child(3):not(.activeTab) {
   color: #ef4444;
 }
 .tabBtn:nth-child(4):not(.activeTab) {
   color: var(--primary-green);
-} 
+}
 
 /* =========================================
    TAB CONTENT AREA & GRID
@@ -261,8 +293,19 @@
   gap: 12px;
   flex: 1;
 }
+
+.statusBadge {
+  font-size: 0.8rem;
+  font-weight: bold;
+  padding: 4px 10px;
+  border-radius: 10px;
+  border: 1px solid ;
+  background-color: #dcfce7;
+  color: var(--primary-green);
+}
+
 .topicTitle {
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   font-weight: 800;
   color: #000;
   margin: 0;
@@ -513,7 +556,7 @@
     gap: 2px;
   }
   .tabBtn {
-    flex: none; 
+    flex: none;
     padding: 10px 15px;
     font-size: 0.9rem;
   }

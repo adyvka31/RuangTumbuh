@@ -1,4 +1,3 @@
-// hooks/useCourseBooking.js
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -21,15 +20,21 @@ export const useCourseBooking = (id, currentUser) => {
     description: "",
   });
 
+  // Fetch data kursus dengan perbaikan interceptor Axios
   const {
-    data: course,
+    data: rawCourse,
     isLoading,
     isError,
   } = useQuery({
     queryKey: ["course", id],
-    queryFn: async () => await api.get(`/courses/${id}`),
+    queryFn: async () => {
+      const response = await api.get(`/courses/${id}`);
+      return response.data !== undefined ? response.data : response;
+    },
     enabled: !!id,
   });
+
+  const course = rawCourse;
 
   const bookingMutation = useMutation({
     mutationFn: async (scheduledAt) => {
@@ -46,16 +51,17 @@ export const useCourseBooking = (id, currentUser) => {
       setPopup({
         isOpen: true,
         type: "success",
-        title: "Berhasil!",
+        title: "Booking Berhasil!",
         description:
           "Permintaan booking kamu berhasil diajukan! Silakan cek di menu My Courses.",
       });
+      // Tunggu user membaca popup sejenak sebelum diarahkan
       setTimeout(() => navigate("/mycourses"), 2500);
     },
     onError: (error) => {
       setPopup({
         isOpen: true,
-        type: "danger",
+        type: "error", // Sesuaikan dengan tipe popup ("error" bukan "danger")
         title: "Booking Gagal",
         description:
           error.response?.data?.message ||
@@ -69,13 +75,15 @@ export const useCourseBooking = (id, currentUser) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleBooking = () => {
+  const handleBooking = (e) => {
+    e.preventDefault(); // Mencegah reload halaman jika dipanggil dari tag <form>
+
     if (!formData.date || !formData.time) {
       setPopup({
         isOpen: true,
-        type: "danger",
-        title: "Gagal",
-        description: "Harap pilih tanggal dan waktu!",
+        type: "error",
+        title: "Data Tidak Lengkap",
+        description: "Harap pilih tanggal dan waktu sesi kursus kamu!",
       });
       return;
     }
@@ -83,7 +91,6 @@ export const useCourseBooking = (id, currentUser) => {
     const scheduledAt = new Date(
       `${formData.date}T${formData.time}`,
     ).toISOString();
-
     bookingMutation.mutate(scheduledAt);
   };
 

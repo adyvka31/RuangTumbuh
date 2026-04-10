@@ -14,7 +14,9 @@ export const Input = forwardRef(
       value,
       onChange,
       isTextarea,
-      ...props // Sisa props dari react-hook-form akan masuk ke sini
+      isSelect, // Tambahkan prop isSelect
+      options = [], // Tambahkan prop options untuk dropdown
+      ...props
     },
     ref,
   ) => {
@@ -25,9 +27,26 @@ export const Input = forwardRef(
     return (
       <div className={styles.inputContainer}>
         <div className={styles.inputWrapper}>
-          {isTextarea ? (
+          {isSelect ? ( // Logika untuk merender select
+            <select
+              ref={ref}
+              className={`${styles.inputForm} ${errorMessage ? styles.error : ""}`}
+              id={id}
+              name={name}
+              value={value}
+              onChange={onChange}
+              {...props}
+            >
+              <option value="" disabled hidden></option>
+              {options.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          ) : isTextarea ? (
             <textarea
-              ref={ref} // 3. PASANG REF KE TEXTAREA
+              ref={ref}
               className={`${styles.inputForm} ${errorMessage ? styles.error : ""}`}
               id={id}
               name={name}
@@ -43,7 +62,7 @@ export const Input = forwardRef(
             />
           ) : (
             <input
-              ref={ref} // 4. PASANG REF KE INPUT
+              ref={ref}
               className={`${styles.inputForm} ${errorMessage ? styles.error : ""}`}
               type={inputType}
               id={id}
@@ -59,7 +78,8 @@ export const Input = forwardRef(
             {label}
           </label>
 
-          {isPassword && !isTextarea ? (
+          {/* ... sisa kode toggle password dan icon ... */}
+          {isPassword && !isTextarea && !isSelect ? (
             <button
               type="button"
               className={styles.passwordToggle}

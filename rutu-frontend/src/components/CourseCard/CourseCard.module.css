@@ -24,14 +24,19 @@
    BANNER / HEADER (Dinamis)
 ========================================= */
 .cardBanner {
-  height: 180px; /* Slightly taller for images */
+  height: 180px;
   border-bottom: 4px solid #000;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background-color: #f3f4f6;
+  background-image: radial-gradient(
+    rgba(0, 0, 0, 0.25) 2.5px,
+    transparent 2.5px
+  );
+  background-size: 20px 20px;
+  background-position: 0 0;
 }
 
 .bannerImage {
@@ -42,7 +47,6 @@
   height: 100%;
   object-fit: cover;
   transition: transform 0.5s ease;
-  filter: saturate(1.2) brightness(0.9);
 }
 
 .neoCard:hover .bannerImage {
@@ -57,8 +61,8 @@
   background: linear-gradient(
     to bottom,
     rgba(0, 0, 0, 0.4) 0%,
-    transparent 40%,
-    transparent 60%,
+    transparent 20%,
+    transparent 70%,
     rgba(0, 0, 0, 0.6) 100%
   );
   display: flex;
@@ -121,7 +125,6 @@
 }
 
 .courseTitle {
-  font-family: "Fredoka", sans-serif;
   font-size: 1.4rem;
   font-weight: 800;
   color: #000;
@@ -151,7 +154,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   color: #000;
   box-shadow: 3px 3px 0px #000;
   flex-shrink: 0;
@@ -159,7 +162,7 @@
 }
 
 .neoCard:hover .mentorAvatar {
-  transform: scale(1.1) rotate(5deg);
+  transform: scale(1.03) rotate(5deg);
   box-shadow: 4px 4px 0px #000;
 }
 
@@ -278,3 +281,51 @@
   background-color: #60a5fa;
 }
 
+.btnDetailText {
+  background-color: #fff;
+  color: #000;
+  flex: 1;
+}
+
+/* Tombol Detail (Hanya Icon) untuk My Course Page */
+.btnDetail {
+  background-color: #fff;
+  color: #000;
+  flex: 0.4; /* Lebih kecil agar tombol lain muat */
+}
+
+/* Tombol Edit di Search Page */
+.btnEditSearch {
+  background-color: #3b82f6;
+  color: #fff;
+}
+
+/* Tombol Edit di My Course Page */
+.btnEdit {
+  background-color: #3b82f6;
+  color: #fff;
+}
+
+/* Tombol Delete di My Course Page */
+.btnDelete {
+  background-color: #ef4444;
+  color: #fff;
+}
+
+.btnBooking {
+  background-color: var(--primary-yellow, #facc15);
+  color: #000;
+}
+
+/* Responsif untuk 3 tombol di mobile */
+@media (max-width: 480px) {
+  .btnEdit,
+  .btnDelete {
+    font-size: 0px; /* Sembunyikan teks agar tidak sempit */
+    gap: 0;
+  }
+  .btnEdit svg,
+  .btnDelete svg {
+    font-size: 1.2rem;
+  }
+}

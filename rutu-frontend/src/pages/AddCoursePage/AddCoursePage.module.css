@@ -1,7 +1,7 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: 40px; 
+  gap: 40px;
 }
 
 /* =========================================
@@ -119,6 +119,41 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
+}
+
+.selectLabel {
+  font-family: "plus-jakarta", sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  color: #000;
+}
+
+.selectInput {
+  width: 100%;
+  padding: 14px 15px;
+  font-size: 1rem;
+  font-family: "plus-jakarta", sans-serif;
+  font-weight: 600;
+  border: 3px solid #000;
+  border-radius: 12px;
+  background-color: #fff;
+  color: #000;
+  outline: none;
+  box-shadow: 4px 4px 0px #000;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  background-size: 1.2em;
+}
+
+.selectInput:focus {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px #000;
+  border-color: var(--primary-green, #10b981);
 }
 
 /* =========================================

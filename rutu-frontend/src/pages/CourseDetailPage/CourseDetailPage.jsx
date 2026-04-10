@@ -163,9 +163,6 @@ export default function CourseDetailPage() {
                             <FiPlayCircle /> {item.duration}
                           </span>
                         </div>
-                        {item.isFree && (
-                          <span className={styles.freeBadge}>Gratis</span>
-                        )}
                       </div>
                     ))}
                   </motion.div>
