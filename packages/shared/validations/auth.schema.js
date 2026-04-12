@@ -1,31 +1,25 @@
-import { z } from "zod";
+const { z } = require("zod");
 
-export const loginPayloadSchema = z.object({
-  email: z.string().email("Format email tidak valid. Pastikan menggunakan @"),
-  password: z.string().min(1, "Password tidak boleh kosong"),
+const loginPayloadSchema = z.object({
+  email: z.string().email({ message: "Format email tidak valid" }),
+  password: z.string().min(6, { message: "Password minimal 6 karakter" }),
 });
 
-export const registerPayloadSchema = z
+const registerPayloadSchema = z
   .object({
-    name: z
+    name: z.string().min(3, { message: "Nama minimal 3 karakter" }),
+    email: z.string().email({ message: "Format email tidak valid" }),
+    password: z.string().min(6, { message: "Password minimal 6 karakter" }),
+    confirmPassword: z
       .string()
-      .regex(/^[a-zA-Z\s]*$/, "Nama hanya boleh berisi huruf.")
-      .refine((val) => {
-        const words = val.trim().split(/\s+/);
-        return words.length >= 2 && words.length <= 5;
-      }, "Nama lengkap harus terdiri dari 2 hingga 5 kata."),
-    email: z.string().email("Format email tidak valid. Pastikan menggunakan @"),
-    password: z
-      .string()
-      .min(8, "Password minimal 8 karakter.")
-      .max(32, "Password maksimal 32 karakter.")
-      .regex(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-        "Password wajib mengandung huruf besar, kecil, dan angka.",
-      ),
-    confirmPassword: z.string().min(1, "Konfirmasi password wajib diisi"),
+      .min(6, { message: "Konfirmasi password minimal 6 karakter" }),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Password dan Konfirmasi Password harus sama persis.",
+    message: "Password tidak cocok",
     path: ["confirmPassword"],
   });
+
+module.exports = {
+  loginPayloadSchema,
+  registerPayloadSchema,
+};

@@ -57,23 +57,23 @@ describe("Komponen RegisterForm", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Register" }));
 
+    // [PERBAIKAN 1]: Disesuaikan dengan pesan dari Zod schema
     await waitFor(() => {
-      expect(
-        screen.getByText("Password dan Konfirmasi Password harus sama persis."),
-      ).toBeInTheDocument();
+      expect(screen.getByText("Password tidak cocok")).toBeInTheDocument();
     });
 
     expect(api.post).not.toHaveBeenCalled();
   });
 
-  it("harus menampilkan pesan error jika format nama salah (kurang dari 2 kata)", async () => {
+  // [PERBAIKAN 2]: Ubah skenario tes agar menguji validasi "min(3 karakter)"
+  it("harus menampilkan pesan error jika nama kurang dari 3 karakter", async () => {
     renderWithRouter();
 
     fireEvent.change(screen.getByLabelText("Name"), {
-      target: { value: "Budi" },
+      target: { value: "Al" }, // "Al" hanya 2 karakter, seharusnya ditolak Zod
     });
     fireEvent.change(screen.getByLabelText("Email"), {
-      target: { value: "budi@email.com" },
+      target: { value: "al@email.com" },
     });
     fireEvent.change(screen.getByLabelText("Password"), {
       target: { value: "Password123!" },
@@ -84,10 +84,9 @@ describe("Komponen RegisterForm", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Register" }));
 
+    // [PERBAIKAN 3]: Disesuaikan dengan pesan dari Zod schema
     await waitFor(() => {
-      expect(
-        screen.getByText("Nama lengkap harus terdiri dari 2 hingga 5 kata."),
-      ).toBeInTheDocument();
+      expect(screen.getByText("Nama minimal 3 karakter")).toBeInTheDocument();
     });
   });
 

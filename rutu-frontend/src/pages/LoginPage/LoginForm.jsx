@@ -39,35 +39,29 @@ export const LoginForm = () => {
         )}
 
         <div className={styles.inputFormGroup}>
-          <div>
+          <div className={styles.inputWrapper}>
+            {/* PERBAIKAN: Gunakan errorMessage */}
             <Input
               type="email"
               id="email"
               label="Email"
               icon={FiAtSign}
+              errorMessage={errors.email?.message}
               {...register("email")}
             />
-            {errors.email && (
-              <span style={{ color: "red", fontSize: "0.8rem" }}>
-                {errors.email.message}
-              </span>
-            )}
           </div>
 
-          <div>
+          <div className={styles.inputWrapper}>
+            {/* PERBAIKAN: Gunakan errorMessage */}
             <Input
               type="password"
               id="password"
               label="Password"
               icon={FiLock}
               autoComplete="current-password"
+              errorMessage={errors.password?.message}
               {...register("password")}
             />
-            {errors.password && (
-              <span style={{ color: "red", fontSize: "0.8rem" }}>
-                {errors.password.message}
-              </span>
-            )}
           </div>
 
           <div className={styles.passwordActionsForm}>

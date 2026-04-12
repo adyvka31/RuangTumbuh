@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
+const helmet = require("helmet");
 const morgan = require("morgan");
 const logger = require("./utils/logger");
 const { getChatbotReply } = require("./services/chatbot.service");
@@ -17,14 +18,39 @@ const chatRoutes = require("./routes/chat.routes");
 const chatbotRoutes = require("./routes/chatbot.routes");
 
 const app = express();
+app.use(helmet());
 
 const corsOptions = {
-  origin: [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "https://ruang-tumbuh.vercel.app",
-  ],
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      "http://localhost:5173",
+      "http://127.0.0.1:5173",
+      "https://ruang-tumbuh.vercel.app", 
+    ];
+
+    const isProduction = process.env.NODE_ENV === "production";
+
+    // Jika origin tidak ada (biasanya request dari Postman/Server-to-Server)
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    // Jika origin terdaftar di whitelist
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    // Izinkan preview URL Vercel hanya jika bukan di mode production
+    if (!isProduction && origin.endsWith(".vercel.app")) {
+      return callback(null, true);
+    }
+
+    // Blokir sisanya
+    callback(new Error("CORS Policy: Origin Blocked"));
+  },
   credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
 app.use(cors(corsOptions));
 

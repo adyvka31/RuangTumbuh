@@ -15,16 +15,15 @@ export const useRegister = () => {
     description: "",
   });
 
-  // Integrasi React Hook Form dengan Zod Schema dari shared package
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(registerPayloadSchema),
+    mode: "onBlur",
   });
 
-  // Logika Mutasi API
   const registerMutation = useMutation({
     mutationFn: async (userData) => {
       return await api.post("/auth/register", userData);
