@@ -36,6 +36,7 @@ model User {
   forumComments   ForumComment[]
   messages        Message[]      // Menggantikan sentMessages & recvMessages
   chatRooms       Participant[]
+  notifications   Notification[]
 }
 
 // TABEL SKILL (KETERAMPILAN YANG BISA DITUKAR)
@@ -178,6 +179,7 @@ enum CourseBookingStatus {
   ACCEPTED
   REJECTED
   COMPLETED
+  CANCELLED
 }
 
 // MODEL UNTUK FITUR CHAT & KOMUNITAS
@@ -217,4 +219,18 @@ model Participant {
   room        ChatRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
 
   @@id([userId, roomId]) // Composite primary key
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String   // Penerima notifikasi
+  title     String
+  message   String
+  type      String   // Misal: 'COURSE_UPDATE', 'BOOKING_STATUS', 'SCHEDULE_CREATED'
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }

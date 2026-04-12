@@ -364,6 +364,7 @@ export default function CourseDetailPage() {
         icon={<FiAlertCircle />}
         title="Segera Hadir 🚧"
         description="Fitur profil lengkap sedang dikembangkan."
+        buttonText="Tutup"
         onAction={() => setPopup({ isOpen: false })}
       />
     </DashboardLayout>

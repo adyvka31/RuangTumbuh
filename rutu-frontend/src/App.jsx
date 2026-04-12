@@ -14,9 +14,6 @@ const Register = lazy(() => import("@pages/RegisterPage/RegisterPage"));
 const DashboardPage = lazy(() => import("@pages/DashboardPage/DashboardPage"));
 const SearchPage = lazy(() => import("@pages/SearchPage/SearchPage"));
 const MessagesPage = lazy(() => import("@pages/MessagesPage/MessagesPage"));
-const NotificationPage = lazy(
-  () => import("@pages/NotificationPage/NotificationPage"),
-);
 const MyCoursePage = lazy(() => import("@/pages/MyCoursePage/MyCoursePage"));
 const CourseDetailPage = lazy(
   () => import("@pages/CourseDetailPage/CourseDetailPage"),
@@ -70,7 +67,6 @@ export default function App() {
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/messages" element={<MessagesPage />} />
-                <Route path="/notifications" element={<NotificationPage />} />
                 <Route path="/mycourses" element={<MyCoursePage />} />
                 <Route path="/course/:id" element={<CourseDetailPage />} />
                 <Route
