@@ -1,22 +1,25 @@
+/// <reference types="vitest" />
 /* eslint-disable no-undef */
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import { viteCommonjs } from "@originjs/vite-plugin-commonjs";
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), viteCommonjs()],
+
   server: {
     port: 5173,
     proxy: {
       "/api": {
-        target: "https://ruangtumbuh-production.up.railway.app",
+        target: "http://localhost:5001",
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/api/, "/api"),
       },
     },
   },
+
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -24,28 +27,23 @@ export default defineConfig({
       "@components": path.resolve(__dirname, "./src/components"),
       "@assets": path.resolve(__dirname, "./src/assets"),
       "@layouts": path.resolve(__dirname, "./src/layouts"),
-      // PAKSA VITE PAKAI ENTRY POINT YANG BENAR UNTUK COOKIE
-      cookie: "cookie",
     },
-  },
-  test: {
-    globals: true,
-    environment: "happy-dom",
-    setupFiles: "./src/setupTests.js",
-  },
-  esbuild: {
-    drop: ["console", "debugger"],
   },
 
   optimizeDeps: {
-    // TAMBAHKAN 'cookie' DI SINI
     include: ["@rutu/shared", "cookie"],
   },
 
   build: {
     commonjsOptions: {
       include: [/@rutu\/shared/, /node_modules/],
-      exclude: [/node_modules\/cookie/],
+      transformMixedEsModules: true,
     },
+  },
+
+  test: {
+    environment: "jsdom",
+    globals: true,
+    setupFiles: "./src/setupTests.js",
   },
 });

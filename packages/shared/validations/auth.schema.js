@@ -1,11 +1,11 @@
-const { z } = require("zod");
+import { z } from "zod";
 
-const loginPayloadSchema = z.object({
+export const loginPayloadSchema = z.object({
   email: z.string().email({ message: "Format email tidak valid" }),
   password: z.string().min(6, { message: "Password minimal 6 karakter" }),
 });
 
-const registerPayloadSchema = z
+export const registerPayloadSchema = z
   .object({
     name: z.string().min(3, { message: "Nama minimal 3 karakter" }),
     email: z.string().email({ message: "Format email tidak valid" }),
@@ -18,8 +18,3 @@ const registerPayloadSchema = z
     message: "Password tidak cocok",
     path: ["confirmPassword"],
   });
-
-module.exports = {
-  loginPayloadSchema,
-  registerPayloadSchema,
-};
