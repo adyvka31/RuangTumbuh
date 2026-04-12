@@ -2,9 +2,9 @@
   "name": "@rutu/shared",
   "version": "1.0.0",
   "type": "module",
-  "main": "validations/auth.schema.js",
+  "main": "index.js", 
   "exports": {
-    ".": "./validations/auth.schema.js"
+    ".": "./index.js"
   },
   "peerDependencies": {
     "zod": "*"
