@@ -109,10 +109,10 @@ const getTutorIncomingBookings = async (tutorId) => {
   });
 };
 
-const changeBookingStatus = async (id, status, tutorId) => {
+const changeBookingStatus = async (id, status, requesterId) => {
+  // Ubah tutorId menjadi requesterId agar lebih umum
   const booking = await prisma.courseBooking.findUnique({
     where: { id },
-    // Ambil juga durasi kursus untuk penambahan/refund saldo
     include: { course: { select: { tutorId: true, durasi: true } } },
   });
 
@@ -122,7 +122,19 @@ const changeBookingStatus = async (id, status, tutorId) => {
     throw error;
   }
 
-  if (booking.course.tutorId !== tutorId) {
+  // --- LOGIKA OTORISASI BARU ---
+  const isTutor = booking.course.tutorId === requesterId;
+  const isStudent = booking.studentId === requesterId;
+
+  // Siswa HANYA boleh membatalkan jika statusnya CANCELLED
+  if (isStudent && status !== "CANCELLED") {
+    const error = new Error("Siswa hanya diperbolehkan membatalkan pengajuan!");
+    error.statusCode = 403;
+    throw error;
+  }
+
+  // Jika bukan tutor dan bukan siswa yang membatalkan, tolak.
+  if (!isTutor && !(isStudent && status === "CANCELLED")) {
     const error = new Error("Kamu tidak berhak mengubah status booking ini!");
     error.statusCode = 403;
     throw error;
@@ -131,37 +143,38 @@ const changeBookingStatus = async (id, status, tutorId) => {
   let updateData = { status };
   const durationMinutes = parseInt(booking.course.durasi) || 0;
 
-  // --- LOGIKA TIME BANKING: TUTOR MENERIMA BOOKING ---
-  if (status === "ACCEPTED") {
-    // Generate Token
+  // --- LOGIKA TIME BANKING: ACCEPTED (Hanya untuk Tutor) ---
+  if (status === "ACCEPTED" && isTutor) {
     const generatedToken = Math.random()
       .toString(36)
       .substring(2, 8)
       .toUpperCase();
     updateData.token = generatedToken;
 
-    // Transaction: Ubah status menjadi ACCEPTED dan TAMBAH saldo Tutor
     const [updatedBooking] = await prisma.$transaction([
-      prisma.courseBooking.update({
-        where: { id },
-        data: updateData,
-      }),
+      prisma.courseBooking.update({ where: { id }, data: updateData }),
       prisma.user.update({
-        where: { id: tutorId },
-        data: { timeBalance: { increment: durationMinutes } }, // Saldo tutor bertambah
+        where: { id: requesterId },
+        data: { timeBalance: { increment: durationMinutes } },
       }),
     ]);
     return updatedBooking;
   }
 
-  // --- LOGIKA TIME BANKING: TUTOR MENOLAK BOOKING (REFUND) ---
-  else if (status === "REJECTED") {
-    // Transaction: Ubah status menjadi REJECTED dan KEMBALIKAN saldo Siswa
-    const [updatedBooking] = await prisma.$transaction([
-      prisma.courseBooking.update({
-        where: { id },
-        data: updateData,
+  // --- LOGIKA TIME BANKING: REJECTED/CANCELLED (Refund ke Siswa) ---
+  else if (status === "CANCELLED") {
+    const [deletedBooking] = await prisma.$transaction([
+      prisma.courseBooking.delete({ where: { id } }),
+      prisma.user.update({
+        where: { id: booking.studentId },
+        data: { timeBalance: { increment: durationMinutes } }, // Refund saldo siswa
       }),
+    ]);
+    return deletedBooking;
+  } else if (status === "REJECTED") {
+    const [updatedBooking] = await prisma.$transaction([
+      // Gunakan update() karena data penolakan dari mentor biasanya masih disimpan sebagai riwayat
+      prisma.courseBooking.update({ where: { id }, data: updateData }),
       prisma.user.update({
         where: { id: booking.studentId },
         data: { timeBalance: { increment: durationMinutes } }, // Refund saldo siswa
@@ -170,7 +183,6 @@ const changeBookingStatus = async (id, status, tutorId) => {
     return updatedBooking;
   }
 
-  // Jika statusnya selain ACCEPTED / REJECTED (Misal: COMPLETED)
   return await prisma.courseBooking.update({
     where: { id },
     data: updateData,

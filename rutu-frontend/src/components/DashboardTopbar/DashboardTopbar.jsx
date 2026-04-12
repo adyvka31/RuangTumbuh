@@ -12,66 +12,42 @@ import { FaUser } from "react-icons/fa";
 import {
   FiMessageSquare,
   FiCheckCircle,
-  FiUserPlus,
   FiInfo,
   FiMenu,
+  FiBookOpen,
+  FiCalendar,
+  FiInbox,
 } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNotifications } from "@/hooks/useNotifications"; //
 
-// --- DATA AWAL NOTIFIKASI ---
-const initialNotifications = [
-  {
-    id: 1,
-    type: "chat",
-    title: "Pesan Baru",
-    desc: "Grace membalas pesan Anda di grup Frontend.",
-    time: "Baru saja",
-    unread: true,
-    icon: <FiMessageSquare />,
-    color: "#38BDF8",
-  },
-  {
-    id: 2,
-    type: "status",
-    title: "Pengajuan Diterima",
-    desc: "Selamat! Pengajuan kursus 'React Lanjut' Anda telah disetujui admin.",
-    time: "2 jam lalu",
-    unread: true,
-    icon: <FiCheckCircle />,
-    color: "#10B981",
-  },
-  {
-    id: 3,
-    type: "request",
-    title: "Permintaan Mentoring",
-    desc: "Budi Santoso ingin menjadwalkan sesi 1-on-1 dengan Anda.",
-    time: "Kemarin",
-    unread: false,
-    icon: <FiUserPlus />,
-    color: "#FACC15",
-  },
-  {
-    id: 4,
-    type: "system",
-    title: "Pembaruan Sistem",
-    desc: "Fitur baru: Sertifikat kini tersedia untuk diunduh di profil Anda.",
-    time: "2 hari lalu",
-    unread: false,
-    icon: <FiInfo />,
-    color: "#A78BFA",
-  },
-];
+// Mapping icon & color tetap sama dengan style awal website Anda
+const getIconAndColor = (type) => {
+  switch (type) {
+    case "COURSE_CREATED":
+      return { icon: <FiBookOpen />, color: "#A78BFA" };
+    case "SCHEDULE_CREATED":
+      return { icon: <FiCalendar />, color: "#38BDF8" };
+    case "BOOKING_NEW":
+      return { icon: <FiInbox />, color: "#FACC15" };
+    case "BOOKING_STATUS":
+      return { icon: <FiInfo />, color: "#FB923C" };
+    case "BOOKING_COMPLETED":
+      return { icon: <FiCheckCircle />, color: "#10B981" };
+    default:
+      return { icon: <FiMessageSquare />, color: "#38BDF8" };
+  }
+};
 
 export default function DashboardTopbar({ title, onMenuClick }) {
-  const { user } = useAuth();
+  const { user } = useAuth(); //
   const userName = user?.name || "Pengguna";
 
-  // --- State Notifikasi ---
-  const [notifications, setNotifications] = useState(initialNotifications);
+  // --- Mengambil Data Real dari Hook ---
+  const { notifications, loading } = useNotifications(); //
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const notifRef = useRef(null);
 
-  // Klik di luar popup untuk menutup
   useEffect(() => {
     function handleClickOutside(event) {
       if (notifRef.current && !notifRef.current.contains(event.target)) {
@@ -82,15 +58,8 @@ export default function DashboardTopbar({ title, onMenuClick }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Hitung jumlah yang belum dibaca
-  const unreadCount = notifications.filter((n) => n.unread).length;
-
-  // Fungsi untuk menandai semua sudah dibaca
-  const markAllAsRead = () => {
-    setNotifications(
-      notifications.map((notif) => ({ ...notif, unread: false })),
-    );
-  };
+  // Hitung jumlah yang belum dibaca (asumsi field 'unread' atau '!isRead' dari backend)
+  const unreadCount = notifications.filter((n) => n.unread || !n.isRead).length;
 
   return (
     <header className={styles.topBar}>
@@ -119,14 +88,13 @@ export default function DashboardTopbar({ title, onMenuClick }) {
               }}
             >
               <IoIosNotificationsOutline
-                style={{ width: "100%", height: "100%" }}
+                style={{ width: "100%", height: "100%", strokeWidth: 10 }}
               />
               {unreadCount > 0 && (
                 <span className={styles.badge}>{unreadCount}</span>
               )}
             </div>
 
-            {/* POPUP DROPDOWN NOTIFIKASI */}
             <AnimatePresence>
               {isNotifOpen && (
                 <motion.div
@@ -145,34 +113,67 @@ export default function DashboardTopbar({ title, onMenuClick }) {
                     )}
                   </div>
 
-                  {/* Area List dengan Max-Height & Scroll */}
                   <div className={styles.notifList}>
-                    {notifications.map((notif) => (
-                      <div
-                        key={notif.id}
-                        className={`${styles.notifItem} ${notif.unread ? styles.notifUnread : ""}`}
+                    {loading ? (
+                      <p
+                        style={{
+                          padding: "20px",
+                          textAlign: "center",
+                          fontSize: "14px",
+                          color: "#666",
+                        }}
                       >
-                        <div
-                          className={styles.notifIconWrap}
-                          style={{ backgroundColor: notif.color }}
-                        >
-                          {notif.icon}
-                        </div>
-                        <div className={styles.notifText}>
-                          <h4>{notif.title}</h4>
-                          <p>{notif.desc}</p>
-                          <span className={styles.notifTime}>{notif.time}</span>
-                        </div>
-                        {notif.unread && (
-                          <div className={styles.unreadDot}></div>
-                        )}
-                      </div>
-                    ))}
+                        Memuat...
+                      </p>
+                    ) : notifications.length > 0 ? (
+                      notifications.map((notif) => {
+                        const theme = getIconAndColor(notif.type);
+                        return (
+                          <div
+                            key={notif.id}
+                            className={`${styles.notifItem} ${notif.unread || !notif.isRead ? styles.notifUnread : ""}`}
+                          >
+                            <div
+                              className={styles.notifIconWrap}
+                              style={{ backgroundColor: theme.color }}
+                            >
+                              {theme.icon}
+                            </div>
+                            <div className={styles.notifText}>
+                              <h4>{notif.title}</h4>
+                              <p>{notif.message || notif.desc}</p>
+                              <span className={styles.notifTime}>
+                                {new Date(notif.createdAt).toLocaleTimeString(
+                                  [],
+                                  {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  },
+                                )}
+                              </span>
+                            </div>
+                            {(notif.unread || !notif.isRead) && (
+                              <div className={styles.unreadDot}></div>
+                            )}
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <p
+                        style={{
+                          padding: "20px",
+                          textAlign: "center",
+                          fontSize: "14px",
+                          color: "#666",
+                        }}
+                      >
+                        Tidak ada notifikasi baru.
+                      </p>
+                    )}
                   </div>
 
                   <div className={styles.notifFooter}>
                     <button
-                      onClick={markAllAsRead}
                       disabled={unreadCount === 0}
                       className={unreadCount === 0 ? styles.btnDisabled : ""}
                     >
