@@ -5,7 +5,7 @@
   "exports": {
     ".": "./validations/auth.schema.js"
   },
-  "peerDependencies": {
-    "zod": "*"
+  "dependencies": {
+    "zod": "^3.22.4"
   }
 }
