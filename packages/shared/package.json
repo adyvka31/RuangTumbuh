@@ -1,7 +1,8 @@
 {
   "name": "@rutu/shared",
   "version": "1.0.0",
-  "main": "validations/auth.schema.js",
+  "type": "module",
+  "main": "index.js",
   "exports": {
     ".": "./validations/auth.schema.js"
   },
