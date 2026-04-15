@@ -14,6 +14,8 @@ COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
 COPY packages/shared ./packages/shared
 COPY rutu-backend ./rutu-backend
 
+RUN pnpm config set shamefully-hoist true
+
 # Menginstal dependency khusus untuk backend dan shared package
 RUN pnpm install --filter rutu-backend...
 
