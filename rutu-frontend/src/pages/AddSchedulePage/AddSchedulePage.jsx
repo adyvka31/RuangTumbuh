@@ -319,6 +319,7 @@ export default function AddSchedulePage() {
         icon={<FiCheckCircle />}
         title={popup.title}
         description={popup.description}
+        buttonText="Tutup"
         onAction={() => setPopup((p) => ({ ...p, isOpen: false }))}
       />
     </DashboardLayout>

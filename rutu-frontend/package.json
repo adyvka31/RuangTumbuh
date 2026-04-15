@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
-    "@rutu/shared": "workspace:*",
+    "@rutu/shared": "file:../packages/shared",
     "@tanstack/react-query": "^5.96.2",
     "axios": "^1.13.6",
     "bootstrap": "^5.3.8",

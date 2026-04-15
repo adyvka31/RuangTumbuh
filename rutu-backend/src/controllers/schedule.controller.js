@@ -1,12 +1,23 @@
 const logger = require("../utils/logger");
 const scheduleService = require("../services/schedule.service");
 const catchAsync = require("../utils/catchAsync");
+const notificationService = require("../services/notification.service");
 
 const addSchedule = catchAsync(async (req, res) => {
   const newSchedule = await scheduleService.addSelfSchedule(req.body);
   logger.info(
     `[Schedule] Jadwal mandiri berhasil dibuat oleh User ID: ${req.body.studentId}`,
   );
+
+  // Trigger Notifikasi
+  if (req.body.studentId) {
+    await notificationService.createNotification(
+      req.body.studentId,
+      "Jadwal Baru Ditambahkan",
+      "Jadwal belajar mandiri Anda telah berhasil dibuat dan disimpan di kalender.",
+      "SCHEDULE_CREATED",
+    );
+  }
 
   res
     .status(201)
@@ -23,13 +34,11 @@ const getAllSchedules = catchAsync(async (req, res) => {
     `[Schedule] Data kalender diambil untuk User ID: ${req.params.id}`,
   );
 
-  res
-    .status(200)
-    .json({
-      success: true,
-      message: "Jadwal berhasil dimuat",
-      data: schedules,
-    });
+  res.status(200).json({
+    success: true,
+    message: "Jadwal berhasil dimuat",
+    data: schedules,
+  });
 });
 
 const editSchedule = catchAsync(async (req, res) => {

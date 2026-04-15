@@ -16,6 +16,7 @@ const bookingRoutes = require("./routes/booking.routes");
 const scheduleRoutes = require("./routes/schedule.routes");
 const chatRoutes = require("./routes/chat.routes");
 const chatbotRoutes = require("./routes/chatbot.routes");
+const notificationRoutes = require("./routes/notification.routes.js");
 
 const app = express();
 app.use(helmet());
@@ -25,7 +26,7 @@ const corsOptions = {
     const allowedOrigins = [
       "http://localhost:5173",
       "http://127.0.0.1:5173",
-      "https://ruang-tumbuh.vercel.app", 
+      "https://ruang-tumbuh.vercel.app",
     ];
 
     const isProduction = process.env.NODE_ENV === "production";
@@ -78,6 +79,7 @@ app.use("/api/bookings", bookingRoutes);
 app.use("/api/schedules", scheduleRoutes);
 app.use("/api/chats", chatRoutes);
 app.use("/api/chatbot", chatbotRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 app.post("/api/chatbot", async (req, res) => {
   try {

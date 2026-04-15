@@ -1,4 +1,4 @@
-const { z } = require("zod");
+import { z } from "zod";
 
 const loginPayloadSchema = z.object({
   email: z.string().email({ message: "Format email tidak valid" }),
@@ -19,7 +19,4 @@ const registerPayloadSchema = z
     path: ["confirmPassword"],
   });
 
-module.exports = {
-  registerPayloadSchema,
-  loginPayloadSchema,
-};
+export { registerPayloadSchema, loginPayloadSchema };

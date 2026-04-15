@@ -385,6 +385,7 @@ export default function AddCoursePage() {
           icon={popup.type === "error" ? <FiAlertCircle /> : <FiCheckCircle />}
           title={popup.title}
           description={popup.description}
+          buttonText="Tutup"
           onAction={() => setPopup((p) => ({ ...p, isOpen: false }))}
         />
       </div>
