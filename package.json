@@ -2,6 +2,12 @@
   "name": "RuangTumbuh",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "pnpm@9.0.0",
+  "workspaces": [
+    "packages/*",
+    "rutu-frontend",
+    "rutu-backend"
+  ],
   "scripts": {
     "dev": "concurrently \"pnpm --filter rutu-frontend dev\" \"pnpm --filter rutu-backend dev\"",
     "prepare": "husky"
