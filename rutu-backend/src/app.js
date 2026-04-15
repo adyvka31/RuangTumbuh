@@ -21,6 +21,8 @@ const notificationRoutes = require("./routes/notification.routes.js");
 const app = express();
 app.use(helmet());
 
+app.set("trust proxy", 1);
+
 const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [

@@ -1,22 +1,26 @@
-import { z } from "zod";
+const { z } = require("zod");
+const shared = require("@rutu/shared");
 
-const loginPayloadSchema = z.object({
-  email: z.string().email({ message: "Format email tidak valid" }),
-  password: z.string().min(6, { message: "Password minimal 6 karakter" }),
+// Ambil skema langsung, ATAU dari dalam objek .default (jika ter-transpile)
+const registerPayloadSchema =
+  shared.registerPayloadSchema || shared.default?.registerPayloadSchema;
+const loginPayloadSchema =
+  shared.loginPayloadSchema || shared.default?.loginPayloadSchema;
+
+// Cek apakah skema berhasil dimuat
+if (!loginPayloadSchema) {
+  console.error(
+    "🚨 PERINGATAN: loginPayloadSchema gagal dimuat dari @rutu/shared. Isi module:",
+    shared,
+  );
+}
+
+const registerSchema = z.object({
+  body: registerPayloadSchema || z.any(),
 });
 
-const registerPayloadSchema = z
-  .object({
-    name: z.string().min(3, { message: "Nama minimal 3 karakter" }),
-    email: z.string().email({ message: "Format email tidak valid" }),
-    password: z.string().min(6, { message: "Password minimal 6 karakter" }),
-    confirmPassword: z
-      .string()
-      .min(6, { message: "Konfirmasi password minimal 6 karakter" }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Password tidak cocok",
-    path: ["confirmPassword"],
-  });
+const loginSchema = z.object({
+  body: loginPayloadSchema || z.any(),
+});
 
-export { registerPayloadSchema, loginPayloadSchema };
+module.exports = { registerSchema, loginSchema };

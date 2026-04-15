@@ -8,7 +8,7 @@ import api from "@/utils/api";
 import { loginPayloadSchema } from "@rutu/shared";
 
 export const useLoginForm = () => {
-  const navigate = useNavigate();{}
+  const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
   const [showPopup, setShowPopup] = useState(false);
