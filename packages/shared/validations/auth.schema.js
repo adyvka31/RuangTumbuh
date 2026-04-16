@@ -1,26 +1,17 @@
 const { z } = require("zod");
-const shared = require("@rutu/shared");
 
-// Ambil skema langsung, ATAU dari dalam objek .default (jika ter-transpile)
-const registerPayloadSchema =
-  shared.registerPayloadSchema || shared.default?.registerPayloadSchema;
-const loginPayloadSchema =
-  shared.loginPayloadSchema || shared.default?.loginPayloadSchema;
-
-// Cek apakah skema berhasil dimuat
-if (!loginPayloadSchema) {
-  console.error(
-    "🚨 PERINGATAN: loginPayloadSchema gagal dimuat dari @rutu/shared. Isi module:",
-    shared,
-  );
-}
-
-const registerSchema = z.object({
-  body: registerPayloadSchema || z.any(),
+const registerPayloadSchema = z.object({
+  name: z.string().min(1, "Nama wajib diisi"),
+  email: z.string().email("Format email tidak valid"),
+  password: z.string().min(6, "Password minimal 6 karakter"),
 });
 
-const loginSchema = z.object({
-  body: loginPayloadSchema || z.any(),
+const loginPayloadSchema = z.object({
+  email: z.string().email("Format email tidak valid"),
+  password: z.string().min(1, "Password wajib diisi"),
 });
 
-module.exports = { registerSchema, loginSchema };
+module.exports = {
+  registerPayloadSchema,
+  loginPayloadSchema,
+};
