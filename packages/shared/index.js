@@ -1,1 +1,1 @@
-export * from "./validations/auth.schema.js";
+module.exports = require("./validations/auth.schema.js");
