@@ -1,16 +1,34 @@
 const express = require("express");
 const router = express.Router();
 const authController = require("../controllers/auth.controller");
+const { loginPayloadSchema, registerPayloadSchema } = require("@rutu/shared");
 
-// Import middleware dan schema validation
-const validate = require("../middlewares/validate.middleware");
-const {
-  registerSchema,
-  loginSchema,
-} = require("../validations/auth.validation");
+// Custom middleware khusus untuk mengatasi isu Zod Multiple Instances
+const validateSharedBody = (schema) => (req, res, next) => {
+  try {
+    schema.parse(req.body);
+    next();
+  } catch (err) {
+    let errorMessage = "Validasi gagal";
+    if (err.errors) {
+      errorMessage = err.errors.map((e) => e.message).join(", ");
+    }
+    return res.status(400).json({
+      success: false,
+      message: errorMessage,
+    });
+  }
+};
 
-// Sisipkan `validate(schema)` sebelum `controller`
-router.post("/register", validate(registerSchema), authController.register);
-router.post("/login", validate(loginSchema), authController.login);
+router.post(
+  "/register",
+  validateSharedBody(registerPayloadSchema),
+  authController.register,
+);
+router.post(
+  "/login",
+  validateSharedBody(loginPayloadSchema),
+  authController.login,
+);
 
 module.exports = router;
