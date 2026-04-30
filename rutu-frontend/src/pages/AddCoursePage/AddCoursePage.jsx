@@ -2,7 +2,7 @@ import React from "react";
 import DashboardLayout from "@/layouts/DashboardLayout/DashboardLayout";
 import { Popup } from "@/components/Popup/Popup";
 import { Input } from "@/components/Input/Input";
-import { Skeleton } from "@/components/Skeleton/Skeleton"; // [TAMBAHAN] Import Skeleton
+import { Skeleton } from "@/components/Skeleton/Skeleton";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FiPlus,
@@ -18,16 +18,8 @@ import {
 import styles from "./AddCoursePage.module.css";
 import { useAddCourse } from "@/hooks/useAddCourse";
 
-// Konfigurasi Pilihan Kategori
-const CATEGORY_OPTIONS = [
-  { value: "Front-End", label: "💻 Front-End Web" },
-  { value: "Back-End", label: "⚙️ Back-End Web" },
-  { value: "UI/UX Designer", label: "🎨 UI/UX Designer" },
-  { value: "Matematika", label: "📐 Matematika" },
-  { value: "Fisika", label: "⚛️ Fisika" },
-  { value: "Bahasa Inggris", label: "🇬🇧 Bahasa Inggris" },
-  { value: "Bisnis & Manajemen", label: "📊 Bisnis & Manajemen" },
-];
+// [PENTING]: Import struktur Kategori Baku dari file constants
+import { COURSE_CATEGORIES } from "@/constants/categoryConstants";
 
 export default function AddCoursePage() {
   const {
@@ -54,7 +46,7 @@ export default function AddCoursePage() {
   };
 
   // =========================================
-  // VIEW LOADING: Meniru Struktur Layout Asli
+  // VIEW LOADING SKELETON
   // =========================================
   if (isFetching) {
     return (
@@ -190,7 +182,7 @@ export default function AddCoursePage() {
   }
 
   // =========================================
-  // VIEW UTAMA (TIDAK ADA PERUBAHAN)
+  // VIEW UTAMA
   // =========================================
   return (
     <DashboardLayout title={isEditMode ? "Edit Kursus" : "Tambah Kursus Baru"}>
@@ -240,7 +232,7 @@ export default function AddCoursePage() {
                     name="category"
                     value={formData.category}
                     onChange={handleInputChange}
-                    options={CATEGORY_OPTIONS}
+                    options={COURSE_CATEGORIES} // DATA CONSTANT DIGUNAKAN DI SINI
                     errorMessage={errors.category}
                   />
                 </div>
@@ -393,6 +385,7 @@ export default function AddCoursePage() {
           icon={popup.type === "error" ? <FiAlertCircle /> : <FiCheckCircle />}
           title={popup.title}
           description={popup.description}
+          buttonText="Tutup"
           onAction={() => setPopup((p) => ({ ...p, isOpen: false }))}
         />
       </div>

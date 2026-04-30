@@ -32,11 +32,12 @@
   justify-content: center;
   overflow: hidden;
   background-image: radial-gradient(
-    rgba(0, 0, 0, 0.25) 2.5px,
-    transparent 2.5px
+    rgba(255, 255, 255, 0.15) 2px,
+    transparent 2px
   );
   background-size: 20px 20px;
   background-position: 0 0;
+  transition: background-color 0.3s ease;
 }
 
 .bannerImage {
@@ -68,6 +69,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.bannerIconWrapper {
+  opacity: 0.4;
+  transform: rotate(-15deg) scale(1.2);
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2));
+}
+
+.neoCard:hover .bannerIconWrapper {
+  transform: rotate(0deg) scale(1.4);
+  opacity: 0.6;
 }
 
 .bannerIcon {
@@ -162,7 +175,7 @@
 }
 
 .neoCard:hover .mentorAvatar {
-  transform: scale(1.03) rotate(5deg);
+  transform: scale(1.05) rotate(6deg);
   box-shadow: 4px 4px 0px #000;
 }
 

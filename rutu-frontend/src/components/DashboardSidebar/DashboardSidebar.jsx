@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import styles from "./DashboardSidebar.module.css";
 import logo from "../../assets/logo.svg";
 import { Popup } from "../Popup/Popup";
@@ -26,7 +26,7 @@ const mainMenu = [
   },
   {
     id: 3,
-    label: "Materi & Kursus",
+    label: "Sesi & Kursus",
     link: "/search",
     icon: FiCalendar,
   },

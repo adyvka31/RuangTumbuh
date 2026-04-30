@@ -3,10 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import DashboardLayout from "@/layouts/DashboardLayout/DashboardLayout";
 import styles from "./SearchPage.module.css";
 import CourseCard from "@/components/CourseCard/CourseCard";
-import { CourseCardSkeleton } from "@/components/CourseCard/CourseCardSkeleton"; // [TAMBAHAN] Import Skeleton
+import { CourseCardSkeleton } from "@/components/CourseCard/CourseCardSkeleton";
 import { FiSearch, FiSliders, FiLoader } from "react-icons/fi";
-import { COURSE_CATEGORIES } from "@/constants/courseData";
 import { useSearchCourses } from "@/hooks/useSearchCourses";
+import { CATEGORY_VALUES } from "@/constants/categoryConstants";
 
 export default function SearchPage() {
   const {
@@ -31,6 +31,8 @@ export default function SearchPage() {
     show: { y: 0, opacity: 1, transition: { type: "spring", bounce: 0.4 } },
     exit: { opacity: 0, scale: 0.9, transition: { duration: 0.2 } },
   };
+
+  const FILTER_TABS = ["Semua", ...CATEGORY_VALUES];
 
   return (
     <DashboardLayout title="Materi & Kursus">
@@ -73,8 +75,9 @@ export default function SearchPage() {
             </button>
           </div>
 
+          {/* FILTER CATEGORY PILLS */}
           <div className={styles.categoriesWrapper}>
-            {COURSE_CATEGORIES.map((cat) => (
+            {FILTER_TABS.map((cat) => (
               <button
                 key={cat}
                 className={`${styles.categoryPill} ${

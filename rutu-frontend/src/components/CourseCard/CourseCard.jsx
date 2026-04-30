@@ -1,18 +1,16 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./CourseCard.module.css";
-import { getCourseExtras } from "@/constants/courseData";
-import { Popup } from "@/components/Popup/Popup"; // Pastikan path ini benar
+import { Popup } from "@/components/Popup/Popup";
 import api from "@/utils/api";
+import { getImageUrl } from "@/utils/imageHelper";
+import { CATEGORY_COLORS } from "@/constants/categoryConstants";
+import { getCategoryIcon } from "@/constants/categoryIconHelper";
+
 import {
   FiClock,
   FiStar,
   FiArrowRight,
-  FiCode,
-  FiServer,
-  FiDroplet,
-  FiSmartphone,
-  FiBookOpen,
   FiEye,
   FiEdit3,
   FiTrash2,
@@ -20,7 +18,6 @@ import {
   FiCheckCircle,
 } from "react-icons/fi";
 
-// Tambahkan isMyCourse dan onRefresh sebagai properti baru
 export default function CourseCard({ course, isMyCourse, onRefresh }) {
   const navigate = useNavigate();
 
@@ -33,23 +30,7 @@ export default function CourseCard({ course, isMyCourse, onRefresh }) {
     description: "",
   });
 
-  const safeCategory = course.category || "General";
-  const extras = getCourseExtras(safeCategory);
-
-  const getCategoryIcon = (category) => {
-    switch (category?.toLowerCase().replace(/[^a-z0-9]/g, "")) {
-      case "frontend":
-        return <FiCode className={styles.bannerIcon} />;
-      case "backend":
-        return <FiServer className={styles.bannerIcon} />;
-      case "uiuxdesign":
-        return <FiDroplet className={styles.bannerIcon} />;
-      case "mobiledev":
-        return <FiSmartphone className={styles.bannerIcon} />;
-      default:
-        return <FiBookOpen className={styles.bannerIcon} />;
-    }
-  };
+  const safeCategory = course.category || course.kategori || "General"; // Sesuaikan dengan properti API Anda
 
   const getInitials = (name) => {
     if (!name) return "U";
@@ -78,46 +59,55 @@ export default function CourseCard({ course, isMyCourse, onRefresh }) {
     }
   };
 
+  // [LOGIKA PLACEHOLDER KATEGORI]
+  const hasImage = course.thumbnail && course.thumbnail.length > 5;
+  const bgColor = CATEGORY_COLORS[safeCategory] || CATEGORY_COLORS["Default"];
+
   return (
     <>
       <div className={styles.neoCard}>
-        <div
-          className={styles.cardBanner}
-          style={{ backgroundColor: extras.color }}
-        >
-          {course.image && (
+        {/* --- BAGIAN THUMBNAIL / BANNER --- */}
+        <div className={styles.cardBanner} style={{ backgroundColor: bgColor }}>
+          {hasImage ? (
             <img
-              src={course.image}
-              alt={course.title}
+              src={getImageUrl(course.thumbnail)}
+              alt={course.title || course.name}
               className={styles.bannerImage}
+              loading="lazy"
             />
+          ) : (
+            // Tampilkan Ikon Kategori Besar jika tidak ada gambar
+            <div className={styles.bannerOverlay}>
+              <div className={styles.bannerIconWrapper}>
+                {getCategoryIcon(safeCategory, 80)}
+              </div>
+            </div>
           )}
-          <div className={styles.bannerOverlay}>
-            {getCategoryIcon(course.category)}
-          </div>
-          <span className={styles.categoryBadge}>
-            {course.category || "General"}
-          </span>
+
+          <span className={styles.categoryBadge}>{safeCategory}</span>
           <div className={styles.durationBadge}>
             <FiClock />
             <span>
-              {course.duration ? `${course.duration} Menit` : "0 Menit"}
+              {course.duration || course.durasi
+                ? `${course.duration || course.durasi} Menit`
+                : "0 Menit"}
             </span>
           </div>
         </div>
 
+        {/* --- BAGIAN BODY KONTEN --- */}
         <div className={styles.cardBody}>
-          <h3 className={styles.courseTitle}>{course.title}</h3>
+          <h3 className={styles.courseTitle}>{course.title || course.name}</h3>
 
           <div className={styles.mentorInfo}>
             <div
               className={styles.mentorAvatar}
-              style={{ backgroundColor: extras.color }}
+              style={{ backgroundColor: bgColor }} // Avatar warna senada dengan banner
             >
               {course.authorImage ? (
                 <img
-                  src={course.authorImage}
-                  alt={course.author}
+                  src={getImageUrl(course.authorImage)}
+                  alt={course.author || course.tutor}
                   className={styles.avatarImage}
                 />
               ) : (
@@ -126,27 +116,31 @@ export default function CourseCard({ course, isMyCourse, onRefresh }) {
                     fontFamily: "'Fredoka', sans-serif",
                     fontWeight: 700,
                     letterSpacing: "1px",
+                    color: "#fff", // Pastikan kontras dengan background
                   }}
                 >
-                  {getInitials(course.author || "Saya")}
+                  {getInitials(course.author || course.tutor || "Saya")}
                 </span>
               )}
             </div>
             <div className={styles.mentorText}>
-              <span className={styles.mentorName} title={course.author}>
-                {course.author || "Saya"}
+              <span
+                className={styles.mentorName}
+                title={course.author || course.tutor}
+              >
+                {course.author || course.tutor || "Saya"}
               </span>
               <span className={styles.mentorRole}>Mentor</span>
             </div>
             <div className={styles.ratingBadge}>
               <FiStar className={styles.starIcon} />
-              <span>{course.rating ? `${course.rating}.0` : "5.0"}</span>
+              <span>{course.rating ? `${course.rating}.0` : "0.0"}</span>
             </div>
           </div>
         </div>
 
+        {/* --- BAGIAN FOOTER / TOMBOL --- */}
         <div className={styles.cardFooter}>
-          {/* LOGIKA KONDISIONAL RENDER TOMBOL */}
           {isMyCourse ? (
             // Tampilan untuk Halaman My Course (3 Tombol)
             <>
@@ -181,7 +175,8 @@ export default function CourseCard({ course, isMyCourse, onRefresh }) {
               </button>
               {(() => {
                 const user = JSON.parse(localStorage.getItem("user") || "{}");
-                const isOwner = user.name === course.author;
+                const tutorName = course.author || course.tutor;
+                const isOwner = user.name === tutorName;
 
                 return isOwner ? (
                   <button
@@ -204,14 +199,14 @@ export default function CourseCard({ course, isMyCourse, onRefresh }) {
         </div>
       </div>
 
-      {/* POPUP KHUSUS MY COURSE */}
+      {/* POPUPS */}
       {isMyCourse && showDeletePopup && (
         <Popup
           isOpen={true}
           type="danger"
           icon={<FiAlertCircle />}
           title="Hapus Kursus?"
-          description={`Apakah kamu yakin ingin menghapus kursus "${course.title}"? Tindakan ini tidak dapat dibatalkan.`}
+          description={`Apakah kamu yakin ingin menghapus kursus "${course.title || course.name}"? Tindakan ini tidak dapat dibatalkan.`}
           buttonText="Hapus Sekarang"
           onAction={handleDelete}
           secondaryButtonText="Batal"

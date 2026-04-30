@@ -1,4 +1,6 @@
+// rutu-backend/src/validations/course.validation.js
 const { z } = require("zod");
+const { COURSE_CATEGORIES } = require("../utils/constants");
 
 const createCourseSchema = z.object({
   body: z.object({
@@ -6,8 +8,20 @@ const createCourseSchema = z.object({
       .string()
       .min(5, "Judul kursus minimal 5 karakter.")
       .max(100, "Judul kursus maksimal 100 karakter."),
-    tutorId: z.string().uuid("Format Tutor ID tidak valid.").or(z.string()), // Disesuaikan dengan tipe ID (UUID atau string)
-    kategori: z.string().min(1, "Kategori kursus wajib dipilih."),
+    tutorId: z
+      .string()
+      .uuid("Format Tutor ID tidak valid.")
+      .or(z.string())
+      .optional(),
+
+    // [PERBAIKAN] Validasi kategori ketat menggunakan .refine() milik Zod
+    kategori: z
+      .string()
+      .min(1, "Kategori kursus wajib dipilih.")
+      .refine((val) => COURSE_CATEGORIES.includes(val), {
+        message: `Kategori harus salah satu dari kategori baku yang tersedia.`,
+      }),
+
     durasi: z
       .union([z.string(), z.number()])
       .refine(
@@ -32,7 +46,15 @@ const updateCourseSchema = z.object({
       .min(5, "Judul kursus minimal 5 karakter.")
       .max(100, "Judul kursus maksimal 100 karakter.")
       .optional(),
-    kategori: z.string().min(1, "Kategori kursus wajib dipilih.").optional(),
+
+    // [PERBAIKAN] Sama seperti di atas namun .optional() untuk proses update
+    kategori: z
+      .string()
+      .refine((val) => COURSE_CATEGORIES.includes(val), {
+        message: `Kategori tidak valid.`,
+      })
+      .optional(),
+
     durasi: z
       .union([z.string(), z.number()])
       .refine(
